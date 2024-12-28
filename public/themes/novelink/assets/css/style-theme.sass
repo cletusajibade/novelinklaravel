@@ -1,0 +1,710 @@
+img
+  max-width: 100%
+  display: inline-block
+  height: auto
+  display: block
+
+.base-header
+  border-bottom: 1px solid #eff2f5
+
+.base-header.main-header.style-two
+  .main-menu
+    .navigation > li
+      margin: 0px 9px
+
+figcaption
+  margin-top: 10px
+  padding-bottom: 15px
+  font-size: 14px
+
+abbr[title]
+  border-bottom: 1px dotted
+
+acronym
+  border-bottom: 1px dotted
+
+.wp-block-image .aligncenter > figcaption,
+.wp-block-image .alignleft > figcaption,
+.wp-block-image .alignright > figcaption,
+.wp-block-image.is-resized > figcaption
+  text-align: center
+
+.wp-block-image
+  max-width: 100%
+
+  figcaption
+    display: block
+
+pre
+  display: block
+  padding: 9.5px
+  margin: 0 0 10px
+  font-size: 13px
+  line-height: 1.42857143
+  color: #333
+  white-space: pre-wrap
+  word-wrap: break-word
+  background-color: #fff
+  border-radius: 4px
+  overflow: auto
+  margin-top: 10px
+  border: 1px solid #2b3c6b
+
+.wp-block-cover-text
+  font-size: 24px
+
+  a
+    color: #ffffff
+
+.alignleft
+  float: left
+  margin-right: 1.5em
+  margin-bottom: 1.5em
+
+.wp-block-button.alignright
+  text-align: right
+
+.wp-block-quote.is-large, .wp-block-quote.is-style-large
+  padding: 41px 40px !important
+
+article
+  .text
+    overflow: hidden
+
+.alignright
+  display: inline
+  float: right
+  margin-left: 1.5em
+  clear: both
+
+.blocks-gallery-item
+  list-style: outside none
+  padding-left: 0 !important
+
+iframe
+  width: 100%
+
+.wp-caption
+  margin-bottom: 1.5em
+  max-width: 100%
+
+.wp-block-cover-text
+  margin-bottom: 0 !important
+
+.aligncenter
+  clear: both
+  margin-left: auto
+  margin-right: auto
+
+.blocks-gallery-item:before
+  content: none !important
+
+.widget_recent_comments
+  ul
+    li
+      display: flex !important
+      align-items: center
+      flex-wrap: wrap
+      margin-bottom: 10px
+
+      &:after
+
+      .comment-author-link
+        font-weight: 600
+        margin-right: 5px
+
+        a
+          color: #2d5883
+
+      a
+        margin-left: 5px !important
+
+  .recentcomments
+    .comment-author-link
+      a
+        margin-left: 0px !important
+
+.widget_recent_entries
+  ul
+    margin-left: 0px !important
+
+    li
+      margin-bottom: 20px
+      position: relative
+      display: block
+      width: 100%
+      line-height: 50px
+      border-left: 4px solid #ec4e4f
+      padding: 0px 15px
+      transition: all 500ms ease
+      background: #f9f9f9
+
+      &:after
+        display: none
+
+      &:last-child
+        margin-bottom: 0
+
+.widget_nav_menu,
+.widget_meta,
+.widget_pages
+  ul
+    padding-left: 20px
+
+    li
+      a
+        position: relative
+        display: block
+        color: #252930
+        padding: 7px 0px
+
+        &::after
+          content: ""
+          position: absolute
+          left: -20px
+          top: 18px
+          width: 6px
+          height: 6px
+          border-radius: 50%
+          background: #ec4e4e
+
+        &:hover
+          color: #ec4e4e
+
+      ul
+        padding-left: 18px
+
+.blog-sidebar
+  .sidebar-widget
+    background: transparent
+    border: 1px solid #e0e6ed
+    padding: 33px 35px 39px 35px
+    display: flow-root
+
+  .widget_calendar
+    background: transparent
+    border: 1px solid #e0e6ed
+    padding: 33px 35px 39px 35px
+
+    table
+      width: 100%
+      margin-bottom: 0px
+
+    nav
+      margin-bottom: 0px
+
+    caption
+      padding-bottom: 0px
+
+  .sidebar-search
+    margin-bottom: 0 !important
+
+  .widget_archive,
+  .widget_categories
+    ul
+      li
+        width: 100%
+        position: relative
+        display: flex
+        align-items: center
+        flex-wrap: wrap
+        justify-content: space-between
+
+        a
+          position: relative
+          display: inline-block
+          font-size: 18px
+          font-family: 'Cabin', sans-serif
+          font-weight: 500
+          color: #222
+          margin: 5px 0px
+          padding-left: 52px
+
+          &::before
+            position: absolute
+            content: ''
+            background: #d2dbe4
+            width: 1px
+            height: 100%
+            left: 28px
+            top: 0px
+
+          &::after
+            position: absolute
+            content: "\f106"
+            font-family: 'Flaticon', sans-serif
+            font-size: 16px
+            font-weight: 600
+            color: #c8d1db
+            left: 0px
+            top: 0px
+            transition: all 500ms ease
+
+        &:hover
+          a
+            &::after
+              color: #ec4e4e
+
+        ul
+          width: 100%
+
+.base-theme
+  .blog-details-content
+    .news-block-one
+      .inner-box
+        .lower-content
+          ol
+            ol
+              margin-bottom: 0
+
+          ul
+            ul
+              margin-bottom: 0
+
+  h6 + h2
+    margin-top: 16px
+
+  a
+    color: #ec4e4e
+
+  p
+    line-height: 1.8em
+
+  .news-block-one
+    .inner-box
+      .image-box
+        background: transparent
+
+        img
+          width: auto
+
+.wp-caption-text,
+.gallery-caption,
+.bypostauthor
+  opacity: 1
+
+table,
+th,
+td
+  border: 1px solid #f0f0f0
+  border: 1px solid rgba(51, 51, 51, 0.1) !important
+  font-size: 15px
+
+th,
+td
+  padding: 7px
+  font-size: 15px
+
+table
+  border-collapse: separate
+  margin-bottom: 10px
+  margin-top: 10px
+  border-spacing: 0
+
+select
+  position: relative
+  width: 100%
+  border: none
+  line-height: 56px
+  border-radius: 0px
+  padding: 0px 20px
+  font-size: 15px
+  font-weight: 400
+  color: #222
+  border: 1px solid #e0e6ed
+  background: transparent
+  z-index: 9
+  appearance: none
+  -webkit-appearance: none
+  -moz-appearance: none
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>")
+  background-repeat: no-repeat
+  background-position-x: 97%
+  background-position-y: 15px
+
+abbr[title]
+  border-bottom: 1px dotted
+
+acronym
+  border-bottom: 1px dotted
+
+pre
+  display: block
+  padding: 9.5px
+  margin: 0 0 10px
+  font-size: 13px
+  line-height: 1.42857143
+  color: #333
+  white-space: pre-wrap
+  word-wrap: break-word
+  background-color: #fff
+  border-radius: 4px
+  overflow: auto
+  margin-top: 10px
+  border: 1px solid #2b3c6b
+
+.sticky-post-class
+  .lower-content
+    background: #ffffff !important
+    box-shadow: 0 0px 20px rgba(0, 0, 0, 0.05)
+
+.news-block-one
+  position: relative
+
+  .sticky_post_icon
+    position: absolute
+    right: 20px
+    top: 20px
+    color: #ec4e4f
+    font-size: 25px
+    z-index: 1
+
+    i
+
+.sidebar-page-container
+  .news-block-one
+    .inner-box
+      .lower-content
+        .page-links
+          justify-content: flex-start
+
+        .entry-title
+          font-size: 33px
+
+          a
+            -ms-word-wrap: break-word
+            word-wrap: break-word
+
+.sidebar-page-container
+  .news-block-one.no-post-thumb
+    .inner-box
+      .lower-content
+        .post-date
+          position: relative
+          left: 0
+          top: 0
+
+        .entry-title
+          margin-top: 25px
+
+        h2
+          a
+            display: block
+
+.page-single-details
+  .news-block-one
+    .inner-box
+      .lower-content
+        padding: 0px
+
+.news-section.blog-grid
+  .news-block
+    .news-block-one
+      .sticky_post_icon
+
+      .inner-box
+        .lower-content
+          .page-links
+            justify-content: flex-start
+
+          .post-date.post-date-two
+            position: relative
+            top: 0
+            left: 0
+            right: auto
+            width: 180px
+            height: auto
+            color: #fff
+            font-weight: 700
+            line-height: 35px
+            margin-bottom: 15px
+
+.news-section.blog-grid
+  .news-block.no-post-thumb
+    .news-block-one
+      .inner-box
+        .lower-content
+          .post-date
+            position: relative
+            top: 0
+            left: 0
+            right: auto
+            margin-bottom: 20px
+
+.have-title-post
+  .inner-box
+    .lower-content
+      .post-date
+        margin-bottom: 25px
+
+.blog-details-content
+  .news-block-one
+    .entry-title
+      -ms-word-wrap: break-word
+      word-wrap: break-word
+
+  .page-links
+    justify-content: flex-start
+
+  .lower-content
+    background: #ffffff !important
+
+.blog-details-content.no-single-post-thumb
+  .news-block-one
+    .inner-box
+      .lower-content
+        padding: 0
+
+        .post-date
+          position: relative
+          left: 0
+          top: 0
+
+        .entry-title
+          margin-top: 25px
+
+        h2
+          a
+            display: block
+
+.base-theme
+  .blog-details-content
+    .lower-content
+      .text
+        ul
+          margin-bottom: 10px
+          padding-left: 25px
+          list-style: unset
+
+          li
+            list-style: unset
+
+        ol
+          margin-bottom: 10px
+          padding-left: 25px
+
+          li
+            list-style: unset
+
+        h3
+          margin-bottom: 0
+
+        h2
+          margin-bottom: 0 !important
+
+    .comment-inner
+      .text
+        ul
+          margin-bottom: 10px
+          padding-left: 20px
+          list-style: unset
+
+          li
+            list-style-type: disc
+
+        ol
+          margin-bottom: 10px
+          padding-left: 20px
+
+          li
+            list-style: unset
+
+.nav-links
+  display: flex
+  justify-content: center
+  align-items: flex-start
+  flex-wrap: wrap
+
+  .current.page-numbers
+    color: #ffffff
+    background: #2d5883
+    border-color: #2d5883
+
+  .page-numbers
+    position: relative
+    display: inline-block
+    font-size: 18px
+    font-family: 'Cabin', sans-serif
+    font-weight: 400
+    height: 50px
+    width: 50px
+    line-height: 50px
+    border: 1px solid #e4e4e4
+    text-align: center
+    color: #555555
+    background: transparent
+    z-index: 1
+    transition: all 500ms ease
+    margin: 3px 3px
+
+    &:hover
+      color: #ffffff
+      background: #2d5883
+      border-color: #2d5883
+
+.page-links
+  margin-bottom: 20px
+  margin-top: 5px
+  display: flex
+  justify-content: center
+  align-items: flex-start
+  overflow: hidden
+  float: left
+  width: 100%
+
+  a, .current
+    position: relative
+    display: inline-block
+    margin: 3px 3px
+    font-size: 18px
+    font-family: 'Cabin', sans-serif
+    font-weight: 400
+    height: 50px
+    width: 50px
+    line-height: 50px
+    border: 1px solid #e4e4e4
+    text-align: center
+    color: #555555
+    background: transparent
+    z-index: 1
+    transition: all 500ms ease
+
+    &:hover
+      color: #ffffff
+      background: #2d5883
+      border-color: #2d5883
+
+  .current
+    color: #ffffff
+    background: #2d5883
+    border-color: #2d5883
+
+.breadcrumb-class-with-header-one.page-title
+  padding-top: 150px
+
+.no-results.not-found.ri-fat-not-found
+  .nothing-found-search
+    max-width: 280px
+    margin-top: 20px
+
+  .no-found-text
+    font-size: 20px
+
+.widget_tag_cloud
+  a
+    position: relative
+    display: inline-block
+    color: #2d5883
+    font-size: 15px !important
+    line-height: 26px
+    border: 1px solid #e5e5e5
+    padding: 11px 21.5px
+    margin-right: 5px
+    margin-bottom: 8px
+
+.widget_rss
+  ul
+    li
+      padding-bottom: 15px
+      margin-bottom: 15px
+      border-bottom: 1px solid #e5e5e5
+
+      &:last-child
+        padding-bottom: 0px
+        margin-bottom: 0px
+        border-bottom: 0px solid #e5e5e5
+
+      .rsswidget
+        margin-bottom: 10px
+        display: block
+        font-weight: 600
+
+      cite
+        margin-top: 10px
+        display: block
+        font-weight: 600
+
+.widget_text
+  .wp-caption
+    margin-top: 10px
+
+    img
+      margin: 10px auto
+
+  p
+    img
+      margin: 10px auto
+
+.wp-block-archives,
+.wp-block-categories
+  select
+    max-width: 200px
+
+.main-footer
+  .footer-top
+    .links-widget
+      .widget-content
+        .list
+          li
+            a
+              color: #ffffff
+
+    p,
+    i,
+    a
+      color: #ffffff
+
+  .footer-bottom
+    border-top: 1px solid rgba(255, 255, 255, 0.1)
+
+    .footer-nav
+      li
+        a
+          color: #ffffff
+// color white
+
+
+a:not([href])
+  color: #ffffff
+
+div[style="background-color:#f4399d"]
+  a
+    color: #ffffff
+
+@media only screen and (min-width: 320px) and (max-width: 600px)
+  .sidebar-page-container
+    .news-block-one
+      .inner-box
+        .lower-content
+          padding: 20px
+
+          .entry-title
+            font-size: 25px
+            margin-bottom: 0
+            margin-top: 10px
+
+            a
+  ol.comment-box
+    li
+      ol.children
+        padding-left: 10px
+
+@media only screen and (min-width: 320px) and (max-width: 400px)
+  .blog-sidebar
+    .sidebar-widget
+      padding: 30px
+
+    .widget_calendar
+      border: 0px solid #e0e6ed
+      padding: 0px
+  .widget_nav_menu,
+  .widget_meta,
+  .widget_pages
+    ul
+      li
+        ul
+          padding-left: 14px
+  .base-sidebar.sidebar-widget.widget_tag_cloud
+    padding: 0
+    border: 0
+        
