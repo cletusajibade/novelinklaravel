@@ -1,0 +1,88 @@
+<x-front-layout page-title="Consultation Form" :current-route-name="Route::currentRouteName()"
+    bg-url="2020/08/page-title.jpg">
+    <section
+        class="elementor-section elementor-top-section elementor-element elementor-element-61750cc elementor-section-stretched elementor-section-full_width elementor-section-height-default elementor-section-height-default"
+        data-id="61750cc" data-element_type="section" data-settings='{"stretch_section":"section-stretched"}'
+        style="width: 634px; left: 0px">
+
+        <div class="elementor-container elementor-column-gap-default">
+            <div class="elementor-row">
+                <div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-531ee38"
+                    data-id="531ee38" data-element_type="column">
+                    <div class="elementor-column-wrap elementor-element-populated">
+                        <div class="elementor-widget-wrap" style="margin-top: 4rem">
+                            <div class="elementor-element elementor-element-9c14a15 elementor-widget elementor-widget-visarzo_about"
+                                data-id="9c14a15" data-element_type="widget" data-widget_type="visarzo_about.default">
+                                <div class="elementor-widget-container">
+                                    <section class="about-section" style="padding: 0 0 2rem 0;margin-bottom: 0;">
+                                        <div class="pattern-layer"></div>
+                                        <div class="auto-container">
+                                            <div class="row align-items-center clearfix">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 content-column">
+                                                    <div id="content_block_1">
+                                                        <div class="content-box">
+                                                            <div class="sec-title centred">
+                                                                <!-- <p>who we are</p> -->
+                                                                <h2 class="about_section">
+                                                                    Complete the form to get in touch with us
+                                                                </h2>
+                                                                <div class="dotted-box">
+                                                                    <span class="dotted"></span>
+                                                                    <span class="dotted"></span>
+                                                                    <span class="dotted"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="bold-text centred">
+                                                                <p>
+                                                                    To book a consultation, please select the
+                                                                    Consultation Package you are interested in. Once
+                                                                    successfully booked,
+                                                                    you will receive a confirmation email. We would also
+                                                                    send you an email with the link for the consultation
+                                                                    session.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="elementor-widget-container">
+                                    <section class="contact-page-section" style="padding: 0 0 110px 0px;">
+                                        <div class="auto-container">
+                                            <div class="contact-form-inner" style="max-width: 640px">
+                                                <div class="form-inner">
+                                                    <div class="elementor-shortcode yachercore-contact_cf7-0">
+                                                        <div role="form" class="wpcf7">
+                                                            <div class="screen-reader-response">
+                                                                <p role="status" aria-live="polite" aria-atomic="true">
+                                                                </p>
+                                                                <ul></ul>
+                                                            </div>
+                                                            @if (@isset($errorMsg))
+                                                                <div id='error-div' class="alert alert-danger p-4"
+                                                                    role="alert">
+                                                                    <span
+                                                                        style="font-size:larger">***Error***:&nbsp;</span>
+                                                                    {{ $errorMsg }}
+                                                                </div>
+                                                            @endif
+                                                            <!-- CONSULTATION FORM -->
+                                                            <x-forms.consultation />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</x-front-layout>

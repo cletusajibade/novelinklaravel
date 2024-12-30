@@ -1,27 +1,4 @@
-@php
-    $currentRouteName = Route::currentRouteName();
-    $titlePage = 'About Us';
-@endphp
-
-<!DOCTYPE html>
-<html lang="en-US">
-
-<head>
-    @include('includes/html-head')
-    <style id="visarzo-theme-inline-css">
-        .page-breadcrumb {
-            background-image: url("{{ url('/') }}/uploads/2020/08/page-title.jpg");
-        }
-    </style>
-</head>
-
-<body
-    class="home page-template page-template-elementor_header_footer page page-id-7 wp-custom-logo elementor-default elementor-template-full-width elementor-kit-9 elementor-page elementor-page-7 e--ua-blink e--ua-chrome e--ua-webkit"
-    data-elementor-device-mode="mobile">
-
-    <!-- HEADER -->
-    <x-header :titlePage="$titlePage" :currentRouteName="$currentRouteName" />
-
+<x-front-layout :page-title="ROUTE_ABOUT" :current-route-name="Route::currentRouteName()" bg-url="2020/08/page-title.jpg">
     <section
         class="elementor-section elementor-top-section elementor-element elementor-element-61750cc elementor-section-stretched elementor-section-full_width elementor-section-height-default elementor-section-height-default"
         data-id="61750cc" data-element_type="section"
@@ -46,8 +23,8 @@
                                                     <div id="image_block_1">
                                                         <div class="image-box">
                                                             <figure class="image"><img
-                                                                    src="uploads/2020/07/about-1.jpg"
-                                                                    title="about-1" alt="about-1" /></figure>
+                                                                    src="uploads/2020/07/about-1.jpg" title="about-1"
+                                                                    alt="about-1" /></figure>
                                                             <div class="box">
                                                                 <div class="inner">
                                                                     <div class="icon-box">
@@ -66,8 +43,7 @@
                                                     <div id="content_block_1">
                                                         <div class="content-box">
                                                             <div class="sec-title">
-                                                                <!-- <p>About us</p> -->
-                                                                <h2 class="about_section"><?php echo $titlePage; ?></h2>
+                                                                <h2 class="about_section">{{ ROUTE_ABOUT }}</h2>
                                                                 <div class="dotted-box">
                                                                     <span class="dotted"></span>
                                                                     <span class="dotted"></span>
@@ -139,8 +115,8 @@
                                                             style="visibility: visible;">
                                                             <div class="inner-box">
                                                                 <figure class="image-box">
-                                                                    <img src="uploads/2020/08/Webpix.jpg"
-                                                                        title="team-1" alt="team-1">
+                                                                    <img src="uploads/2020/08/Webpix.jpg" title="team-1"
+                                                                        alt="team-1">
                                                                     <!-- <ul class="social-links clearfix"> -->
                                                                     <!-- <li><a href="#"><i class="fab fa-twitter"></i></a></li> -->
                                                                     <!-- <li><a href="#"><i class="fab fa-facebook-f"></i></a></li> -->
@@ -155,7 +131,9 @@
                                                                         Immigration Consultant (RCIC)</span>
                                                                     <span class="designation">R712188</span>
                                                                 </div>
-                                                                <img src="uploads/2020/08/RCIC_EN_HORZ_CLR_POS_TM.png" alt="R712188" style="max-width:45%;opacity:0.9;margin:0px;background:none;">
+                                                                <img src="uploads/2020/08/RCIC_EN_HORZ_CLR_POS_TM.png"
+                                                                    alt="R712188"
+                                                                    style="max-width:45%;opacity:0.9;margin:0px;background:none;">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -166,7 +144,6 @@
                                                     <div id="content_block_1">
                                                         <div class="content-box">
                                                             <div class="sec-title">
-                                                                <!-- <p>About us</p> -->
                                                                 <h2 class="about_section">Our Lead Consultant</h2>
                                                                 <div class="dotted-box">
                                                                     <span class="dotted"></span>
@@ -203,8 +180,6 @@
                                             </div>
                                         </div>
                                     </section>
-
-
                                 </div>
                             </div>
                         </div>
@@ -213,9 +188,4 @@
             </div>
         </div>
     </section>
-
-    <!-- FOOTER  -->
-    <x-footer />
-</body>
-
-</html>
+</x-front-layout>

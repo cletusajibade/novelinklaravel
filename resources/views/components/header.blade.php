@@ -1,6 +1,5 @@
-@php
-    $hasHtml = $titlePage !== strip_tags($titlePage);
-@endphp
+@php $hasHtml = $pageTitle !== strip_tags($pageTitle); @endphp
+
 <header class="main-header  style-one">
     <div class="header-top">
         <div class="top-inner clearfix">
@@ -11,10 +10,10 @@
                     </li>
                     <li>
                         <i class="flaticon-open-email-message"></i>
-                        info@novelinkimmigration.ca</span>
+                        {{ EMAIL_CONTACT }}</span>
                     </li>
                     <li>
-                        <i class="flaticon-clock"></i><a href="book-consultation.php">Contact Us</a>
+                        <i class="flaticon-clock"></i><a href="{{ route('consultation') }}">{{ ROUTE_CONTACT }}</a>
                     </li>
                 </ul>
             </div>
@@ -72,66 +71,67 @@
                                 </li>
                                 <li id="menu-item-338"
                                     class="menu-item menu-item-type-post_type menu-item-object-page menu-item-338">
-                                    <a href="{{ route('about') }}">About Us</a>
+                                    <a href="{{ route('about') }}">{{ ROUTE_ABOUT }}</a>
                                 </li>
                                 <li id="menu-item-911"
                                     class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-911">
-                                    <a href="permanent-residence.php">PERMANENT RESIDENCE</a>
+                                    <a href="{{ route('pr') }}">{{ TITLE_PERM_RESIDENCE }}</a>
                                     <ul class="sub-menu">
                                         <li id="menu-item-455"
                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-455">
-                                            <a href="permanent-residence.php">Permanent Residence</a>
+                                            <a href="{{ route('pr') }}">{{ TITLE_PERM_RESIDENCE }}</a>
                                         </li>
                                         <li id="menu-item-455"
                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-455">
-                                            <a href="federal-skilled-workers.php">Federal Skilled Worker</a>
+                                            <a
+                                                href="{{ route('fed-skilled-worker') }}">{{ TITLE_FED_SKILLED_WORKER }}</a>
                                         </li>
                                         <li id="menu-item-340"
                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-340">
-                                            <a href="canadian-experience-class.php">Canadian Experience Class</a>
+                                            <a href="{{ route('cad-experience') }}">{{ TITLE_CAD_EXPERIENCE }}</a>
                                         </li>
                                         <li id="menu-item-453"
                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-453">
-                                            <a href="federal-skilled-trades.php">Federal Skilled Trades</a>
+                                            <a
+                                                href="{{ route('fed-skilled-trades') }}">{{ TITLE_FED_SKILLED_TRADES }}</a>
                                         </li>
                                         <li id="menu-item-912"
                                             class="menu-item menu-item-type-custom menu-item-object-custom menu-item-912">
-                                            <a href="provincial-nomination-programs.php">Provincial Nomination
-                                                Programs</a>
+                                            <a href="{{ route('prov-nom') }}">{{ TITLE_PROV_NOM }}</a>
                                         </li>
                                         <li id="menu-item-913"
                                             class="menu-item menu-item-type-custom menu-item-object-custom menu-item-913">
-                                            <a href="sponsorship.php">Sponsorship</a>
+                                            <a href="{{ route('sponsor') }}">{{ TITLE_SPONSORSHIP }}</a>
                                         </li>
                                         <li id="menu-item-913"
                                             class="menu-item menu-item-type-custom menu-item-object-custom menu-item-913">
-                                            <a href="caregivers.php">Caregivers</a>
+                                            <a href="{{ route('caregivers') }}">{{ TITLE_CAREGIVERS }}</a>
                                         </li>
                                     </ul>
                                 </li>
                                 <li id="menu-item-452"
                                     class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-452">
-                                    <a href="temporary-residence.php">TEMPORARY RESIDENCE</a>
+                                    <a href="{{ route('temp-res') }}">{{ TITLE_TEMP_RESIDENCE }}</a>
                                     <ul class="sub-menu">
                                         <li id="menu-item-457"
                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-457">
-                                            <a href="temporary-residence.php">Temporary Residence</a>
+                                            <a href="{{ route('temp-res') }}">{{ TITLE_TEMP_RESIDENCE }}</a>
                                         </li>
                                         <li id="menu-item-457"
                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-457">
-                                            <a href="study-permit.php">Study Permit</a>
+                                            <a href="{{ route('study-permit') }}">{{ TITLE_STUDY_PERMIT }}</a>
                                         </li>
                                         <li id="menu-item-459"
                                             class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-459">
-                                            <a href="visitor-visa.php">Visitor Visa</a>
+                                            <a href="{{route('visitor-visa')}}">{{TITLE_VISITOR_VISA}}</a>
                                         </li>
                                         <li id="menu-item-460"
                                             class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-460">
-                                            <a href="super-visa.php">Super Visa</a>
+                                            <a href="{{ route('super-visa') }}">{{ TITLE_SUPER_VISA }}</a>
                                         </li>
                                         <li id="menu-item-461"
                                             class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-461">
-                                            <a href="work-permit.php">Work Permit</a>
+                                            <a href="{{route('work-permit')}}">{{TITLE_WORK_PERMIT}}</a>
                                         </li>
                                         <!-- <li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-462"><a href="https://novelinkimmigration.ca/coaching/toefl/">TOEFL</a></li> -->
                                         <!-- <li id="menu-item-463" class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-463"><a href="https://novelinkimmigration.ca/coaching/sat-coaching/">SAT Coaching</a></li> -->
@@ -140,7 +140,7 @@
                                 </li>
                                 <li id="menu-item-910"
                                     class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-910">
-                                    <a href="citizenship.php">CITIZENSHIP</a>
+                                    <a href="{{ route('citizenship') }}">{{ TITLE_CITIZENSHIP }}</a>
                                     <!-- <ul class="sub-menu">
                                         <li id="menu-item-451" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-451"><a href="https://novelinkimmigration.ca/service-page-01/">Service Page 01</a></li>
                                         <li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><a href="https://novelinkimmigration.ca/service-page-02/">Service Page 02</a></li>
@@ -204,8 +204,8 @@
         <div class="contact-info">
             <ul class="info clearfix">
                 <li><i class="flaticon-home"></i>Calgary, AB</li>
-                <li><i class="flaticon-open-email-message"></i>info@novelinkimmigration.ca</span></li>
-                <li><i class="flaticon-clock"></i><a href="book-consultation.php">Contact Us</a></li>
+                <li><i class="flaticon-open-email-message"></i>{{ EMAIL_CONTACT }}</span></li>
+                <li><i class="flaticon-clock"></i><a href="{{ route('consultation') }}">{{ ROUTE_CONTACT }}</a></li>
             </ul>
         </div>
         <div class="social-links">
@@ -228,9 +228,9 @@
                         <div class="title-box">
                             <h1>
                                 @if ($hasHtml)
-                                    {!! $titlePage !!}
+                                    {!! $pageTitle !!}
                                 @else
-                                    {{ $titlePage }}
+                                    {{ $pageTitle }}
                                 @endif
                             </h1>
                             <div class="dotted-box">
@@ -253,16 +253,16 @@
                                 </li>
                                 <li>
                                     @if ($hasHtml)
-                                        {!! $titlePage !!}
+                                        {!! $pageTitle !!}
                                     @else
-                                        {{ $titlePage }}
+                                        {{ $pageTitle }}
                                     @endif
                                 </li>
                             @endif
                             @if (@isset($currentRouteName) and $currentRouteName == 'home')
                                 <div class="btn-box">
-                                    <a href="book-consultation.php" class="theme-btn-one"><i class="flaticon-send"
-                                            style="margin-right: 10px;"></i>Book
+                                    <a href="{{ route('consultation') }}" class="theme-btn-one"><i
+                                            class="flaticon-send" style="margin-right: 10px;"></i>Book
                                         a Consultation</a>
                                 </div>
                             @endif

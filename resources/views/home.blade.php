@@ -1,27 +1,4 @@
-@php
-    $currentRouteName = Route::currentRouteName();
-    $titlePage = 'Make your Canadian immigration <br/> dreams a reality!';
-@endphp
-
-<!DOCTYPE html>
-<html lang="en-US">
-
-<head>
-    @include('includes/html-head')
-    <style id="visarzo-theme-inline-css">
-        .page-breadcrumb {
-            background-image: url("{{ url('/') }}/uploads/2020/07/home-hero-bg.png");
-        }
-    </style>
-</head>
-
-<body
-    class="home page-template page-template-elementor_header_footer page page-id-7 wp-custom-logo elementor-default elementor-template-full-width elementor-kit-9 elementor-page elementor-page-7 e--ua-blink e--ua-chrome e--ua-webkit"
-    data-elementor-device-mode="mobile">
-
-    <!-- HEADER -->
-    <x-header :titlePage="$titlePage" :currentRouteName="$currentRouteName" />
-
+<x-front-layout :page-title="TITLE_HOME_HERO" :current-route-name="Route::currentRouteName()" bg-url="2020/07/home-hero-bg.png">
     <section
         class="elementor-section elementor-top-section elementor-element elementor-element-61750cc elementor-section-stretched elementor-section-full_width elementor-section-height-default elementor-section-height-default"
         data-id="61750cc" data-element_type="section"
@@ -379,12 +356,9 @@
                                                                     <!-- <div class="form-group"><span class="wpcf7-form-control-wrap your-email"><input type="email" name="your-email" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" aria-required="true" aria-invalid="false" placeholder="Email address"></span></div> -->
 
                                                                     <div class="form-group">
-                                                                        <button class="theme-btn-two"><i
-                                                                                class="flaticon-send"></i><a
-                                                                                href="book-consultation.php"
-                                                                                target="_self" rel="noopener"
-                                                                                style="color: #fff">Book us
-                                                                                now</a></button>
+
+                                                                        <x-book-button url="{{route('consultation')}}">{{TITLE_BOOK_BUTTON}}</x-book-button>
+
                                                                     </div>
                                                                     <div class="wpcf7-response-output"
                                                                         aria-hidden="true"></div>
@@ -416,7 +390,7 @@
                                                                 <i aria-hidden="true" class=" flaticon-email"></i>
                                                                 <p>Any Questions? Email us</p>
                                                                 <h3><a
-                                                                        href="mailto:info@novelinkimmigration.ca">info@novelinkimmigration.ca</a>
+                                                                        href="mailto:{{ EMAIL_CONTACT }}">{{ EMAIL_CONTACT }}</a>
                                                                 </h3>
                                                             </li>
                                                             <li>
@@ -443,9 +417,4 @@
             </div>
         </div>
     </section>
-
-    <!--FOOTER  -->
-    <x-footer />
-</body>
-
-</html>
+</x-front-layout>
