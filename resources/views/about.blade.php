@@ -51,7 +51,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="bold-text">
-                                                                <p>At Novelink Immigration our goal is to assist
+                                                                <p>At {{config('app.name')}}, our goal is to assist
                                                                     individuals
                                                                     and families find the right and easiest way to come
                                                                     to
