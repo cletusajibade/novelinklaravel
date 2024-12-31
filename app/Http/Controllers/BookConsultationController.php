@@ -4,18 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ConsultationController extends Controller
+class BookConsultationController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('book-consultation');
-    }
-
-    /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new consultation.
      */
     public function create()
     {
@@ -23,7 +15,7 @@ class ConsultationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created consultation in storage.
      */
     public function store(Request $request)
     {
@@ -31,7 +23,7 @@ class ConsultationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified consultation.
      */
     public function show(string $id)
     {
@@ -39,7 +31,7 @@ class ConsultationController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified consultation.
      */
     public function edit(string $id)
     {
@@ -47,7 +39,7 @@ class ConsultationController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified consultation in storage.
      */
     public function update(Request $request, string $id)
     {
@@ -55,7 +47,7 @@ class ConsultationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified consultation from storage.
      */
     public function destroy(string $id)
     {
