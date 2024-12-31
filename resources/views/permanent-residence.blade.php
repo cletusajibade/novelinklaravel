@@ -29,7 +29,7 @@
                                                     <div id="image_block_1">
                                                         <div class="image-box">
                                                             <figure class="image">
-                                                                <img src="uploads/2020/07/federal-skilled-workers-1.jpg"
+                                                                <img src="{{ asset('uploads/2020/07/federal-skilled-workers-1.jpg') }}"
                                                                     title="about-1" alt="about-1" />
                                                             </figure>
                                                         </div>
@@ -77,7 +77,7 @@
                                                                 </p>
 
                                                                 <span>
-                                                                    <p>Canada’s Express Entry system allows eligible
+                                                                    <p>Canada's Express Entry system allows eligible
                                                                         Candidates apply for permanent residence under
                                                                         one of the following programs:</p>
                                                                 </span>

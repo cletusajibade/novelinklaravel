@@ -14,7 +14,7 @@
                                 <div class="elementor-widget-container">
                                     <section class="about-section">
                                         <div class="pattern-layer"
-                                            style="background-image: url(wp-content/uploads/2020/07/pattern-1.png);">
+                                            style="background-image: url(uploads/2020/07/pattern-1.png);">
                                         </div>
                                         <div class="auto-container">
                                             <div class="row align-items-center clearfix">
@@ -22,7 +22,7 @@
                                                     <div id="image_block_1">
                                                         <div class="image-box">
                                                             <figure class="image">
-                                                                <img src="wp-content/uploads/2020/07/canadian-experience-class-1.jpg"
+                                                                <img src="{{ asset('uploads/2020/07/canadian-experience-class-1.jpg') }}"
                                                                     title="about-1" alt="about-1" />
                                                             </figure>
                                                         </div>

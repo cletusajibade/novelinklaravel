@@ -15,7 +15,7 @@
                                     <section class="about-section">
                                         <div class="pattern-layer"
                                             style="
-                          background-image: url(wp-content/uploads/2020/07/pattern-1.png);
+                          background-image: url(uploads/2020/07/pattern-1.png);
                         ">
                                         </div>
                                         <div class="auto-container">
@@ -24,7 +24,7 @@
                                                     <div id="image_block_1">
                                                         <div class="image-box">
                                                             <figure class="image">
-                                                                <img src="uploads/2020/07/canadian-experience-class-1.jpg"
+                                                                <img src="{{ asset('uploads/2020/07/canadian-experience-class-1.jpg') }}"
                                                                     title="about-1" alt="about-1" />
                                                             </figure>
                                                         </div>

@@ -12,7 +12,7 @@ Route::view('/caregivers','caregivers')->name('caregivers');
 Route::view('/citizenship', 'citizenship')->name('citizenship');
 Route::view('/federal-skilled-trades', 'federal-skilled-trades')->name('fed-skilled-trades');
 Route::view('/federal-skilled-worker', 'federal-skilled-worker')->name('fed-skilled-worker');
-Route::view('/permanent-residence', 'permanent-residence')->name('pr');
+Route::view('/permanent-residence', 'permanent-residence')->name('perm');
 Route::view('/provincial-nomination-programs', 'provincial-nomination-programs')->name('prov-nom');
 Route::view('/sponsorship', 'sponsorship')->name('sponsor');
 Route::view('/study-permit', 'study-permit')->name('study-permit');
