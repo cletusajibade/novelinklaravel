@@ -6,6 +6,7 @@
     - Remember they are passed to the component as html attributes in kebab-case wherever the component is rendered or used.
     - e.g: <x-front-layout page-title="VALUE" current-route-name="VALUE" bg-url="VALUE">
 --}}
+{{-- {{ App::environment() }} --}}
 <!DOCTYPE html>
 <html lang="en-US">
 

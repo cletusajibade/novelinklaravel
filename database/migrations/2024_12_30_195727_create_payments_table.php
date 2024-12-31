@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Consultation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique(); //links to Consultation table
+            $table->foreignIdFor(Consultation::class); // Foreign key to Consultations table
             $table->string('payment_id')->unique();
             $table->decimal('amount', 15, 2);
             $table->string('currency', 3);
