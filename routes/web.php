@@ -22,7 +22,8 @@ Route::view('/visitor-visa', 'visitor-visa')->name('visitor-visa');
 Route::view('/work-permit', 'work-permit')->name('work-permit');
 
 // Dynamic view routes
-Route::get('/consultation', [ConsultationController::class, 'index'])->name('consultation');
+Route::get('/consultation', [ConsultationController::class, 'index'])->name('consultation.index');
+Route::get('/consultation/create', [ConsultationController::class, 'create'])->name('consultation.create');
 Route::post('/consultation', [ConsultationController::class, 'store'])->name('consultation.store');
 
 

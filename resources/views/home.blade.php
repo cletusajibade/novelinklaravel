@@ -32,7 +32,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="bold-text">
-                                                                <p>At {{config('app.name')}}, our goal is to assist
+                                                                <p>At {{ config('app.name') }}, our goal is to assist
                                                                     individuals
                                                                     and families find the right and easiest way to come
                                                                     to
@@ -357,7 +357,8 @@
 
                                                                     <div class="form-group">
 
-                                                                        <x-book-button url="{{route('consultation')}}">{{TITLE_BOOK_BUTTON}}</x-book-button>
+                                                                        <x-book-button
+                                                                            url="{{ route('consultation.create') }}">{{ TITLE_BOOK_BUTTON }}</x-book-button>
 
                                                                     </div>
                                                                     <div class="wpcf7-response-output"

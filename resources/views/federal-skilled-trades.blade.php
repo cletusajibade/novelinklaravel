@@ -57,7 +57,8 @@
                                                             </div>
                                                             <div class="btn-box">
                                                                 <p>If you have experience as a skilled trade worker</p>
-                                                                <x-book-button url="{{route('consultation')}}">{{TITLE_BOOK_BUTTON}}</x-book-button>
+                                                                <x-book-button
+                                                                    url="{{ route('consultation.create') }}">{{ TITLE_BOOK_BUTTON }}</x-book-button>
                                                             </div>
                                                             <div class="text">
                                                                 <p>

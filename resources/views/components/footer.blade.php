@@ -109,15 +109,23 @@
                                                                     <li><a href="permanent-residence.php"
                                                                             target="_self" rel="noopener">Express
                                                                             Entry</a></li>
-                                                                    <li><a href="{{route('fed-skilled-worker')}}"
-                                                                            target="_self" rel="noopener">{{TITLE_FED_SKILLED_WORKER}}</a></li>
-                                                                    <li><a href="{{route('cad-experience')}}"
-                                                                            target="_self" rel="noopener">{{TITLE_CAD_EXPERIENCE}}</a></li>
-                                                                    <li><a href="{{route('study-permit')}}" target="_self"
-                                                                            rel="noopener">{{TITLE_STUDY_PERMIT}}</a></li>
+                                                                    <li><a href="{{ route('fed-skilled-worker') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ TITLE_FED_SKILLED_WORKER }}</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('cad-experience') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ TITLE_CAD_EXPERIENCE }}</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('study-permit') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ TITLE_STUDY_PERMIT }}</a>
+                                                                    </li>
                                                                     <!-- <li><a href="{{ url('/') }}/service-page-01/" target="_self" rel="noopener">Our Service</a></li> -->
-                                                                    <li><a href="{{route('prov-nom')}}"
-                                                                            target="_self" rel="noopener">{{TITLE_PROV_NOM}}</a></li>
+                                                                    <li><a href="{{ route('prov-nom') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ TITLE_PROV_NOM }}</a>
+                                                                    </li>
                                                                 </ul>
                                                             </div>
 
@@ -149,17 +157,23 @@
                                                             </div>
                                                             <div class="widget-content">
                                                                 <ul class="list clearfix">
-                                                                    <li><a href="{{route('study-permit')}}" target="_self"
-                                                                            rel="noopener">Study</a></li>
-                                                                    <li><a href="{{route('visitor-visa')}}" target="_self"
-                                                                            rel="noopener">Visit</a></li>
-                                                                    <li><a href="{{route('work-permit')}}" target="_self"
-                                                                            rel="noopener">Work</a></li>
-                                                                    <li><a href="{{route('sponsor')}}" target="_self"
-                                                                            rel="noopener">Sponsor</a></li>
+                                                                    <li><a href="{{ route('study-permit') }}"
+                                                                            target="_self" rel="noopener">Study</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('visitor-visa') }}"
+                                                                            target="_self" rel="noopener">Visit</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('work-permit') }}"
+                                                                            target="_self" rel="noopener">Work</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('sponsor') }}"
+                                                                            target="_self" rel="noopener">Sponsor</a>
+                                                                    </li>
                                                                     <!-- <li><a href="{{ url('/') }}/service-page-01/" target="_self" rel="noopener">Our Service</a></li> -->
-                                                                    <li><a href="{{route('consultation')}}" target="_self"
-                                                                            rel="noopener">{{ROUTE_CONTACT}}</a></li>
+                                                                    <li><a href="{{ route('consultation.create') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ ROUTE_CONTACT }}</a>
+                                                                    </li>
                                                                 </ul>
                                                             </div>
                                                         </div>
@@ -284,9 +298,9 @@
             </div>
 
             <ul class="footer-nav pull-right clearfix">
-                <li><a href="{{route('home')}}">{{ROUTE_HOME}}</a></li>
+                <li><a href="{{ route('home') }}">{{ ROUTE_HOME }}</a></li>
                 <li><a href="{{ route('about') }}">{{ ROUTE_ABOUT }}</a></li>
-                <li><a href="mailto:{{EMAIL_CONTACT}}">{{EMAIL_CONTACT}}</a></li>
+                <li><a href="mailto:{{ EMAIL_CONTACT }}">{{ EMAIL_CONTACT }}</a></li>
             </ul>
         </div>
     </div>

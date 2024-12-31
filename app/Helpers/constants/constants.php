@@ -6,6 +6,7 @@ define('ROUTE_CONTACT', 'Contact Us');
 define('EMAIL_CONTACT', 'info@novelinkimmigration.ca');
 define('TITLE_CAD_EXPERIENCE', 'Canadian Experience Class');
 define('TITLE_HOME_HERO', 'Make your Canadian immigration <br/> dreams a reality!');
+define('TITLE_CONSULTATION_FORM', 'Consultation Form');
 define('TITLE_CAREGIVERS', 'Caregivers');
 define('TITLE_CITIZENSHIP', 'Citizenship');
 define('TITLE_BOOK_BUTTON', 'Book a consultation');

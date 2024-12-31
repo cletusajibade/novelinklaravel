@@ -54,8 +54,9 @@
                                                                 </p>
                                                             </div>
                                                             <div class="btn-box">
-                                                                <a href="{{route('consultation')}}" target="_self"
-                                                                    rel="noopener" class="theme-btn-two">Book a
+                                                                <a href="{{ route('consultation.create') }}"
+                                                                    target="_self" rel="noopener"
+                                                                    class="theme-btn-two">Book a
                                                                     consultation <i class="flaticon-send"></i></a>
                                                             </div>
                                                             <div class="text">

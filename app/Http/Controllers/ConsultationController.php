@@ -19,7 +19,7 @@ class ConsultationController extends Controller
      */
     public function create()
     {
-        //
+        return view('book-consultation');
     }
 
     /**

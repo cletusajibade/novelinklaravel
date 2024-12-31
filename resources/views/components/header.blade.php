@@ -13,7 +13,7 @@
                         {{ EMAIL_CONTACT }}</span>
                     </li>
                     <li>
-                        <i class="flaticon-clock"></i><a href="{{ route('consultation') }}">{{ ROUTE_CONTACT }}</a>
+                        <i class="flaticon-clock"></i><a href="{{ route('consultation.create') }}">{{ ROUTE_CONTACT }}</a>
                     </li>
                 </ul>
             </div>
@@ -123,7 +123,7 @@
                                         </li>
                                         <li id="menu-item-459"
                                             class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-459">
-                                            <a href="{{route('visitor-visa')}}">{{TITLE_VISITOR_VISA}}</a>
+                                            <a href="{{ route('visitor-visa') }}">{{ TITLE_VISITOR_VISA }}</a>
                                         </li>
                                         <li id="menu-item-460"
                                             class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-460">
@@ -131,7 +131,7 @@
                                         </li>
                                         <li id="menu-item-461"
                                             class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-461">
-                                            <a href="{{route('work-permit')}}">{{TITLE_WORK_PERMIT}}</a>
+                                            <a href="{{ route('work-permit') }}">{{ TITLE_WORK_PERMIT }}</a>
                                         </li>
                                         <!-- <li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-462"><a href="https://novelinkimmigration.ca/coaching/toefl/">TOEFL</a></li> -->
                                         <!-- <li id="menu-item-463" class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-463"><a href="https://novelinkimmigration.ca/coaching/sat-coaching/">SAT Coaching</a></li> -->
@@ -205,7 +205,8 @@
             <ul class="info clearfix">
                 <li><i class="flaticon-home"></i>Calgary, AB</li>
                 <li><i class="flaticon-open-email-message"></i>{{ EMAIL_CONTACT }}</span></li>
-                <li><i class="flaticon-clock"></i><a href="{{ route('consultation') }}">{{ ROUTE_CONTACT }}</a></li>
+                <li><i class="flaticon-clock"></i><a
+                        href="{{ route('consultation.create') }}">{{ ROUTE_CONTACT }}</a></li>
             </ul>
         </div>
         <div class="social-links">
@@ -222,7 +223,8 @@
 <div data-elementor-type="wp-page" data-elementor-id="7" class="elementor elementor-7">
     <div class="elementor-inner">
         <div class="elementor-section-wrap">
-            <section class="page-title page-breadcrumb  ">
+            {{-- TODO:reduce the padding of the .page-title class below, try "padding: 100px 0px 100px 0px;"  --}}
+            <section class="page-title page-breadcrumb">
                 <div class="auto-container">
                     <div class="content-box">
                         <div class="title-box">
@@ -261,7 +263,7 @@
                             @endif
                             @if (@isset($currentRouteName) and $currentRouteName == 'home')
                                 <div class="btn-box">
-                                    <a href="{{ route('consultation') }}" class="theme-btn-one"><i
+                                    <a href="{{ route('consultation.create') }}" class="theme-btn-one"><i
                                             class="flaticon-send" style="margin-right: 10px;"></i>Book
                                         a Consultation</a>
                                 </div>
