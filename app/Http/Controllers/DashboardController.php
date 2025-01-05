@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Consultation;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -11,6 +12,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('dashboard.dashboard');
+        $consultations = Consultation::all();
+        return view('dashboard.dashboard', ['consultations' => $consultations]);
     }
 }

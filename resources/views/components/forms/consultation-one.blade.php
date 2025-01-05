@@ -4,9 +4,7 @@
         <div class="col-lg-12 col-md-12 col-sm-12 form-group">
             <span class="wpcf7-form-control-wrap" data-name="first-name">
                 <span class="form-el-label">Enter your first name<span style="color: red"> *</span></span>
-                <input type="text" name="first_name" value="<?php if (isset($first_name)) {
-                    echo $first_name;
-                } ?>" size="40"
+                <input type="text" name="first_name" value="{{ old('first_name') }}" size="40"
                     class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true"
                     aria-invalid="false">
             </span>
@@ -14,9 +12,7 @@
         <div class="col-lg-12 col-md-12 col-sm-12 form-group">
             <span class="wpcf7-form-control-wrap" data-name="last-name">
                 <span class="form-el-label">Enter your last name<span style="color: red"> *</span></span>
-                <input type="text" name="last_name" value="<?php if (isset($last_name)) {
-                    echo $last_name;
-                } ?>" size="40"
+                <input type="text" name="last_name" value="{{ old('last_name') }}" size="40"
                     class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true"
                     aria-invalid="false">
             </span>

@@ -2,14 +2,13 @@
 
 use App\Http\Controllers\BookConsultationController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ConsultationsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Static view routes
+// Static frontend view routes
 Route::view('/', 'home')->name('home');
 Route::view('/about', 'about')->name('about');
 Route::view('/canadian-experience-class', 'canadian-experience-class')->name('cad-experience');
@@ -26,11 +25,12 @@ Route::view('/temporary-residence', 'temporary-residence')->name('temp-res');
 Route::view('/visitor-visa', 'visitor-visa')->name('visitor-visa');
 Route::view('/work-permit', 'work-permit')->name('work-permit');
 
-// Dynamic view routes
+// Consultation booking routes
 Route::get('/book-consultation', [BookConsultationController::class, 'create'])->name('consultation.create');
 Route::post('/book-consultation', [BookConsultationController::class, 'store'])->name('consultation.store');
 
 
+// Backend dashboard routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/consultations', [ConsultationsController::class, 'index'])->name('consultations');
