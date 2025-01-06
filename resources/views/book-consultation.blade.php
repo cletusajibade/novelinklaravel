@@ -60,15 +60,19 @@
                                                                 </p>
                                                                 <ul></ul>
                                                             </div>
-                                                            @if (@isset($errorMsg))
-                                                                <div id='error-div' class="alert alert-danger p-4"
-                                                                    role="alert">
-                                                                    <span
-                                                                        style="font-size:larger">***Error***:&nbsp;</span>
-                                                                    {{ $errorMsg }}
+                                                            @if (session('success'))
+                                                                <x-bladewind::alert type="success">
+                                                                    {{ session('success') }}
+                                                                </x-bladewind::alert>
+                                                            @endif
+                                                            @if (session('error'))
+                                                                <div class="alert alert-danger">
+                                                                    {{ session('error') }}
                                                                 </div>
                                                             @endif
+
                                                             <!-- CONSULTATION FORM ONE -->
+                                                            {{-- <x-forms.consultation-one :countries="$countries" /> --}}
                                                             <x-forms.consultation-one />
                                                         </div>
                                                     </div>

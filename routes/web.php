@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\BookConsultationController;
+use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ConsultationsController;
 use App\Http\Controllers\DashboardController;
@@ -26,8 +26,8 @@ Route::view('/visitor-visa', 'visitor-visa')->name('visitor-visa');
 Route::view('/work-permit', 'work-permit')->name('work-permit');
 
 // Consultation booking routes
-Route::get('/book-consultation', [BookConsultationController::class, 'create'])->name('consultation.create');
-Route::post('/book-consultation', [BookConsultationController::class, 'store'])->name('consultation.store');
+Route::get('/book-consultation', [ConsultationController::class, 'create'])->name('consultation.create');
+Route::post('/book-consultation', [ConsultationController::class, 'store'])->name('consultation.store');
 
 
 // Backend dashboard routes
