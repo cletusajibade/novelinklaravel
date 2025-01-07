@@ -22,6 +22,8 @@
 
         .bw-table-filter-bar {
             padding: 0.375rem 0;
+            margin: 0.75rem;
+            background-color: transparent;
         }
 
         table {
@@ -63,18 +65,6 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- FooTable CSS -->
-    <link rel="stylesheet" href="{{ asset('plugins/footable/css/footable.standalone.min.css') }}" />
-
-    <!-- Load JQuery, required by FooTable -->
-    <script src="{{ asset('js/jquery/jquery.min.js') }}"></script>
-    <!-- FooTable Js -->
-    <script src="{{ asset('plugins/footable/js/footable.min.js') }}"></script>
-    <script>
-        jQuery(function($) {
-            $('.table').footable();
-        });
-    </script>
 </head>
 
 <body class="font-sans antialiased">
