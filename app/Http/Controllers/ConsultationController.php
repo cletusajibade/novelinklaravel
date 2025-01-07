@@ -92,7 +92,7 @@ class ConsultationController extends Controller
     /**
      * Remove the specified consultation from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $uuid)
     {
         //
     }

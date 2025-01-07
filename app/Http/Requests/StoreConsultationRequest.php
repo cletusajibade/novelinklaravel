@@ -26,7 +26,7 @@ class StoreConsultationRequest extends FormRequest
             'last_name' => 'required|alpha:ascii|max:255',
             'email' => 'required|string|email:rfc,dns|max:255|unique:consultations,email',
             'phone' => 'required|string|unique:consultations,phone', //todo: implement phone input field validation
-            'country_code' => 'required',
+            // 'country_code' => 'required', //TODO: may be implemented later
             'date_of_birth' => 'required|date',
             'country' => 'required|not_in:null',
             'country_of_residence' => 'required|not_in:null',

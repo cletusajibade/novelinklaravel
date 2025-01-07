@@ -25,7 +25,7 @@ Route::view('/temporary-residence', 'temporary-residence')->name('temp-res');
 Route::view('/visitor-visa', 'visitor-visa')->name('visitor-visa');
 Route::view('/work-permit', 'work-permit')->name('work-permit');
 
-// Consultation booking routes
+// Frontend consultation booking routes
 Route::get('/book-consultation', [ConsultationController::class, 'create'])->name('consultation.create');
 Route::post('/book-consultation', [ConsultationController::class, 'store'])->name('consultation.store');
 
@@ -33,15 +33,29 @@ Route::post('/book-consultation', [ConsultationController::class, 'store'])->nam
 // Backend dashboard routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('/consultations', [ConsultationsController::class, 'index'])->name('consultations');
+    Route::patch('/consultations', [ConsultationsController::class, 'update'])->name('consultations.update');
+    Route::get('/consultations/{uuid}', [ConsultationsController::class, 'edit'])->name('consultations.edit');
+    Route::post('/consultations', [ConsultationsController::class, 'sendEmail'])->name('consultations.send-email');
+    Route::delete('/consultations', [ConsultationsController::class, 'destroy'])->name('consultations.destroy');
+
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
+
     Route::get('/payments', [PaymentsController::class, 'index'])->name('payments');
 });
 
+// Backend profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+
+Route::middleware('auth')->group(function () {
+    // Send email
+
 });
 
 require __DIR__ . '/auth.php';

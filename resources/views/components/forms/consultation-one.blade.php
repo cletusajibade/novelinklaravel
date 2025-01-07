@@ -11,7 +11,7 @@
                     class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true"
                     aria-invalid="false">
                 @error('first_name')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger error-message">{{ $message }}</div>
                 @enderror
             </span>
         </div>
@@ -22,7 +22,7 @@
                     class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true"
                     aria-invalid="false">
                 @error('last_name')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger error-message">{{ $message }}</div>
                 @enderror
             </span>
         </div>
@@ -33,11 +33,12 @@
                     class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email"
                     aria-required="true" aria-invalid="false">
                 @error('email')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger error-message">{{ $message }}</div>
                 @enderror
             </span>
         </div>
-        <div class="col-lg-3 col-md-12 col-sm-12 form-group" style="padding-right: 0;">
+        {{-- TODO: Country Code may be implement --}}
+        {{-- <div class="col-lg-3 col-md-12 col-sm-12 form-group" style="padding-right: 0;">
             <span class="wpcf7-form-control-wrap" data-name="phone">
                 <span class="form-el-label">Country Code<span style="color: red"> *</span></span>
                 <input id="country_code" type="text" onkeypress="return /[0-9+]/i.test(event.key)"
@@ -45,11 +46,11 @@
                     class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true"
                     aria-invalid="false" placeholder="+1">
                 @error('country_code')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger error-message">{{ $message }}</div>
                 @enderror
             </span>
-        </div>
-        <div class="col-lg-9 col-md-12 col-sm-12 form-group">
+        </div> --}}
+        <div class="col-lg-12 col-md-12 col-sm-12 form-group">
             <span class="wpcf7-form-control-wrap" data-name="phone">
                 <span class="form-el-label">Phone Number<span style="color: red"> *</span></span>
                 <input id="phone" type="text" onkeypress="return /[0-9 ]/i.test(event.key)" name="phone"
@@ -57,23 +58,17 @@
                     class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true"
                     aria-invalid="false" placeholder="123 456 7890">
                 @error('phone')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger error-message">{{ $message }}</div>
                 @enderror
             </span>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 form-group">
             <span class="wpcf7-form-control-wrap" data-name="date-of-birth">
                 <span class="form-el-label">Date of Birth<span style="color: red"> *</span></span>
-                {{-- <input id="nove_date_picker" name="date_of_birth" type="text" readonly="readonly"
-                    value="{{ old('date_of_birth') }}" placeholder="YYYY-MM-DD"> --}}
-                <x-bladewind::datepicker />
-                <x-bladewind::datepicker name="invoice_date" type="single" required="false" placeholder="Invoice Date"
-                    date_from="" date_to="" default_date="" has_label="true" validate="false"
-                    show_error_inline="true" stacked="true" use_placeholder="false"
-                    validation_message="end date before start date! Really?" onblur="copyDate('copy_from', 'copy_to')"
-                    week_starts="mon" class="shadow-sm" />
+                <input id="nove_date_picker" name="date_of_birth" type="text" readonly="readonly"
+                    value="{{ old('date_of_birth') }}" placeholder="YYYY-MM-DD">
                 @error('date_of_birth')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger error-message">{{ $message }}</div>
                 @enderror
             </span>
         </div>
@@ -93,7 +88,7 @@
                     @endforeach
                 </select> --}}
                 @error('country')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger error-message">{{ $message }}</div>
                 @enderror
             </span>
         </div>
@@ -104,13 +99,13 @@
                     size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
                     aria-required="true" aria-invalid="false">
                 @error('country_of_residence')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger error-message">{{ $message }}</div>
                 @enderror
             </span>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 form-group message-btn">
             <button class="theme-btn-two wpcf7-form-control" type="submit" name="submit-form">
-                <i class="flaticon-send"></i>Continue
+                Continue<i class="flaticon-send"></i>
             </button>
         </div>
     </div>

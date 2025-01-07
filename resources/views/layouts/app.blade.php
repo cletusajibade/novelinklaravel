@@ -17,6 +17,48 @@
     <link href="{{ asset('vendor/bladewind/css/animate.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('vendor/bladewind/css/bladewind-ui.min.css') }}" rel="stylesheet" />
     <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
+    <style>
+        /******************** BEGIN: Customize BladewindUI CSS *************************/
+
+        .bw-table-filter-bar {
+            padding: 0.375rem 0;
+        }
+
+        table {
+            table-layout: fixed;
+            width: 100%;
+            /* Ensures table spans container width */
+            border-collapse: collapse;
+        }
+
+
+        td {
+            /* Prevent content from spilling out */
+            overflow: hidden;
+            /* Show ellipsis for truncated content */
+            text-overflow: ellipsis;
+            /* Prevent text from wrapping */
+            white-space: nowrap;
+        }
+
+        /* These styles overewrite the color of pagination arrow icons.
+         * Noticed the default colors didn't work well */
+        /* Styles for light mode */
+        @media (prefers-color-scheme: light) {
+            .bw-button svg {
+                color: #ed1c24;
+            }
+        }
+
+        /* Styles for dark mode */
+        @media (prefers-color-scheme: dark) {
+            .bw-button svg {
+                color: #ed1c24;
+            }
+        }
+
+        /******************** END: Customize BladewindUI CSS *************************/
+    </style>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

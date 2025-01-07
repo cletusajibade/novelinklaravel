@@ -29,30 +29,15 @@
                     <tr>
                         <td style="padding: 20px;">
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                Dear {{ $name }},
+                                Dear {{ $first_name }},
                             </p>
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                Welcome to {{ $app_name }}, and thanks for booking a consultation session
-                                with us.
+                                This is a quick update from us.
                             </p>
-
-                            {{-- <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                 Package: {{ $package }}<br/>
-                                 Amount: {{{{ $amount }}}}
-                            </p> --}}
 
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                Please join the Zoom meeting by clicking on the link:<br />
-                                <a href="{{ env('ZOOM_URL') }}">{{ env('ZOOM_URL') }}</a>
-                                <br /><br />
-                                Or use the login details below to join on your Zoom device:
-                                <br /> <strong>Meeting ID:</strong> {{ env('ZOOM_ID') }}
-                                <br /> <strong>Passcode:</strong> {{ env('ZOOM_PASSCODE') }}
+                                {{ $email_message }}
                             </p>
-
-
-
-
 
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">If you have any question or
                                 need assistance, please do not hesitate to reach out to us

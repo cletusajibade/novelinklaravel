@@ -61,14 +61,16 @@
                                                                 <ul></ul>
                                                             </div>
                                                             @if (session('success'))
-                                                                <x-bladewind::alert type="success">
+                                                                <x-bladewind::alert type="success" shade="dark"
+                                                                    class="my-alert">
                                                                     {{ session('success') }}
                                                                 </x-bladewind::alert>
                                                             @endif
                                                             @if (session('error'))
-                                                                <div class="alert alert-danger">
+                                                                <x-bladewind::alert type="error" shade="dark"
+                                                                    class="my-alert">
                                                                     {{ session('error') }}
-                                                                </div>
+                                                                </x-bladewind::alert>
                                                             @endif
 
                                                             <!-- CONSULTATION FORM ONE -->
@@ -87,5 +89,25 @@
                 </div>
             </div>
         </div>
+        <script>
+            // scroll down to the alert
+            document.addEventListener('DOMContentLoaded', function() {
+                const alert = document.querySelector('.my-alert');
+                if (alert) {
+                    alert.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+
+                const firstError = document.querySelector('.error-message');
+                if (firstError) {
+                    firstError.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            });
+        </script>
     </section>
 </x-front-layout>
