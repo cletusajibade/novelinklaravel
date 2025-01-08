@@ -14,17 +14,17 @@
                                 <div class="elementor-widget-container">
 
                                     <section class="about-section">
-                                        <div class="pattern-layer"
-                                            style="background-image: url(wp-content/uploads/2020/07/pattern-1.png);">
-                                        </div>
+                                        {{-- <div class="pattern-layer"
+                                            style="background-image: url(uploads/2020/07/pattern-1.png);">
+                                        </div> --}}
                                         <div class="auto-container">
                                             <div class="row align-items-center clearfix">
                                                 <div class="col-lg-6 col-md-12 col-sm-12 image-column">
                                                     <div id="image_block_1">
                                                         <div class="image-box">
                                                             <figure class="image"><img
-                                                                    src="uploads/2020/07/about-1.jpg" title="about-1"
-                                                                    alt="about-1" /></figure>
+                                                                    src="{{ asset('uploads/2020/07/about-1.jpg') }}"
+                                                                    title="about-us" alt="about-1" /></figure>
                                                             <div class="box">
                                                                 <div class="inner">
                                                                     <div class="icon-box">
@@ -51,7 +51,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="bold-text">
-                                                                <p>At Novelink Immigration our goal is to assist
+                                                                <p>At {{ config('app.name') }}, our goal is to assist
                                                                     individuals
                                                                     and families find the right and easiest way to come
                                                                     to
@@ -105,7 +105,7 @@
                                 <div class="elementor-widget-container">
 
                                     <section class="about-section" id="meetlead">
-                                        <!-- <div class="pattern-layer" style="background-image: url(wp-content/uploads/2020/07/pattern-1.png);"></div> -->
+                                        <!-- <div class="pattern-layer" style="background-image: url(uploads/2020/07/pattern-1.png);"></div> -->
                                         <div class="auto-container">
                                             <div class="row align-items-center clearfix">
                                                 <div class="col-lg-6 col-md-12 col-sm-12 image-column">
@@ -114,9 +114,9 @@
                                                             data-wow-delay="00ms" data-wow-duration="1500ms"
                                                             style="visibility: visible;">
                                                             <div class="inner-box">
-                                                                <figure class="image-box">
-                                                                    <img src="uploads/2020/08/Webpix.jpg" title="team-1"
-                                                                        alt="team-1">
+                                                                <figure class="image-box">{{-- TODO: remove the black overlay on this image --}}
+                                                                    <img src="{{ asset('uploads/2020/08/Webpix.jpg') }}"
+                                                                        title="Ruth Olasupo" alt="team-1">
                                                                     <!-- <ul class="social-links clearfix"> -->
                                                                     <!-- <li><a href="#"><i class="fab fa-twitter"></i></a></li> -->
                                                                     <!-- <li><a href="#"><i class="fab fa-facebook-f"></i></a></li> -->
@@ -131,9 +131,12 @@
                                                                         Immigration Consultant (RCIC)</span>
                                                                     <span class="designation">R712188</span>
                                                                 </div>
-                                                                <img src="uploads/2020/08/RCIC_EN_HORZ_CLR_POS_TM.png"
-                                                                    alt="R712188"
-                                                                    style="max-width:45%;opacity:0.9;margin:0px;background:none;">
+                                                                <a href="https://register.college-ic.ca/Public-Register-EN/Licensee/Profile.aspx?ID=22159&b9100e1006f6=2"
+                                                                    target="_blank" rel="noopener">
+                                                                    <img src="{{ asset('uploads/2020/08/RCIC_EN_HORZ_CLR_POS_TM.png') }}"
+                                                                        alt="R712188"
+                                                                        style="max-width:45%;opacity:0.9;margin:0px;background:none;">
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </div>

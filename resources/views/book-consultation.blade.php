@@ -1,5 +1,4 @@
-<x-front-layout page-title="Consultation Form" :current-route-name="Route::currentRouteName()"
-    bg-url="2020/08/page-title.jpg">
+<x-front-layout :page-title="TITLE_CONSULTATION_FORM" :current-route-name="Route::currentRouteName()" bg-url="2020/08/page-title.jpg">
     <section
         class="elementor-section elementor-top-section elementor-element elementor-element-61750cc elementor-section-stretched elementor-section-full_width elementor-section-height-default elementor-section-height-default"
         data-id="61750cc" data-element_type="section" data-settings='{"stretch_section":"section-stretched"}'
@@ -24,7 +23,7 @@
                                                             <div class="sec-title centred">
                                                                 <!-- <p>who we are</p> -->
                                                                 <h2 class="about_section">
-                                                                    Complete the form to get in touch with us
+                                                                    Complete form to get in touch with us
                                                                 </h2>
                                                                 <div class="dotted-box">
                                                                     <span class="dotted"></span>
@@ -33,7 +32,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <div class="bold-text centred">
+                                                            {{-- <div class="bold-text centred">
                                                                 <p>
                                                                     To book a consultation, please select the
                                                                     Consultation Package you are interested in. Once
@@ -41,7 +40,7 @@
                                                                     you will receive a confirmation email. We would also
                                                                     send you an email with the link for the consultation
                                                                     session.</p>
-                                                            </div>
+                                                            </div> --}}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -61,16 +60,22 @@
                                                                 </p>
                                                                 <ul></ul>
                                                             </div>
-                                                            @if (@isset($errorMsg))
-                                                                <div id='error-div' class="alert alert-danger p-4"
-                                                                    role="alert">
-                                                                    <span
-                                                                        style="font-size:larger">***Error***:&nbsp;</span>
-                                                                    {{ $errorMsg }}
-                                                                </div>
+                                                            @if (session('success'))
+                                                                <x-bladewind::alert type="success" shade="dark"
+                                                                    class="my-alert">
+                                                                    {{ session('success') }}
+                                                                </x-bladewind::alert>
                                                             @endif
-                                                            <!-- CONSULTATION FORM -->
-                                                            <x-forms.consultation />
+                                                            @if (session('error'))
+                                                                <x-bladewind::alert type="error" shade="dark"
+                                                                    class="my-alert">
+                                                                    {{ session('error') }}
+                                                                </x-bladewind::alert>
+                                                            @endif
+
+                                                            <!-- CONSULTATION FORM ONE -->
+                                                            {{-- <x-forms.consultation-one :countries="$countries" /> --}}
+                                                            <x-forms.consultation-one />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -84,5 +89,25 @@
                 </div>
             </div>
         </div>
+        <script>
+            // scroll down to the alert
+            document.addEventListener('DOMContentLoaded', function() {
+                const alert = document.querySelector('.my-alert');
+                if (alert) {
+                    alert.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+
+                const firstError = document.querySelector('.error-message');
+                if (firstError) {
+                    firstError.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            });
+        </script>
     </section>
 </x-front-layout>

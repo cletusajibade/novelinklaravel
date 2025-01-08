@@ -10,10 +10,10 @@
                     </li>
                     <li>
                         <i class="flaticon-open-email-message"></i>
-                        {{ EMAIL_CONTACT }}</span>
+                        <a href="mailto:{{ EMAIL_CONTACT }}">{{ EMAIL_CONTACT }}</a></span>
                     </li>
                     <li>
-                        <i class="flaticon-clock"></i><a href="{{ route('consultation') }}">{{ ROUTE_CONTACT }}</a>
+                        <i class="flaticon-clock"></i><a href="{{ route('consultation.create') }}">{{ ROUTE_CONTACT }}</a>
                     </li>
                 </ul>
             </div>
@@ -37,7 +37,7 @@
                         <figure class="logo">
                             <a href="{{ url('/') }}" class="custom-logo-link" rel="home"
                                 aria-current="page"><img width="180" height="54"
-                                    src="{{ url('/') }}/uploads/2020/08/novelink.png" class="custom-logo"
+                                    src="{{ asset('uploads/2020/08/novelink.png') }}" class="custom-logo"
                                     alt="Novelink" /></a>
                         </figure>
                     </div>
@@ -75,11 +75,11 @@
                                 </li>
                                 <li id="menu-item-911"
                                     class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-911">
-                                    <a href="{{ route('pr') }}">{{ TITLE_PERM_RESIDENCE }}</a>
+                                    <a href="{{ route('perm') }}">{{ TITLE_PERM_RESIDENCE }}</a>
                                     <ul class="sub-menu">
                                         <li id="menu-item-455"
                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-455">
-                                            <a href="{{ route('pr') }}">{{ TITLE_PERM_RESIDENCE }}</a>
+                                            <a href="{{ route('perm') }}">{{ TITLE_PERM_RESIDENCE }}</a>
                                         </li>
                                         <li id="menu-item-455"
                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-455">
@@ -123,7 +123,7 @@
                                         </li>
                                         <li id="menu-item-459"
                                             class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-459">
-                                            <a href="{{route('visitor-visa')}}">{{TITLE_VISITOR_VISA}}</a>
+                                            <a href="{{ route('visitor-visa') }}">{{ TITLE_VISITOR_VISA }}</a>
                                         </li>
                                         <li id="menu-item-460"
                                             class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-460">
@@ -131,7 +131,7 @@
                                         </li>
                                         <li id="menu-item-461"
                                             class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-461">
-                                            <a href="{{route('work-permit')}}">{{TITLE_WORK_PERMIT}}</a>
+                                            <a href="{{ route('work-permit') }}">{{ TITLE_WORK_PERMIT }}</a>
                                         </li>
                                         <!-- <li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-462"><a href="https://novelinkimmigration.ca/coaching/toefl/">TOEFL</a></li> -->
                                         <!-- <li id="menu-item-463" class="menu-item menu-item-type-post_type menu-item-object-coachings menu-item-463"><a href="https://novelinkimmigration.ca/coaching/sat-coaching/">SAT Coaching</a></li> -->
@@ -180,7 +180,7 @@
                 <div class="logo-box pull-left">
                     <figure class="logo" style="padding: 19.5px 0px 5px 0px !important;">
                         <a href="{{ url('/') }}"><img width="160"
-                                src="{{ url('/') }}/uploads/2020/08/novelink.png" alt="Logo"></a>
+                                src="{{ asset('uploads/2020/08/novelink.png') }}" alt="Logo"></a>
                     </figure>
                 </div>
                 <div class="menu-area pull-right">
@@ -198,14 +198,15 @@
     <nav class="menu-box">
         <div class="nav-logo">
             <a href="{{ url('/') }}"><img width="105" height="109"
-                    src="{{ url('/') }}/uploads/2020/08/novelink.png" alt="Logo"></a>
+                    src="{{ asset('uploads/2020/08/novelink.png') }}" alt="Logo"></a>
         </div>
         <div class="menu-outer"></div>
         <div class="contact-info">
             <ul class="info clearfix">
                 <li><i class="flaticon-home"></i>Calgary, AB</li>
                 <li><i class="flaticon-open-email-message"></i>{{ EMAIL_CONTACT }}</span></li>
-                <li><i class="flaticon-clock"></i><a href="{{ route('consultation') }}">{{ ROUTE_CONTACT }}</a></li>
+                <li><i class="flaticon-clock"></i><a
+                        href="{{ route('consultation.create') }}">{{ ROUTE_CONTACT }}</a></li>
             </ul>
         </div>
         <div class="social-links">
@@ -222,7 +223,8 @@
 <div data-elementor-type="wp-page" data-elementor-id="7" class="elementor elementor-7">
     <div class="elementor-inner">
         <div class="elementor-section-wrap">
-            <section class="page-title page-breadcrumb  ">
+            {{-- TODO:reduce the padding of the .page-title class below, try "padding: 100px 0px 100px 0px;"  --}}
+            <section class="page-title page-breadcrumb">
                 <div class="auto-container">
                     <div class="content-box">
                         <div class="title-box">
@@ -261,7 +263,7 @@
                             @endif
                             @if (@isset($currentRouteName) and $currentRouteName == 'home')
                                 <div class="btn-box">
-                                    <a href="{{ route('consultation') }}" class="theme-btn-one"><i
+                                    <a href="{{ route('consultation.create') }}" class="theme-btn-one"><i
                                             class="flaticon-send" style="margin-right: 10px;"></i>Book
                                         a Consultation</a>
                                 </div>

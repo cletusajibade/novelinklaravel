@@ -32,7 +32,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="bold-text">
-                                                                <p>At Novelink Immigration our goal is to assist
+                                                                <p>At {{ config('app.name') }}, our goal is to assist
                                                                     individuals
                                                                     and families find the right and easiest way to come
                                                                     to
@@ -90,11 +90,11 @@
                                                         style="visibility: visible;">
                                                         <div class="inner-box">
                                                             <figure class="image-box"><img
-                                                                    src="uploads/2020/07/apply-online.png"
+                                                                    src="{{ asset('uploads/2020/07/apply-online.png') }}"
                                                                     title="girl-with-computer" alt="girl-with-computer">
                                                             </figure>
                                                             <div class="text">
-                                                                <h3>Book a Consultation</h3>
+                                                                <h3><a href="{{ route('consultation.create') }}">Book a Consultation</a></h3>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -105,11 +105,10 @@
                                                         style="visibility: visible;">
                                                         <div class="inner-box">
                                                             <figure class="image-box"><img
-                                                                    src="uploads/2020/08/speak-to-consultant.png"
+                                                                    src="{{ asset('uploads/2020/08/speak-to-consultant.png') }}"
                                                                     title="feature-2" alt="feature-2"></figure>
                                                             <div class="text">
-                                                                <h3><a href="#FEDERALSKILLEDWORKERS">Speak to a
-                                                                        Consultant</a></h3>
+                                                                <h3><a href="{{ route('consultation.create') }}">Speak to a Consultant</a></h3>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -120,10 +119,10 @@
                                                         style="visibility: visible;">
                                                         <div class="inner-box">
                                                             <figure class="image-box"><img
-                                                                    src="uploads/2020/08/app-evaluated.jpg"
+                                                                    src="{{ asset('uploads/2020/08/app-evaluated.jpg') }}"
                                                                     title="feature-2" alt="feature-2"></figure>
                                                             <div class="text">
-                                                                <h3><a href="#CANADIANEXPERIENCECLASS">Get Expert
+                                                                <h3><a href="{{ route('consultation.create') }}">Get Expert
                                                                         Advice</a></h3>
                                                             </div>
                                                         </div>
@@ -132,7 +131,7 @@
                                                 <!-- <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
                                                 <div class="feature-block-one wow fadeInUp animated animated" data-wow-delay="300ms" data-wow-duration="1500ms" style="visibility: visible;">
                                                     <div class="inner-box">
-                                                        <figure class="image-box"><img src="uploads/2020/08/feature-2.jpg" title="feature-2" alt="feature-2"></figure>
+                                                        <figure class="image-box"><img src="{{ asset('uploads/2020/08/feature-2.jpg') }}" title="feature-2" alt="feature-2"></figure>
                                                         <div class="text">
                                                             <h3><a href="#FEDERALSKILLETRADES">FEDERAL SKILLED TRADES</a></h3>
                                                         </div>
@@ -142,7 +141,7 @@
                                             <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
                                                 <div class="feature-block-one wow fadeInUp animated animated" data-wow-delay="300ms" data-wow-duration="1500ms" style="visibility: visible;">
                                                     <div class="inner-box">
-                                                        <figure class="image-box"><img src="uploads/2020/08/feature-2.jpg" title="feature-2" alt="feature-2"></figure>
+                                                        <figure class="image-box"><img src="{{ asset('uploads/2020/08/feature-2.jpg') }}" title="feature-2" alt="feature-2"></figure>
                                                         <div class="text">
                                                             <h3><a href="#STUDYPERMIT">STUDY PERMIT</a></h3>
                                                         </div>
@@ -152,7 +151,7 @@
                                             <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
                                                 <div class="feature-block-one wow fadeInUp animated animated" data-wow-delay="300ms" data-wow-duration="1500ms" style="visibility: visible;">
                                                     <div class="inner-box">
-                                                        <figure class="image-box"><img src="uploads/2020/08/feature-2.jpg" title="feature-2" alt="feature-2"></figure>
+                                                        <figure class="image-box"><img src="{{ asset('uploads/2020/08/feature-2.jpg') }}" title="feature-2" alt="feature-2"></figure>
                                                         <div class="text">
                                                             <h3><a href="#VISITORVISA">VISITOR VISA</a></h3>
                                                         </div>
@@ -162,7 +161,7 @@
                                             <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
                                                 <div class="feature-block-one wow fadeInUp animated animated" data-wow-delay="300ms" data-wow-duration="1500ms" style="visibility: visible;">
                                                     <div class="inner-box">
-                                                        <figure class="image-box"><img src="uploads/2020/08/feature-2.jpg" title="feature-2" alt="feature-2"></figure>
+                                                        <figure class="image-box"><img src="{{ asset('uploads/2020/08/feature-2.jpg') }}" title="feature-2" alt="feature-2"></figure>
                                                         <div class="text">
                                                             <h3><a href="#SPONSORSHIP">SPONSORSHIP</a></h3>
                                                         </div>1
@@ -250,8 +249,9 @@
                                         </div>
                                         <figure class="image-layer wow slideInRight animated animated"
                                             data-wow-delay="00ms" data-wow-duration="1500ms"
-                                            style="visibility: visible;"><img src="uploads/2020/07/choose-1.jpg"
-                                                title="choose-1" alt="choose-1"></figure>
+                                            style="visibility: visible;"><img
+                                                src="{{ asset('uploads/2020/07/choose-1.jpg') }}" title="choose-1"
+                                                alt="choose-1"></figure>
                                         <div class="auto-container">
                                             <div id="content_block_2">
                                                 <div class="content-box">
@@ -357,7 +357,8 @@
 
                                                                     <div class="form-group">
 
-                                                                        <x-book-button url="{{route('consultation')}}">{{TITLE_BOOK_BUTTON}}</x-book-button>
+                                                                        <x-book-button
+                                                                            url="{{ route('consultation.create') }}">{{ TITLE_BOOK_BUTTON }}</x-book-button>
 
                                                                     </div>
                                                                     <div class="wpcf7-response-output"
@@ -389,13 +390,12 @@
                                                             <li>
                                                                 <i aria-hidden="true" class=" flaticon-email"></i>
                                                                 <p>Any Questions? Email us</p>
-                                                                <h3><a
-                                                                        href="mailto:{{ EMAIL_CONTACT }}">{{ EMAIL_CONTACT }}</a>
+                                                                <h3><a href="mailto:{{ EMAIL_CONTACT }}">{{ EMAIL_CONTACT }}</a>
                                                                 </h3>
                                                             </li>
                                                             <li>
                                                                 <i aria-hidden="true"
-                                                                    class=" flaticon-group-of-users-silhouette"></i>
+                                                                    class="flaticon-group-of-users-silhouette"></i>
                                                                 <p>Follow us on Instagram</p>
                                                                 <h3>
                                                                     <a href="https://www.instagram.com/novelinkimmigration/"

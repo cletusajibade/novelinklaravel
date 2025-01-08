@@ -11,10 +11,10 @@
                                                                 <section class="clients-section ">
                                                                     <div class="auto-container">
                                                                         <div class="four-item-carousel owl-carousel owl-theme owl-dots-none owl-nav-none">
-                                                                            <figure class="logo-image"><a href="#" target="_blank" rel="noopener"><img width="215" height="100" src="uploads/2020/08/clients-logo-1.png" class="attachment-full size-full" alt="" loading="lazy" /></a></figure>
-                                                                            <figure class="logo-image"><a href="#" target="_blank" rel="noopener"><img width="215" height="100" src="uploads/2020/08/clients-logo-2.png" class="attachment-full size-full" alt="" loading="lazy" /></a></figure>
-                                                                            <figure class="logo-image"><a href="#" target="_blank" rel="noopener"><img width="215" height="100" src="uploads/2020/07/clients-logo-3.png" class="attachment-full size-full" alt="" loading="lazy" /></a></figure>
-                                                                            <figure class="logo-image"><a href="#" target="_blank" rel="noopener"><img width="215" height="100" src="uploads/2020/08/clients-logo-4.png" class="attachment-full size-full" alt="" loading="lazy" /></a></figure>
+                                                                            <figure class="logo-image"><a href="#" target="_blank" rel="noopener"><img width="215" height="100" src="{{ asset('uploads/2020/08/clients-logo-1.png') }}" class="attachment-full size-full" alt="" loading="lazy" /></a></figure>
+                                                                            <figure class="logo-image"><a href="#" target="_blank" rel="noopener"><img width="215" height="100" src="{{ asset('uploads/2020/08/clients-logo-2.png') }}" class="attachment-full size-full" alt="" loading="lazy" /></a></figure>
+                                                                            <figure class="logo-image"><a href="#" target="_blank" rel="noopener"><img width="215" height="100" src="{{ asset('uploads/2020/07/clients-logo-3.png') }}" class="attachment-full size-full" alt="" loading="lazy" /></a></figure>
+                                                                            <figure class="logo-image"><a href="#" target="_blank" rel="noopener"><img width="215" height="100" src="{{ asset('uploads/2020/08/clients-logo-4.png') }}" class="attachment-full size-full" alt="" loading="lazy" /></a></figure>
                                                                         </div>
                                                                     </div>
                                                                 </section>
@@ -55,9 +55,9 @@
                                                             <figure class="footer-logo"
                                                                 style="margin-left: -5px; margin-bottom:3rem;"><a
                                                                     href="{{ url('/') }}/">
-                                                                    <!-- <img src="uploads/2020/08/footer-logo-two.png" title="footer-logo-two" alt="footer-logo-two" /> -->
+                                                                    <!-- <img src="{{ asset('uploads/2020/08/footer-logo-two.png') }}" title="footer-logo-two" alt="footer-logo-two" /> -->
                                                                     <img width="180" height="54"
-                                                                        src="uploads/2020/08/novelink.png"
+                                                                        src="{{ asset('uploads/2020/08/novelink.png') }}"
                                                                         class="custom-logo" alt="Novelink" />
                                                                 </a>
                                                             </figure>
@@ -66,8 +66,8 @@
                                                             </div> -->
                                                             <ul class="social-links clearfix">
                                                                 <li>
-                                                                    <a
-                                                                        href="https://www.instagram.com/novelinkimmigration/"><i
+                                                                    <a href="https://www.instagram.com/novelinkimmigration/"
+                                                                        target="_blank"><i
                                                                             class="fab fa-instagram"></i></a>
                                                                 </li>
                                                                 <li><a href="#"><i
@@ -106,18 +106,26 @@
                                                             </div>
                                                             <div class="widget-content">
                                                                 <ul class="list clearfix">
-                                                                    <li><a href="permanent-residence.php"
-                                                                            target="_self" rel="noopener">Express
+                                                                    <li><a href="{{ route('perm') }}" target="_self"
+                                                                            rel="noopener">Express
                                                                             Entry</a></li>
-                                                                    <li><a href="{{route('fed-skilled-worker')}}"
-                                                                            target="_self" rel="noopener">{{TITLE_FED_SKILLED_WORKER}}</a></li>
-                                                                    <li><a href="{{route('cad-experience')}}"
-                                                                            target="_self" rel="noopener">{{TITLE_CAD_EXPERIENCE}}</a></li>
-                                                                    <li><a href="{{route('study-permit')}}" target="_self"
-                                                                            rel="noopener">{{TITLE_STUDY_PERMIT}}</a></li>
+                                                                    <li><a href="{{ route('fed-skilled-worker') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ TITLE_FED_SKILLED_WORKER }}</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('cad-experience') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ TITLE_CAD_EXPERIENCE }}</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('study-permit') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ TITLE_STUDY_PERMIT }}</a>
+                                                                    </li>
                                                                     <!-- <li><a href="{{ url('/') }}/service-page-01/" target="_self" rel="noopener">Our Service</a></li> -->
-                                                                    <li><a href="{{route('prov-nom')}}"
-                                                                            target="_self" rel="noopener">{{TITLE_PROV_NOM}}</a></li>
+                                                                    <li><a href="{{ route('prov-nom') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ TITLE_PROV_NOM }}</a>
+                                                                    </li>
                                                                 </ul>
                                                             </div>
 
@@ -149,17 +157,23 @@
                                                             </div>
                                                             <div class="widget-content">
                                                                 <ul class="list clearfix">
-                                                                    <li><a href="{{route('study-permit')}}" target="_self"
-                                                                            rel="noopener">Study</a></li>
-                                                                    <li><a href="{{route('visitor-visa')}}" target="_self"
-                                                                            rel="noopener">Visit</a></li>
-                                                                    <li><a href="{{route('work-permit')}}" target="_self"
-                                                                            rel="noopener">Work</a></li>
-                                                                    <li><a href="{{route('sponsor')}}" target="_self"
-                                                                            rel="noopener">Sponsor</a></li>
+                                                                    <li><a href="{{ route('study-permit') }}"
+                                                                            target="_self" rel="noopener">Study</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('visitor-visa') }}"
+                                                                            target="_self" rel="noopener">Visit</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('work-permit') }}"
+                                                                            target="_self" rel="noopener">Work</a>
+                                                                    </li>
+                                                                    <li><a href="{{ route('sponsor') }}"
+                                                                            target="_self" rel="noopener">Sponsor</a>
+                                                                    </li>
                                                                     <!-- <li><a href="{{ url('/') }}/service-page-01/" target="_self" rel="noopener">Our Service</a></li> -->
-                                                                    <li><a href="{{route('consultation')}}" target="_self"
-                                                                            rel="noopener">{{ROUTE_CONTACT}}</a></li>
+                                                                    <li><a href="{{ route('consultation.create') }}"
+                                                                            target="_self"
+                                                                            rel="noopener">{{ ROUTE_CONTACT }}</a>
+                                                                    </li>
                                                                 </ul>
                                                             </div>
                                                         </div>
@@ -245,9 +259,9 @@
                                                         <!--                                                            </div>-->
                                                         <!--                                                        </div>-->
                                                         <div class="footer-bottom logo-widget">
-                                                            <a href="https://secure.college-ic.ca/search-new?search_last_name=Olasupo&search_iccrc_number=R712188"
+                                                            <a href="https://register.college-ic.ca/Public-Register-EN/Licensee/Profile.aspx?ID=22159&b9100e1006f6=2"
                                                                 target="_blank" rel="noopener"><img
-                                                                    src="uploads/2020/08/RCIC_EN_HORZ_CLR_POS_TM.png"
+                                                                    src="{{ asset('uploads/2020/08/RCIC_EN_HORZ_CLR_POS_TM.png') }}"
                                                                     alt="R712188"
                                                                     style="display: block; margin-left: auto; margin-right: auto;"></a>
 
@@ -270,7 +284,7 @@
     <div class="auto-container">
         <!--        <div class="footer-bottom logo-widget">-->
         <!--            <a href="https://secure.college-ic.ca/search-new?search_last_name=Olasupo&search_iccrc_number=R712188"-->
-        <!--               target="_blank" rel="noopener"><img src="uploads/2020/08/RCIC_EN_HORZ_CLR_POS_TM.png"-->
+        <!--               target="_blank" rel="noopener"><img src="{{ asset('uploads/2020/08/RCIC_EN_HORZ_CLR_POS_TM.png') }}"-->
         <!--                                                   alt="R712188"-->
         <!--                                                   style="max-width:45%;display: block; margin-left: auto; margin-right: auto; width: 50%;"></a>-->
         <!---->
@@ -280,13 +294,14 @@
 
             <div class="copyright pull-left">
                 <p style="color: #7b8a9a;">
-                    (©) @php echo date('Y') @endphp <a href="#">NOVELINK</a> Immigration. All rights reserved. </p>
+                    (©) @php echo date('Y') @endphp <a href="{{ route('home') }}"> {{ config('app.name') }} </a>. All rights
+                    reserved. </p>
             </div>
 
             <ul class="footer-nav pull-right clearfix">
-                <li><a href="{{route('home')}}">{{ROUTE_HOME}}</a></li>
+                <li><a href="{{ route('home') }}">{{ ROUTE_HOME }}</a></li>
                 <li><a href="{{ route('about') }}">{{ ROUTE_ABOUT }}</a></li>
-                <li><a href="mailto:{{EMAIL_CONTACT}}">{{EMAIL_CONTACT}}</a></li>
+                <li><a href="mailto:{{ EMAIL_CONTACT }}">{{ EMAIL_CONTACT }}</a></li>
             </ul>
         </div>
     </div>
@@ -295,43 +310,53 @@
 <button class="scroll-top scroll-to-target" data-target="html">
     <i class="fa fa-arrow-up"></i>
 </button>
-<link rel='stylesheet' id='elementor-post-780-css' href='uploads/elementor/css/post-780.css' type='text/css'
-    media='all' />
-<link rel='stylesheet' id='e-animations-css' href="plugins/elementor/assets/lib/animations/animations.min.css"
+<link rel='stylesheet' id='elementor-post-780-css' href="{{ asset('uploads/elementor/css/post-780.css') }}"
     type='text/css' media='all' />
-<script type='text/javascript' src="plugins/novelink-core//assets/elementor/js/elementor-custom.js"
+<link rel='stylesheet' id='e-animations-css'
+    href="{{ asset('plugins/elementor/assets/lib/animations/animations.min.css') }}" type='text/css'
+    media='all' />
+<script type='text/javascript' src="{{ asset('plugins/novelink-core//assets/elementor/js/elementor-custom.js') }}"
     id='{$prefix}-element-script-js'></script>
-<script type='text/javascript' src='js/dist/vendor/regenerator-runtime.min.js' id='regenerator-runtime-js'></script>
-<script type='text/javascript' src='js/dist/vendor/wp-polyfill.min.js' id='wp-polyfill-js'></script>
+<script type='text/javascript' src="{{ asset('js/dist/vendor/regenerator-runtime.min.js') }}"
+    id='regenerator-runtime-js'></script>
+<script type='text/javascript' src="{{ asset('js/dist/vendor/wp-polyfill.min.js') }}" id='wp-polyfill-js'></script>
 
-<script type='text/javascript' src='themes/novelink/assets/js/popper.min.js' id='popper-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/bootstrap.min.js' id='bootstrap-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/owl.js' id='owl-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/wow.js' id='wow-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/jquery.fancybox.js' id='jquery-fancybox-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/tweenmax.min.js' id='tweenmax-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/appear.js' id='appear-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/scrollbar.js' id='scrollbar-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/nice-select.min.js' id='nice-select-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/switcher.min.js' id='visarzo-switcher-js'></script>
-<script type='text/javascript' src='themes/novelink/assets/js/script.js' id='visarzo-scripts-js'></script>
-<script type='text/javascript' src="plugins/novelink-core//assets/elementor/js/imigration.js" id='immigration-js'>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/popper.min.js') }}" id='popper-js'></script>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/bootstrap.min.js') }}" id='bootstrap-js'>
 </script>
-<script type='text/javascript' src="plugins/novelink-core//assets/elementor/js/training.js" id='training-js'></script>
-<script type='text/javascript' src="plugins/novelink-core//assets/elementor/js/testimonial.js" id='testimonial-js'>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/owl.js') }}" id='owl-js'></script>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/wow.js') }}" id='wow-js'></script>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/jquery.fancybox.js') }}"
+    id='jquery-fancybox-js'></script>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/tweenmax.min.js') }}" id='tweenmax-js'>
 </script>
-<script type='text/javascript' src="plugins/elementor/assets/js/webpack.runtime.min.js"
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/appear.js') }}" id='appear-js'></script>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/scrollbar.js') }}" id='scrollbar-js'></script>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/nice-select.min.js') }}" id='nice-select-js'>
+</script>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/switcher.min.js') }}" id='visarzo-switcher-js'>
+</script>
+<script type='text/javascript' src="{{ asset('themes/novelink/assets/js/script.js') }}" id='visarzo-scripts-js'>
+</script>
+<script type='text/javascript' src="{{ asset('plugins/novelink-core//assets/elementor/js/imigration.js') }}"
+    id='immigration-js'></script>
+<script type='text/javascript' src="{{ asset('plugins/novelink-core//assets/elementor/js/training.js') }}"
+    id='training-js'></script>
+<script type='text/javascript' src="{{ asset('plugins/novelink-core//assets/elementor/js/testimonial.js') }}"
+    id='testimonial-js'></script>
+<script type='text/javascript' src="{{ asset('plugins/elementor/assets/js/webpack.runtime.min.js') }}"
     id='elementor-webpack-runtime-js'></script>
-<script type='text/javascript' src="plugins/elementor/assets/js/frontend-modules.min.js"
+<script type='text/javascript' src="{{ asset('plugins/elementor/assets/js/frontend-modules.min.js') }}"
     id='elementor-frontend-modules-js'></script>
-<script type='text/javascript' src="plugins/elementor/assets/lib/waypoints/waypoints.min.js"
+<script type='text/javascript' src="{{ asset('plugins/elementor/assets/lib/waypoints/waypoints.min.js') }}"
     id='elementor-waypoints-js'></script>
-<script type='text/javascript' src='js/jquery/ui/core.min.js' id='jquery-ui-core-js'></script>
-<script type='text/javascript' src="plugins/elementor/assets/lib/swiper/swiper.min.js" id='swiper-js'></script>
-<script type='text/javascript' src="plugins/elementor/assets/lib/share-link/share-link.min.js" id='share-link-js'>
+<script type='text/javascript' src="{{ asset('js/jquery/ui/core.min.js') }}" id='jquery-ui-core-js'></script>
+<script type='text/javascript' src="{{ asset('plugins/elementor/assets/lib/swiper/swiper.min.js') }}" id='swiper-js'>
 </script>
-<script type='text/javascript' src="plugins/elementor/assets/lib/dialog/dialog.min.js" id='elementor-dialog-js'>
-</script>
+<script type='text/javascript' src="{{ asset('plugins/elementor/assets/lib/share-link/share-link.min.js') }}"
+    id='share-link-js'></script>
+<script type='text/javascript' src="{{ asset('plugins/elementor/assets/lib/dialog/dialog.min.js') }}"
+    id='elementor-dialog-js'></script>
 <script type='text/javascript' id='elementor-frontend-js-before'>
     var elementorFrontendConfig = {
         "environmentMode": {
@@ -443,11 +468,12 @@
         }
     };
 </script>
-<script type='text/javascript' src="plugins/elementor/assets/js/frontend.min.js" id='elementor-frontend-js'></script>
-<script type='text/javascript' src="plugins/elementor/assets/js/preloaded-modules.min.js" id='preloaded-modules-js'>
-</script>
+<script type='text/javascript' src="{{ asset('plugins/elementor/assets/js/frontend.min.js') }}"
+    id='elementor-frontend-js'></script>
+<script type='text/javascript' src="{{ asset('plugins/elementor/assets/js/preloaded-modules.min.js') }}"
+    id='preloaded-modules-js'></script>
 
-<script type="text/javascript" src="js/zebra_datepicker.min.js"></script>
+<script type="text/javascript" src="{{ asset('js/zebra_datepicker.min.js') }}"></script>
 <script type="text/javascript">
     jQuery(document).ready(function($) {
         $('#nove_date_picker').Zebra_DatePicker();
