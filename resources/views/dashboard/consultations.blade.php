@@ -29,8 +29,8 @@
                     This action cannot be reversed.
                 </x-bladewind::modal>
                 <x-bladewind::table :data="$data" include_columns="first_name,last_name,email,phone, country"
-                    paginated="true" page_size="5" show_row_numbers="true" show_total_pages="true"
-                    pagination_style="numbers" :action_icons="$action_icons" searchable="true"
+                    paginated="true" page_size="10" show_row_numbers="true" show_total_pages="true"
+                    pagination_style="arrows" :action_icons="$action_icons" searchable="true"
                     no_data_message="No consultations yet" />
             </div>
         </div>
