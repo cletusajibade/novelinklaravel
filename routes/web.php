@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PaymentController;
 
 // Static frontend view routes
 Route::view('/', 'home')->name('home');
@@ -24,6 +25,10 @@ Route::view('/super-visa', 'super-visa')->name('super-visa');
 Route::view('/temporary-residence', 'temporary-residence')->name('temp-res');
 Route::view('/visitor-visa', 'visitor-visa')->name('visitor-visa');
 Route::view('/work-permit', 'work-permit')->name('work-permit');
+
+// Stripe payment routes
+Route::view('/pay', 'stripe.pay')->name('pay');
+Route::post('/pay', [PaymentController::class, 'pay'])->name('stripe.pay');
 
 // Frontend consultation booking routes
 Route::get('/book-consultation', [ConsultationController::class, 'create'])->name('consultation.create');
