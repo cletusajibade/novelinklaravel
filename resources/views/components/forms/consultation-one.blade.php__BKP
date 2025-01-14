@@ -103,6 +103,67 @@
                 @enderror
             </span>
         </div>
+        {{-- TODO: work on the ui of these check boxes --}}
+        <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+            <div class="select-box">
+                <span class="wpcf7-form-control-wrap" data-name="consultation-packages">
+                    <span class="form-el-label">Select your Consultation Package(s):<span style="color: red">
+                            *</span></span>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="consultation_package[]" value="Permanent-Residence-150"
+                                {{ in_array('Permanent-Residence-150', old('consultation_package', [])) ? 'checked' : '' }}>
+                            Permanent Residence (US$150)
+                        </label>
+                        <label>
+                            <input type="checkbox" name="consultation_package[]" value="Family-Sponsorship-150"
+                                {{ in_array('Family-Sponsorship-150', old('consultation_package', [])) ? 'checked' : '' }}>
+                            Family Sponsorship (US$150)
+                        </label>
+                        <label>
+                            <input type="checkbox" name="consultation_package[]" value="Visitor-Visas-150"
+                                {{ in_array('Visitor-Visas-150', old('consultation_package', [])) ? 'checked' : '' }}>
+                            Visitor Visas (US$150)
+                        </label>
+                        <label>
+                            <input type="checkbox" name="consultation_package[]" value="Study-Permit-150"
+                                {{ in_array('Study-Permit-150', old('consultation_package', [])) ? 'checked' : '' }}>
+                            Study Permit (US$150)
+                        </label>
+                        <label>
+                            <input type="checkbox" name="consultation_package[]" value="Work-Permit-150"
+                                {{ in_array('Work-Permit-150', old('consultation_package', [])) ? 'checked' : '' }}>
+                            Work Permit (US$150)
+                        </label>
+                        <label>
+                            <input type="checkbox" name="consultation_package[]" value="Citizenship-120"
+                                {{ in_array('Citizenship-120', old('consultation_package', [])) ? 'checked' : '' }}>
+                            Citizenship (US$120)
+                        </label>
+                        <label>
+                            <input type="checkbox" name="consultation_package[]" value="Entrepreneur-Investor-400"
+                                {{ in_array('Entrepreneur-Investor-400', old('consultation_package', [])) ? 'checked' : '' }}>
+                            Entrepreneur/Investor (US$400)
+                        </label>
+                        <label>
+                            <input type="checkbox" name="consultation_package[]" value="Refusals-and-GCMS-Review-200"
+                                {{ in_array('Refusals-and-GCMS-Review-200', old('consultation_package', [])) ? 'checked' : '' }}>
+                            Refusals and GCMS Review ($200)
+                        </label>
+                        <label>
+                            <input type="checkbox" name="consultation_package[]" value="Others-150"
+                                {{ in_array('Others-150', old('consultation_package', [])) ? 'checked' : '' }}>
+                            Others ($150)
+                        </label>
+
+                    </div>
+                    @error('consultation_package')
+                        <div class="text-danger error-message">{{ $message }}</div>
+                    @enderror
+                </span>
+            </div>
+        </div>
+
         <div class="col-lg-12 col-md-12 col-sm-12 form-group message-btn">
             <button class="theme-btn-two wpcf7-form-control" type="submit" name="submit-form">
                 Continue<i class="flaticon-send"></i>

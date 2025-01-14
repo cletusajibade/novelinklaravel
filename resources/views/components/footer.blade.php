@@ -170,9 +170,7 @@
                                                                             target="_self" rel="noopener">Sponsor</a>
                                                                     </li>
                                                                     <!-- <li><a href="{{ url('/') }}/service-page-01/" target="_self" rel="noopener">Our Service</a></li> -->
-                                                                    <li><a href="{{ route('consultation.create') }}"
-                                                                            target="_self"
-                                                                            rel="noopener">{{ ROUTE_CONTACT }}</a>
+                                                                    <li><a href="" openToNewTab(event)">{{ ROUTE_CONTACT }}</a>
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -473,7 +471,7 @@
 <script type='text/javascript' src="{{ asset('plugins/elementor/assets/js/preloaded-modules.min.js') }}"
     id='preloaded-modules-js'></script>
 
-<script type="text/javascript" src="{{ asset('js/zebra_datepicker.min.js') }}"></script>
+{{-- <script type="text/javascript" src="{{ asset('js/zebra_datepicker.min.js') }}"></script>
 <script type="text/javascript">
     jQuery(document).ready(function($) {
         $('#nove_date_picker').Zebra_DatePicker();
@@ -488,4 +486,10 @@
         <?php } ?>
         // document.getElementById("error-div").scrollIntoView();
     });
+</script> --}}
+<script>
+    function openToNewTab(event) {
+        event.preventDefault();
+        window.open(@json(route('consultation.create')), '_blank');
+    }
 </script>

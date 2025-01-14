@@ -27,11 +27,13 @@ Route::view('/visitor-visa', 'visitor-visa')->name('visitor-visa');
 Route::view('/work-permit', 'work-permit')->name('work-permit');
 
 // Stripe payment routes
-Route::view('/pay', 'stripe.pay')->name('pay');
-Route::post('/pay', [PaymentController::class, 'pay'])->name('stripe.pay');
+Route::get('/payment', [PaymentController::class, 'create'])->name('stripe.create');
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('stripe.success');
 
 // Frontend consultation booking routes
 Route::get('/book-consultation', [ConsultationController::class, 'create'])->name('consultation.create');
+Route::get('/terms-and-conditions', [ConsultationController::class, 'terms'])->name('consultation.terms');
+Route::post('/terms-and-conditions', [ConsultationController::class, 'post_terms'])->name('consultation.post-terms');
 Route::post('/book-consultation', [ConsultationController::class, 'store'])->name('consultation.store');
 
 

@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ConsultationSeeder::class,
             AppointmentSeeder::class,
-            PaymentSeeder::class
+            PaymentSeeder::class,
+            ConsultationPackagesSeeder::class
         ]);
 
         // User::factory()->create([

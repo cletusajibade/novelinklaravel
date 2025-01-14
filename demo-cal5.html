@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Calendar with Event Booking</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .day {
+            border: 1px solid #ccc;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .today {
+            background-color: #eee;
+        }
+
+        .selected {
+            background-color: #c0c0c0;
+        }
+
+        .event-time-slot {
+            margin: 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .event-time-slot.selected {
+            background-color: #c0c0c0;
+        }
+
+        .event-details {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Calendar with Event Booking</h1>
+
+    <div id="calendar"></div>
+
+    <div id="event-details">
+        <h2>Event Details</h2>
+        <label for="event-title">Event Title:</label><br>
+        <input type="text" id="event-title"><br><br>
+        <label for="event-date">Event Date:</label><br>
+        <input type="text" id="event-date" readonly><br><br>
+        <label for="event-time">Event Time:</label><br>
+        <input type="text" id="event-time" readonly><br><br>
+        <button onclick="bookEvent()">Book Event</button>
+    </div>
+
+    <button onclick="goToToday()">Go to Today</button>
+
+    <script>
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        let currentDate = new Date();
+        let selectedDate = new Date();
+        let selectedTimeSlot = null;
+
+        function createCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+
+            const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+            const lastDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
+            const daysInMonth = lastDayOfMonth.getDate();
+
+            // Create header with day names
+            const headerRow = document.createElement('div');
+            headerRow.classList.add('day');
+            for (let i = 0; i < 7; i++) {
+                const dayName = document.createElement('div');
+                dayName.textContent = daysOfWeek[i].substring(0, 3);
+                headerRow.appendChild(dayName);
+            }
+            calendar.appendChild(headerRow);
+
+            // Create calendar days
+            let dayOfWeek = firstDayOfMonth.getDay();
+            for (let i = 0; i < daysInMonth; i++) {
+                const day = document.createElement('div');
+                day.classList.add('day');
+                day.textContent = i + 1;
+
+                if (i === 0) {
+                    // Add empty cells before the first day of the month
+                    for (let j = 0; j < dayOfWeek; j++) {
+                        const emptyCell = document.createElement('div');
+                        emptyCell.classList.add('day');
+                        calendar.appendChild(emptyCell);
+                    }
+                }
+
+                if (
+                    selectedDate.getFullYear() === currentDate.getFullYear() &&
+                    selectedDate.getMonth() === currentDate.getMonth() &&
+                    i + 1 === currentDate.getDate()
+                ) {
+                    day.classList.add('today');
+                }
+
+                if (
+                    selectedDate.getFullYear() === currentDate.getFullYear() &&
+                    selectedDate.getMonth() === currentDate.getMonth() &&
+                    i + 1 === selectedDate.getDate()
+                ) {
+                    day.classList.add('selected');
+                }
+
+                day.addEventListener('click', () => {
+                    selectDate(i + 1);
+                });
+
+                calendar.appendChild(day);
+
+                if ((i + dayOfWeek) % 7 === 6) {
+                    // Create a new row for the next week
+                    const newRow = document.createElement('div');
+                    newRow.classList.add('day');
+                    calendar.appendChild(newRow);
+                }
+            }
+        }
+
+        function selectDate(day) {
+            selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
+            createCalendar();
+            updateEventDetails();
+        }
+
+        function updateEventDetails() {
+            const eventDetails = document.getElementById('event-details');
+            const eventDateInput = document.getElementById('event-date');
+            const eventTimeInput = document.getElementById('event-time');
+
+            eventDateInput.value = `${months[selectedDate.getMonth()]} ${selectedDate.getDate()}, ${selectedDate.getFullYear()}`;
+
+            if (selectedTimeSlot) {
+                eventTimeInput.value = selectedTimeSlot;
+            } else {
+                eventTimeInput.value = '';
+            }
+
+            eventDetails.style.display = 'block';
+        }
+
+        function selectTimeSlot(timeSlot) {
+            selectedTimeSlot = timeSlot;
+            updateEventDetails();
+
+            // Highlight the selected time slot
+            const timeSlots = document.querySelectorAll('.event-time-slot');
+            timeSlots.forEach((slot) => {
+                slot.classList.remove('selected');
+            });
+            const selectedSlot = document.querySelector(`.event-time-slot[data-time="${timeSlot}"]`);
+            if (selectedSlot) {
+                selectedSlot.classList.add('selected');
+            }
+        }
+
+        function bookEvent() {
+            const eventTitle = document.getElementById('event-title').value;
+            if (eventTitle && selectedDate && selectedTimeSlot) {
+                // TODO: Implement event booking logic (e.g., save to database)
+                alert(`Event "${eventTitle}" booked for ${selectedDate.toDateString()} at ${selectedTimeSlot}`);
+                // Clear form after booking
+                document.getElementById('event-title').value = '';
+                selectedTimeSlot = null;
+                updateEventDetails();
+            } else {
+                alert('Please enter event title and select date and time.');
+            }
+        }
+
+        function goToToday() {
+            selectedDate = new Date();
+            createCalendar();
+            updateEventDetails();
+        }
+
+        // Create initial calendar
+        createCalendar();
+    </script>
+
+</body>
+
+</html>

@@ -94,7 +94,9 @@
                                                                     title="girl-with-computer" alt="girl-with-computer">
                                                             </figure>
                                                             <div class="text">
-                                                                <h3><a href="{{ route('consultation.create') }}">Book a Consultation</a></h3>
+                                                                <h3><a href=""
+                                                                        onclick="openToNewTab(event)">{{ TITLE_BOOK_BUTTON }}</a>
+                                                                </h3>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -108,7 +110,9 @@
                                                                     src="{{ asset('uploads/2020/08/speak-to-consultant.png') }}"
                                                                     title="feature-2" alt="feature-2"></figure>
                                                             <div class="text">
-                                                                <h3><a href="{{ route('consultation.create') }}">Speak to a Consultant</a></h3>
+                                                                <h3><a href=""
+                                                                        onclick="openToNewTab(event)">Speak to a
+                                                                        Consultant</a></h3>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -122,7 +126,8 @@
                                                                     src="{{ asset('uploads/2020/08/app-evaluated.jpg') }}"
                                                                     title="feature-2" alt="feature-2"></figure>
                                                             <div class="text">
-                                                                <h3><a href="{{ route('consultation.create') }}">Get Expert
+                                                                <h3><a href="" onclick="openToNewTab(event)">Get
+                                                                        Expert
                                                                         Advice</a></h3>
                                                             </div>
                                                         </div>
@@ -357,8 +362,7 @@
 
                                                                     <div class="form-group">
 
-                                                                        <x-book-button
-                                                                            url="{{ route('consultation.create') }}">{{ TITLE_BOOK_BUTTON }}</x-book-button>
+                                                                        <x-book-button>{{ TITLE_BOOK_BUTTON }}</x-book-button>
 
                                                                     </div>
                                                                     <div class="wpcf7-response-output"
@@ -390,7 +394,8 @@
                                                             <li>
                                                                 <i aria-hidden="true" class=" flaticon-email"></i>
                                                                 <p>Any Questions? Email us</p>
-                                                                <h3><a href="mailto:{{ EMAIL_CONTACT }}">{{ EMAIL_CONTACT }}</a>
+                                                                <h3><a
+                                                                        href="mailto:{{ EMAIL_CONTACT }}">{{ EMAIL_CONTACT }}</a>
                                                                 </h3>
                                                             </li>
                                                             <li>

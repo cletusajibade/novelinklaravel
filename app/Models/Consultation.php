@@ -9,4 +9,22 @@ class Consultation extends Model
 {
     /** @use HasFactory<\Database\Factories\ConsultationFactory> */
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'uuid',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'date_of_birth',
+        'country',
+        'country_of_residence',
+        'consultation_package',
+        'registration_status'
+    ];
 }

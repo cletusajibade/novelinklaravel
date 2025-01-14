@@ -13,7 +13,7 @@
                         <a href="mailto:{{ EMAIL_CONTACT }}">{{ EMAIL_CONTACT }}</a></span>
                     </li>
                     <li>
-                        <i class="flaticon-clock"></i><a href="{{ route('consultation.create') }}">{{ ROUTE_CONTACT }}</a>
+                        <i class="flaticon-clock"></i><a href="" onclick="openToNewTab(event)">{{ ROUTE_CONTACT }}</a>
                     </li>
                 </ul>
             </div>
@@ -205,8 +205,7 @@
             <ul class="info clearfix">
                 <li><i class="flaticon-home"></i>Calgary, AB</li>
                 <li><i class="flaticon-open-email-message"></i>{{ EMAIL_CONTACT }}</span></li>
-                <li><i class="flaticon-clock"></i><a
-                        href="{{ route('consultation.create') }}">{{ ROUTE_CONTACT }}</a></li>
+                <li><i class="flaticon-clock"></i><a href="" onclick="openToNewTab(event)">{{ ROUTE_CONTACT }}</a></li>
             </ul>
         </div>
         <div class="social-links">
@@ -263,7 +262,7 @@
                             @endif
                             @if (@isset($currentRouteName) and $currentRouteName == 'home')
                                 <div class="btn-box">
-                                    <a href="{{ route('consultation.create') }}" class="theme-btn-one"><i
+                                    <a href="" onclick="openToNewTab(event)" class="theme-btn-one"><i
                                             class="flaticon-send" style="margin-right: 10px;"></i>Book
                                         a Consultation</a>
                                 </div>

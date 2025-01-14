@@ -54,10 +54,7 @@
                                                                 </p>
                                                             </div>
                                                             <div class="btn-box">
-                                                                <a href="{{ route('consultation.create') }}"
-                                                                    target="_self" rel="noopener"
-                                                                    class="theme-btn-two">Book a
-                                                                    consultation <i class="flaticon-send"></i></a>
+                                                                <x-book-button>{{ TITLE_BOOK_BUTTON }}</x-book-button>
                                                             </div>
                                                             <div class="text">
                                                                 <p>
