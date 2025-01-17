@@ -94,9 +94,7 @@
             <!--                </div>-->
             <!--            </dev>-->
             <div class="footer__form">
-                <!-- <form action="<?php //echo htmlspecialchars($_SERVER["PHP_SELF"]);
-                ?>" method="post"> -->
-                <form action="{{ route('consultation.post-terms') }}" method="post">
+                <form action="{{ route('client.post-terms') }}" method="post">
                     @csrf
                     <div class="row">
                         <div class="row__left">

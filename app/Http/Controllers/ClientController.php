@@ -66,7 +66,7 @@ class ClientController extends Controller
             session(['client_id' => $client->id]);
 
             //Redirect to the terms of agreement page
-            return redirect()->route('consultation.terms');
+            return redirect()->route('client.terms');
         } catch (Exception $e) {
             Log::error('Error updating or creating record: ' . $e->getMessage());
             return redirect()->back()->withInput()->withErrors(['error' => 'An error occurred while processing your application. Please try again or conatct us for assistance.']);
@@ -140,7 +140,7 @@ class ClientController extends Controller
 
         if ($validator->fails()) {
             return redirect()
-                ->route('consultation.terms')
+                ->route('client.terms')
                 ->withErrors($validator)
                 ->withInput();
         }
