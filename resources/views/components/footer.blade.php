@@ -490,6 +490,6 @@
 <script>
     function openToNewTab(event) {
         event.preventDefault();
-        window.open(@json(route('consultation.create')), '_blank');
+        window.open(@json(route('client.create')), '_blank');
     }
 </script>

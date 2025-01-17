@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Consultation;
+use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +18,7 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            'consultation_id' => Consultation::inRandomOrder()->first()->id,
+            'client_id' => Client::inRandomOrder()->first()->id,
             'payment_id'=> fake()->uuid(),
             'amount'=> fake()->randomNumber(3, true),
             'currency'=> fake()->currencyCode(),

@@ -2,21 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreConsultationRequest;
-use App\Models\Consultation;
+use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\UpdateClientRequest;
+use App\Models\Client;
 use App\Models\ConsultationPackages;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
-class ConsultationController extends Controller
+class ClientController extends Controller
 {
     /**
-     * Show the form for creating a new consultation.
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
      */
     public function create()
     {
@@ -25,12 +32,12 @@ class ConsultationController extends Controller
     }
 
     /**
-     * Store a newly created consultation in storage.
+     * Store a newly created resource in storage.
      */
-    public function store(StoreConsultationRequest $request)
+    public function store(StoreClientRequest $request)
     {
         /**
-         * The 'StoreConsultationRequest' class, type-hinted in this 'store' method declaration, contains all the validation rules.
+         * The 'StoreClientRequest' class, type-hinted in this 'store' method declaration, contains all the validation rules.
          * It has validated the incoming form request before this 'store' controller method is called.
          * If the request is invalid, the user will be redirected back to the form with the validation errors.
          **/
@@ -40,7 +47,7 @@ class ConsultationController extends Controller
 
             // Using 'updateOrCreate' function here since we are dealing with
             // clients who can return for conultations at a later date.
-            $consultation = Consultation::updateOrCreate(
+            $client = Client::updateOrCreate(
                 ['email' => $data['email']],
                 [
                     'uuid' => Str::uuid(),
@@ -56,7 +63,7 @@ class ConsultationController extends Controller
             );
 
             // Store Client ID in session
-            session(['client_id' => $consultation->id]);
+            session(['client_id' => $client->id]);
 
             //Redirect to the terms of agreement page
             return redirect()->route('consultation.terms');
@@ -67,33 +74,33 @@ class ConsultationController extends Controller
     }
 
     /**
-     * Display the specified consultation.
+     * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Client $client)
     {
         //
     }
 
     /**
-     * Show the form for editing the specified consultation.
+     * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Client $client)
     {
         //
     }
 
     /**
-     * Update the specified consultation in storage.
+     * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateClientRequest $request, Client $client)
     {
         //
     }
 
     /**
-     * Remove the specified consultation from storage.
+     * Remove the specified resource from storage.
      */
-    public function destroy(string $uuid)
+    public function destroy(Client $client)
     {
         //
     }
@@ -101,11 +108,11 @@ class ConsultationController extends Controller
     public function terms()
     {
         if (!session('client_id')) {
-            return redirect()->route('consultation.create');
+            return redirect()->route('client.create');
         }
 
-        $consultation = Consultation::find(session('client_id'));
-        $full_name = $consultation->first_name . " " . $consultation->last_name;
+        $client = Client::find(session('client_id'));
+        $full_name = $client->first_name . " " . $client->last_name;
 
         return view('terms', compact('full_name'));
     }
@@ -113,7 +120,7 @@ class ConsultationController extends Controller
     public function post_terms(Request $request)
     {
         if (!session('client_id')) {
-            return redirect()->route('consultation.create'); //->with('error', 'You cannot access this page.');;
+            return redirect()->route('client.create'); //->with('error', 'You cannot access this page.');;
         }
 
         // Create a custom Validator
@@ -139,10 +146,10 @@ class ConsultationController extends Controller
         }
 
         //Get this client from the DB using the already existing client_id in session
-        $consultation = Consultation::find(session('client_id'));
+        $client = Client::find(session('client_id'));
 
         // Mark Step 2 as completed (agreement signed)
-        $consultation->update(['registration_status' => 'step_2_completed']);
+        $client->update(['registration_status' => 'step_2_completed']);
 
         // Redirect to the Stripe payment page
         return redirect()->route('stripe.create');

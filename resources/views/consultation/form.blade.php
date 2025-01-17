@@ -15,7 +15,7 @@
     </div>
     <div class="max-w-lg mx-auto mt-0 mb-5 bg-white shadow-lg rounded-bl-lg rounded-br-lg p-6">
         <h1 class="text-2xl font-bold text-center text-gray-700 mb-6">Consultation Form</h1>
-        <form action="{{ route('consultation.store') }}" method="post">
+        <form action="{{ route('client.store') }}" method="post">
             @csrf
             <div class="mb-4">
                 <label for="first_name" class="block text-gray-600 mb-2 text-sm">First Name *</label>

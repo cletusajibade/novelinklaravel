@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConsultationCreated;
+use App\Models\Client;
 use App\Models\Consultation;
 
 class PaymentController extends Controller
@@ -17,7 +18,7 @@ class PaymentController extends Controller
     public function create(Request $request)
     {
         if (!session('client_id')) {
-            return redirect()->route('consultation.create'); //->with('error', 'You cannot access this page.');;
+            return redirect()->route('client.create'); //->with('error', 'You cannot access this page.');;
         }
 
         $pub_key = env('STRIPE_PUB_KEY');
@@ -44,21 +45,21 @@ class PaymentController extends Controller
         // Users should only see the success page after filling the consultaion form.
         // If not, redirect them to the consultation form.
         if (!session()->has('client_id')) {
-            return redirect()->route('consultation.create');
+            return redirect()->route('client.create');
         }
 
         //Get this client from the DB using the already existing client_id in session
-        $consultation = Consultation::find(session('client_id'));
+        $client = Client::find(session('client_id'));
 
-        $first_name = $consultation->first_name;
-        $email = $consultation->email;
+        $first_name = $client->first_name;
+        $email = $client->email;
         $app_name = config('app_name');
 
         // Send email
         Mail::to($email)->send(new ConsultationCreated($first_name, $app_name));
 
         // Mark registration_status as completed (payment made)
-        $consultation->update(['registration_status' => 'completed']);
+        $client->update(['registration_status' => 'completed']);
 
         // Finally, clear the client_id session data
         session()->forget(['client_id']);

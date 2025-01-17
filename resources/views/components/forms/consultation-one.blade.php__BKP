@@ -1,6 +1,6 @@
 {{-- @props(['countries']) --}}
 
-<form action="{{ route('consultation.store') }}" method="post" class="wpcf7-form">
+<form action="{{ route('client.store') }}" method="post" class="wpcf7-form">
     @csrf
 
     <div class="row clearfix">

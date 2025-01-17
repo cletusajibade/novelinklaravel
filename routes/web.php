@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ConsultationsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentsController;
@@ -36,10 +37,10 @@ Route::get('/payment', [PaymentController::class, 'create'])->name('stripe.creat
 Route::get('/payment/success', [PaymentController::class, 'success'])->name('stripe.success');
 
 // Frontend consultation booking routes
-Route::get('/book-consultation', [ConsultationController::class, 'create'])->name('consultation.create');
-Route::get('/terms-and-conditions', [ConsultationController::class, 'terms'])->name('consultation.terms');
-Route::post('/terms-and-conditions', [ConsultationController::class, 'post_terms'])->name('consultation.post-terms');
-Route::post('/book-consultation', [ConsultationController::class, 'store'])->name('consultation.store');
+Route::get('/book-consultation', [ClientController::class, 'create'])->name('client.create');
+Route::post('/book-consultation', [ClientController::class, 'store'])->name('client.store');
+Route::get('/terms-and-conditions', [ClientController::class, 'terms'])->name('client.terms');
+Route::post('/terms-and-conditions', [ClientController::class, 'post_terms'])->name('client.post-terms');
 
 
 // Backend dashboard routes
