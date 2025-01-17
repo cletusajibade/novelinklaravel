@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ConsultationsController;
@@ -26,6 +27,10 @@ Route::view('/temporary-residence', 'temporary-residence')->name('temp-res');
 Route::view('/visitor-visa', 'visitor-visa')->name('visitor-visa');
 Route::view('/work-permit', 'work-permit')->name('work-permit');
 
+// Appointment routes
+Route::get('/book-appointment', [AppointmentController::class, 'index'])->name('app.create');
+
+
 // Stripe payment routes
 Route::get('/payment', [PaymentController::class, 'create'])->name('stripe.create');
 Route::get('/payment/success', [PaymentController::class, 'success'])->name('stripe.success');
@@ -48,6 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/consultations', [ConsultationsController::class, 'destroy'])->name('consultations.destroy');
 
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
+    Route::post('/calendar', [CalendarController::class, 'store'])->name('calendar.store');
 
     Route::get('/payments', [PaymentsController::class, 'index'])->name('payments');
 });

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(Consultation::class); // Foreign key to Consultations table
             $table->timestamp('appointment_date');
             $table->integer('duration')->nullable(); // Duration of the appointment (in minutes)
-            $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled'])->default('pending');
+            $table->enum('status', ['available', 'booked', 'blocked'])->default('available');
             $table->string('location')->nullable(); // Location of the appointment, eg Zoom.
             $table->text('notes')->nullable();
             $table->timestamp('reminder_at')->nullable(); // Reminder notification time

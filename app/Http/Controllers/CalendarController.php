@@ -13,4 +13,8 @@ class CalendarController extends Controller
     {
         return view('dashboard.calendar');
     }
+
+    public function store(Request $request) {
+        //dd($request);
+    }
 }
