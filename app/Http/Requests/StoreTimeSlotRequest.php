@@ -11,7 +11,7 @@ class StoreTimeSlotRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class StoreTimeSlotRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'duration' => 'required|numeric|min:0.5',
+            'start_date' => 'required|date|after_or_equal:today',
+            'start_time' => 'required|date_format:H:i',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'is_available' => 'boolean',
+            'exclude_weekends' => 'nullable|boolean',
+            'booked_by' => 'nullable|exists:clients,id',
         ];
     }
 }

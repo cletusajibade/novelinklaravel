@@ -14,8 +14,10 @@ return new class extends Migration
     {
         Schema::create('time_slots', function (Blueprint $table) {
             $table->id('slot_id'); // Primary key
-            $table->date('date');
+            $table->double('duration');
+            $table->date('start_date');
             $table->time('start_time');
+            $table->date('end_date');
             $table->time('end_time');
             $table->boolean('is_available')->default(true); // Availability status
             $table->unsignedBigInteger('booked_by')->nullable(); // Client who booked the slot

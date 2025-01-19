@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\TimeSlotController;
 
 // Static frontend view routes
 Route::view('/', 'home')->name('home');
@@ -29,7 +30,7 @@ Route::view('/visitor-visa', 'visitor-visa')->name('visitor-visa');
 Route::view('/work-permit', 'work-permit')->name('work-permit');
 
 // Appointment routes
-Route::get('/book-appointment', [AppointmentController::class, 'index'])->name('app.create');
+Route::get('/book-appointment', [AppointmentController::class, 'create'])->name('appointment.create');
 
 
 // Stripe payment routes
@@ -47,16 +48,21 @@ Route::post('/terms-and-conditions', [ClientController::class, 'post_terms'])->n
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/consultations', [ConsultationsController::class, 'index'])->name('consultations');
-    Route::patch('/consultations', [ConsultationsController::class, 'update'])->name('consultations.update');
-    Route::get('/consultations/{uuid}', [ConsultationsController::class, 'edit'])->name('consultations.edit');
-    Route::post('/consultations', [ConsultationsController::class, 'sendEmail'])->name('consultations.send-email');
-    Route::delete('/consultations', [ConsultationsController::class, 'destroy'])->name('consultations.destroy');
+    Route::get('/clients', [ConsultationsController::class, 'index'])->name('consultations');
+    Route::patch('/clients', [ConsultationsController::class, 'update'])->name('consultations.update');
+    Route::get('/clients/{uuid}', [ConsultationsController::class, 'edit'])->name('consultations.edit');
+    Route::post('/clients', [ConsultationsController::class, 'sendEmail'])->name('consultations.send-email');
+    Route::delete('/clients', [ConsultationsController::class, 'destroy'])->name('consultations.destroy');
 
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
     Route::post('/calendar', [CalendarController::class, 'store'])->name('calendar.store');
 
+    Route::get('/time-slots', [TimeSlotController::class, 'index'])->name('time-slots');
+    Route::post('/time-slots', [TimeSlotController::class, 'store'])->name('time-slots.store');
+    Route::get('/time-slots/{slot_id}', [TimeSlotController::class, 'edit'])->name('time-slots.edit');
+
     Route::get('/payments', [PaymentsController::class, 'index'])->name('payments');
+
 });
 
 // Backend profile routes

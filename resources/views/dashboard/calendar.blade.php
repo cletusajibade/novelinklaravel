@@ -7,6 +7,18 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            @if (session('success'))
+                {{-- <x-alert type='success' :message="session('success')" /> --}}
+                <x-bladewind::alert type="success" shade="dark">
+                    {{ session('success') }}
+                </x-bladewind::alert>
+            @endif
+             @if (session('warning'))
+                {{-- <x-alert type='success' :message="session('success')" /> --}}
+                <x-bladewind::alert type="warning" shade="dark">
+                    {{ session('warning') }}
+                </x-bladewind::alert>
+            @endif
             <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
 
                 {{-- Calendar component --}}
@@ -39,53 +51,76 @@
                 <div class="flex flex-col md:w-[30%] bg-white px-8 py-4 rounded-lg shadow-md">
                     <h2 id="availability" class="text-xl font-semibold text-gray-800 mb-6">Set Availability
                     </h2>
+                    <form action="{{ route('time-slots.store') }}" method="post">
+                        @csrf
+                        <div class="flex items-center mb-4">
+                            <span id="set-availability">Appointment Duration:</span>
+                            <label class="flex items-center mt-1">
+                                <input type="number" min="0.5" max="5" step="0.5" name="duration"
+                                    value="{{ old('duration', 1) }}" class="w-12 h-4 mr-2 ml-2 rounded-sm pr-0 pl-1" />
+                                hour
+                            </label>
+                            @error('duration')
+                                <div class="text-red-500 error-message text-sm">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <div class="flex items-center mb-4">
-                        <span id="set-availability">Appointment Duration:</span>
-                        <label class="flex items-center mt-1">
-                            <input type="number" min="1" max="5" step=".5" name="duration"
-                                value="1" placeholder="Hour" class="w-12 h-4 mr-2 ml-2 rounded-sm pr-0 pl-1" />
-                            hour
-                        </label>
-                    </div>
+                        <!-- Start Date and Time -->
+                        <div class="mb-4">
+                            <label for="start-date" class="block text-sm font-medium text-gray-700 mb-1">Start
+                                Date</label>
+                            <input type="date" id="start-date" name="start_date" value="{{ old('start_date', date('Y-m-d')) }}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            @error('start_date')
+                                <div class="text-red-500 error-message text-sm">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="start-time" class="block text-sm font-medium text-gray-700 mb-1">Start
+                                Time</label>
+                            <input type="time" id="start-time" name="start_time"
+                                value="{{ old('start_time', '09:00') }}" min="09:00" max="18:00"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            @error('start_time')
+                                <div class="text-red-500 error-message text-sm">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <!-- Start Date and Time -->
-                    <div class="mb-4">
-                        <label for="start-date" class="block text-sm font-medium text-gray-700 mb-1">Start
-                            Date</label>
-                        <input type="date" id="start-date" name="start_date"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div class="mb-4">
-                        <label for="start-time" class="block text-sm font-medium text-gray-700 mb-1">Start
-                            Time</label>
-                        <input type="time" id="start-time" name="start_time" value="09:00"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-
-                    <!-- End Date and Time -->
-                    <div class="mb-4">
-                        <label for="end-date" class="block text-sm font-medium text-gray-700 mb-1">End
-                            Date</label>
-                        <input type="date" id="end-date" name="end_date"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div class="mb-4">
-                        <label for="end-time" class="block text-sm font-medium text-gray-700 mb-1">End
-                            Time</label>
-                        <input type="time" id="end-time" name="end_time"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div class="mb-4">
-                        <label class="flex items-center mb-2 mt-1">
-                            <input type="checkbox" name="exclude_weekends" value="1" class="mr-2" checked>
-                            Exclude Weekends (Sat - Sun)
-                        </label>
-                    </div>
-                    <!-- Submit Button -->
-                    <button type="button"
-                        class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Save
-                        Schedule</button>
+                        <!-- End Date and Time -->
+                        <div class="mb-4">
+                            <label for="end-date" class="block text-sm font-medium text-gray-700 mb-1">End
+                                Date</label>
+                            <input type="date" id="end-date" name="end_date" value="{{ old('end_date', date('Y-m-d')) }}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            @error('end_date')
+                                <div class="text-red-500 error-message text-sm">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="end-time" class="block text-sm font-medium text-gray-700 mb-1">End
+                                Time</label>
+                            <input type="time" id="end-time" name="end_time" value="{{ old('end_time', '18:00') }}"
+                                min="09:00" max="18:00"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            @error('end_time')
+                                <div class="text-red-500 error-message text-sm">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label class="flex items-center mb-2 mt-1">
+                                <input type="checkbox" name="exclude_weekends" value="1" class="mr-2"
+                                    {{ old('exclude_weekends') ? 'checked' : '' }}>
+                                Exclude Weekends (Sat - Sun)
+                            </label>
+                            @error('exclude_weekends')
+                                <div class="text-red-500 error-message text-sm">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <!-- Submit Button -->
+                        <button type="submit"
+                            class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Save
+                            Schedule</button>
+                    </form>
                 </div>
 
                 {{-- Calendar Modal, hidden by default --}}
@@ -115,7 +150,7 @@
                                 12:00 - 1:00 PM MST
                             </label>
                             <div class="flex justify-evenly gap-2">
-                                <button id="save-event"
+                                <button id="save-event" type="submit"
                                     class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
                                 <button id="close-modal"
                                     class="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Cancel</button>
@@ -254,8 +289,8 @@
         });
 
         renderCalendar();
-        setDefaultStartDate(startDate)
-        setStartTime(startTime);
-        setEndTime(endTime);
+        // setDefaultStartDate(startDate)
+        // setStartTime(startTime);
+        // setEndTime(endTime);
     </script>
 </x-app-layout>

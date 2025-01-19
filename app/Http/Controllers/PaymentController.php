@@ -53,7 +53,7 @@ class PaymentController extends Controller
 
         $first_name = $client->first_name;
         $email = $client->email;
-        $app_name = config('app_name');
+        $app_name = config('app.name');
 
         // Send email
         Mail::to($email)->send(new ConsultationCreated($first_name, $app_name));

@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UtilHelpers;
+use App\Http\Requests\StoreTimeSlotRequest;
+use App\Models\TimeSlot;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class CalendarController extends Controller
 {
@@ -14,7 +19,8 @@ class CalendarController extends Controller
         return view('dashboard.calendar');
     }
 
-    public function store(Request $request) {
-        //dd($request);
+    public function store(Request $request)
+    {
+        //
     }
 }

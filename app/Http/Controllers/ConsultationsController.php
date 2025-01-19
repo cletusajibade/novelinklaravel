@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SendUserEmail;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use App\Models\Consultation;
 use Illuminate\Support\Facades\Mail;
@@ -16,8 +17,8 @@ class ConsultationsController extends Controller
      */
     public function index()
     {
-        $consultations = Consultation::latest()->get();
-        return view('dashboard.consultations', ['consultations' => $consultations]);
+        $clients = Client::latest()->get();
+        return view('dashboard.clients', compact('clients'));
     }
 
     /**
@@ -49,8 +50,8 @@ class ConsultationsController extends Controller
      */
     public function edit(string $uuid)
     {
-        $consultation = Consultation::where('uuid', $uuid)->first();
-        return view('dashboard.consultation', compact('consultation'));
+        $client = Client::where('uuid', $uuid)->first();
+        return view('dashboard.client', compact('client'));
     }
 
     /**
@@ -67,7 +68,7 @@ class ConsultationsController extends Controller
     public function destroy(Request $request)
     {
         // dd($request->user_id);
-        Consultation::destroy($request->user_id);
+        Client::destroy($request->user_id);
         return redirect()->back()->with('success', 'Client deleted successfully!');
     }
 
