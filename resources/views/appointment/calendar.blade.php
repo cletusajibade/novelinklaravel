@@ -1,3 +1,10 @@
+{{-- @php
+    // dd($time_slot);
+    foreach ($time_slots as $slot) {
+        echo $slot;
+    }
+@endphp --}}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,7 +22,7 @@
             <h2 id="month-year" class="text-xl font-bold"></h2>
             <button id="next-month" class="text-lg">&#9654;</button>
         </div>
-        
+
         <div class="grid grid-cols-7 gap-px bg-gray-200 text-center font-semibold text-gray-700">
             <div class="bg-white my-[1px]">Sun</div>
             <div class="bg-white my-[1px]">Mon</div>
@@ -39,10 +46,11 @@
             <h3 class="text-lg font-bold mb-2">Book Appointment</h3>
             <p id="selected-date" class="mb-4"></p>
             <input type="text" id="event-name" placeholder="Event Name" class="w-full p-2 border rounded mb-4">
-            <label class="flex items-center mb-4">
-                <input type="checkbox" name="timeslot[]" value="12:30" class="mr-2">
-                12:30 - 1:00 PM
-            </label>
+
+            <div id="time-slots">
+
+            </div>
+
             <div class="flex justify-end gap-2">
                 <button id="save-event" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
                 <button id="close-modal"
@@ -62,9 +70,48 @@
         const saveEvent = document.getElementById("save-event");
         const closeModal = document.getElementById("close-modal");
         const todayButton = document.getElementById("today-button");
+        const timeSlotsDiv = document.getElementById("time-slots");
+
+        const timeSlots = @json($time_slots);
+        // console.log(timeSlots);
 
         let currentDate = new Date();
         const events = {};
+
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const day = String(date.getDate()).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        };
+
+        function setTimeSlots(year, month, day) {
+            // clear time slots from previous iteration.
+            timeSlotsDiv.innerHTML = '';
+
+            const calendarDay = new Date(year, month, day);
+
+            const slotsForDate = timeSlots.filter(slot => slot.start_date ===
+                formatDate(calendarDay).toLocaleString());
+
+            if (slotsForDate.length > 0) {
+
+                slotsForDate.forEach(slot => {
+
+                    if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
+                        const newLabel = document.createElement('label');
+                        newLabel.classList.add("flex", "items-center", "mb-4");
+                        newLabel.innerHTML =
+                            `<div>
+                                <input type="radio" id="${slot.start_time}" name="timeslots" value="${slot.start_time}" class="mr-2">
+                                <label for="${slot.start_time}">${slot.start_time} - ${slot.end_time}</label>
+                            </div>`
+                        timeSlotsDiv.appendChild(newLabel)
+                    }
+                });
+            }
+        }
 
         function renderCalendar() {
             calendar.innerHTML = "";
@@ -75,8 +122,6 @@
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const today = new Date();
-
-            console.log(firstDay);
 
             for (let i = 0; i < firstDay; i++) {
                 const emptyCell = document.createElement("div");
@@ -110,8 +155,10 @@
                         selectedDate.textContent = `Date: ${fullDate}`;
                         eventName.value = "";
                         saveEvent.dataset.date = fullDate;
+                        setTimeSlots(year, month, day);
                     }
                 });
+
 
                 calendar.appendChild(cell);
             }

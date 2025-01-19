@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TimeSlot;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -19,7 +20,9 @@ class AppointmentController extends Controller
      */
     public function create()
     {
-        return view('appointment.calendar');
+        // Send time slot data to the calendar
+        $time_slots = TimeSlot::all();
+        return view('appointment.calendar', compact('time_slots'));
     }
 
     /**

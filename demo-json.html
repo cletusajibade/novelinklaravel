@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar with Slots</title>
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 20px;
+        }
+
+        .day {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .selected {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .slots {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Calendar</h1>
+    <div class="calendar" id="calendar"></div>
+    <div class="slots" id="slots">
+        <h2>Available Slots</h2>
+        <ul id="slotList"></ul>
+    </div>
+
+    <script>
+        const jsonData = [
+            { "slot_id": 54, "duration": 1, "start_date": "2025-01-25", "start_time": "17:00:00", "end_date": "2025-01-25", "end_time": "18:00:00" },
+            { "slot_id": 39, "duration": 1, "start_date": "2025-01-24", "start_time": "11:00:00", "end_date": "2025-01-24", "end_time": "12:00:00" },
+            { "slot_id": 38, "duration": 1, "start_date": "2025-01-24", "start_time": "10:00:00", "end_date": "2025-01-24", "end_time": "11:00:00" },
+            { "slot_id": 37, "duration": 1, "start_date": "2025-01-24", "start_time": "09:00:00", "end_date": "2025-01-24", "end_time": "10:00:00" },
+            { "slot_id": 36, "duration": 1, "start_date": "2025-01-23", "start_time": "17:00:00", "end_date": "2025-01-23", "end_time": "18:00:00" }
+        ];
+
+        const calendar = document.getElementById('calendar');
+        const slotList = document.getElementById('slotList');
+
+        // Generate calendar days
+        const startDate = new Date('2025-01-20');
+        const endDate = new Date('2025-01-30');
+        const oneDay = 24 * 60 * 60 * 1000;
+
+        for (let day = startDate; day <= endDate; day = new Date(day.getTime() + oneDay)) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day';
+            dayDiv.textContent = day.toISOString().split('T')[0];
+            dayDiv.dataset.date = day.toISOString().split('T')[0];
+
+            dayDiv.addEventListener('click', function () {
+                document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
+                this.classList.add('selected');
+                showSlots(this.dataset.date);
+            });
+
+            calendar.appendChild(dayDiv);
+        }
+
+        function showSlots(date) {
+            slotList.innerHTML = ''; // Clear previous slots
+            const slots = jsonData.filter(slot => slot.start_date === date);
+
+            if (slots.length > 0) {
+                slots.forEach(slot => {
+                    const li = document.createElement('li');
+                    li.textContent = `Start Time: ${slot.start_time}`;
+                    slotList.appendChild(li);
+                });
+            } else {
+                slotList.innerHTML = '<li>No slots available</li>';
+            }
+        }
+    </script>
+</body>
+
+</html>

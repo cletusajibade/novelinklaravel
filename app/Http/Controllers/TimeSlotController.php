@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateTimeSlotRequest;
 use App\Models\TimeSlot;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class TimeSlotController extends Controller
 {
@@ -17,6 +18,8 @@ class TimeSlotController extends Controller
     public function index()
     {
         $timeslots = TimeSlot::latest()->get();
+        $jsonData = json_encode($timeslots);
+        Storage::disk('local')->put('exports/time-slots.json', $jsonData);
         return view('dashboard.time-slots', compact('timeslots'));
     }
 
@@ -49,16 +52,14 @@ class TimeSlotController extends Controller
                     $timeEnd = Carbon::createFromFormat('H:i', $time)->addMinutes($data['duration'] * 60);
                     TimeSlot::Create([
                         'duration' => $data['duration'],
-                        'start_date' => $date,
+                        'start_date' => Carbon::parse($date)->startOfDay()->utc(),
                         'start_time' => $time,
-                        'end_date' => $date,
+                        'end_date' => Carbon::parse($date)->startOfDay()->utc(),
                         'end_time' => $timeEnd,
                         'is_available' => $data['is_available'] ?? true,
                         'booked_by' => $data['booked_by'] ?? null
                     ]);
-                }
-                else
-                {
+                } else {
                     return redirect()->back()->with('warning', 'Start Date and Start Time slots already exist. Consider updating existing slots.');
                 }
             }
