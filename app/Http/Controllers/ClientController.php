@@ -152,8 +152,6 @@ class ClientController extends Controller
         $client->update(['registration_status' => 'step_2_completed']);
 
         // Redirect to the appointment booking calendar page
-
-        // return redirect()->route('stripe.create');
         return redirect()->route('appointment.create');
     }
 }

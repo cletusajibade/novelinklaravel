@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\TimeSlot;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,13 @@ class AppointmentController extends Controller
      */
     public function create()
     {
+        if (!session('client_id')) {
+            return redirect()->route('client.create');
+        }
+
+        //Get this client from the DB using the already existing client_id in session
+        $client = Client::find(session('client_id'));
+
         // Send time slot data to the calendar
         $time_slots = TimeSlot::all();
         return view('appointment.calendar', compact('time_slots'));
