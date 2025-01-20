@@ -38,6 +38,7 @@ return new class extends Migration
             $table->text('background_check_details')->nullable();
             $table->text('other_information')->nullable();
             $table->json('consultation_package')->nullable();
+            $table->string('registration_status', length: 64)->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

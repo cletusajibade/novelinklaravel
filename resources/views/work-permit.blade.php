@@ -61,8 +61,7 @@
                                                             <div class="btn-box">
                                                                 <p>Do you already have a job offer with a Canadian
                                                                     employer? </p>
-                                                                <x-book-button
-                                                                    url="{{ route('consultation.create') }}">{{ TITLE_BOOK_BUTTON }}</x-book-button>
+                                                                <x-book-button>{{ TITLE_BOOK_BUTTON }}</x-book-button>
                                                             </div>
                                                             <div class="text">
                                                                 <p>

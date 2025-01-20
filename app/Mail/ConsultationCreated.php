@@ -32,7 +32,7 @@ class ConsultationCreated extends Mailable
             replyTo: [
                 new Address(env('REPLY_TO_ADDRESS'), env('MAIL_FROM_NAME')),
             ],
-            subject: config('app_name') . ' Consultation Recieved',
+            subject: $this->app_name . ' Consultation Recieved',
         );
     }
 

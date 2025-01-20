@@ -60,8 +60,7 @@
                                                                 </p>
                                                             </div>
                                                             <div class="btn-box">
-                                                                <x-book-button
-                                                                    url="{{ route('consultation.create') }}">{{ TITLE_BOOK_BUTTON }}</x-book-button>
+                                                                <x-book-button>{{ TITLE_BOOK_BUTTON }}</x-book-button>
                                                             </div>
                                                             <div class="text">
                                                                 <p>

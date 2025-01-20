@@ -6,7 +6,7 @@ use ArielMejiaDev\LarapexCharts\PieChart;
 use ArielMejiaDev\LarapexCharts\AreaChart;
 use ArielMejiaDev\LarapexCharts\BarChart;
 use App\Models\Appointment;
-use App\Models\Consultation;
+use App\Models\Client;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $consultationsCount = Consultation::count() ?? 0;
+        $consultationsCount = Client::count() ?? 0;
         $appointmentsCount = Appointment::count() ?? 0;
         $totalPayments = Payment::sum('amount') ?? 0;
         $totalPayments = '$' . number_format($totalPayments, 2);

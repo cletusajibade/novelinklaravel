@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Consultation') }}
+            {{ __('Client') }}
         </h2>
     </x-slot>
 
@@ -9,11 +9,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
-                    @if ($consultation)
+                    @if ($client)
                         <section>
                             <header>
                                 <h2 class="text-lg font-medium text-gray-900">
-                                    {{ $consultation->first_name . ' ' . $consultation->last_name }}
+                                    {{ $client->first_name . ' ' . $client->last_name }}
                                 </h2>
 
                                 <p class="mt-1 text-sm text-gray-600">
@@ -32,7 +32,7 @@
                                 <div>
                                     <x-input-label for="first_name" :value="__('First Name')" />
                                     <x-text-input id="first_name" name="first_name" type="text"
-                                        class="mt-1 block w-full" :value="old('first_name', $consultation->first_name)" required autofocus
+                                        class="mt-1 block w-full" :value="old('first_name', $client->first_name)" required autofocus
                                         autocomplete="first_name" />
                                     <x-input-error class="mt-2" :messages="$errors->get('first_name')" />
                                 </div>
@@ -40,7 +40,7 @@
                                 <div>
                                     <x-input-label for="last_name" :value="__('Last Name')" />
                                     <x-text-input id="last_name" name="last_name" type="text"
-                                        class="mt-1 block w-full" :value="old('last_name', $consultation->last_name)" required autofocus
+                                        class="mt-1 block w-full" :value="old('last_name', $client->last_name)" required autofocus
                                         autocomplete="last_name" />
                                     <x-input-error class="mt-2" :messages="$errors->get('last_name')" />
                                 </div>
@@ -48,10 +48,10 @@
                                 <div>
                                     <x-input-label for="email" :value="__('Email')" />
                                     <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
-                                        :value="old('email', $consultation->email)" required autocomplete="username" />
+                                        :value="old('email', $client->email)" required autocomplete="username" />
                                     <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-                                    @if ($consultation instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$consultation->hasVerifiedEmail())
+                                    @if ($client instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$client->hasVerifiedEmail())
                                         <div>
                                             <p class="text-sm mt-2 text-gray-800">
                                                 {{ __('Your email address is unverified.') }}
@@ -74,14 +74,14 @@
                                 <div>
                                     <x-input-label for="phone" :value="__('Phone')" />
                                     <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full"
-                                        :value="old('phone', $consultation->phone)" required autofocus autocomplete="phone" />
+                                        :value="old('phone', $client->phone)" required autofocus autocomplete="phone" />
                                     <x-input-error class="mt-2" :messages="$errors->get('phone')" />
                                 </div>
 
                                 <div>
                                     <x-input-label for="date_of_birth" :value="__('Date of Birth')" />
                                     <x-text-input id="date_of_birth" name="date_of_birth" type="date"
-                                        class="mt-1 block w-full" :value="old('date_of_birth', $consultation->date_of_birth)" required autofocus
+                                        class="mt-1 block w-full" :value="old('date_of_birth', $client->date_of_birth)" required autofocus
                                         autocomplete="date_of_birth" />
                                     <x-input-error class="mt-2" :messages="$errors->get('date_of_birth')" />
                                 </div>
@@ -89,14 +89,14 @@
                                 <div>
                                     <x-input-label for="country" :value="__('Country')" />
                                     <x-text-input id="country" name="country" type="text" class="mt-1 block w-full"
-                                        :value="old('country', $consultation->country)" required autofocus autocomplete="country" />
+                                        :value="old('country', $client->country)" required autofocus autocomplete="country" />
                                     <x-input-error class="mt-2" :messages="$errors->get('country')" />
                                 </div>
 
                                 <div>
                                     <x-input-label for="country_of_residence" :value="__('Country of Residence')" />
                                     <x-text-input id="country_of_residence" name="country_of_residence" type="text"
-                                        class="mt-1 block w-full" :value="old('country_of_residence', $consultation->country_of_residence)" required autofocus
+                                        class="mt-1 block w-full" :value="old('country_of_residence', $client->country_of_residence)" required autofocus
                                         autocomplete="country_of_residence" />
                                     <x-input-error class="mt-2" :messages="$errors->get('country_of_residence')" />
                                 </div>
@@ -106,7 +106,7 @@
                                     <x-text-input id="country_residence_status" name="country_residence_status"
                                         type="text" class="mt-1 block w-full" :value="old(
                                             'country_residence_status',
-                                            $consultation->country_residence_status,
+                                            $client->country_residence_status,
                                         )" autofocus
                                         autocomplete="country_residence_status" />
                                     <x-input-error class="mt-2" :messages="$errors->get('country_residence_status')" />

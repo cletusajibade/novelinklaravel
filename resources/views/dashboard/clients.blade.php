@@ -5,13 +5,13 @@
         "icon:trash | color:red | click:deleteUser('{id}', '{first_name}','{last_name}')",
     ];
 
-    $data = json_encode($consultations->toArray());
+    $data = json_encode($clients->toArray());
 @endphp
 
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Consultations') }}
+            {{ __('Clients') }}
         </h2>
     </x-slot>
 

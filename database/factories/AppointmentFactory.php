@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Consultation;
+use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,11 +18,11 @@ class AppointmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'consultation_id' => Consultation::inRandomOrder()->first()->id,
+            'client_id' => Client::inRandomOrder()->first()->id,
             'appointment_date' => fake()->dateTime(),
             'duration' => fake()->randomElement([15, 30, 45, 60, 120]),
             'status' => fake()->randomElement(['pending', 'confirmed', 'completed', 'canceled']),
-            'location' => fake()->randomElement(['https://us02web.zoom.us/j/9976559044?pwd=aWtQVFJDb0RGblZTTWRESnc4WUFCZz09']),
+            'location' => fake()->randomElement(['Zoom']),
             'notes' => fake()->paragraph(4),
             'reminder_at' => fake()->dateTime()
         ];

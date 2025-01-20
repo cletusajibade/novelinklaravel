@@ -66,6 +66,12 @@
                                                                     {{ session('success') }}
                                                                 </x-bladewind::alert>
                                                             @endif
+                                                            @if ($errors->has('error'))
+                                                                <x-bladewind::alert type="error" shade="dark"
+                                                                    class="my-alert">
+                                                                    {{ $errors->first('error') }}
+                                                                </x-bladewind::alert>
+                                                            @endif
                                                             @if (session('error'))
                                                                 <x-bladewind::alert type="error" shade="dark"
                                                                     class="my-alert">
