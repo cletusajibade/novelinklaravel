@@ -1,10 +1,3 @@
-{{-- @php
-    // dd($time_slot);
-    foreach ($time_slots as $slot) {
-        echo $slot;
-    }
-@endphp --}}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,46 +65,17 @@
         const todayButton = document.getElementById("today-button");
         const timeSlotsDiv = document.getElementById("time-slots");
 
+        // Some colors used to style the cell
+        const bgRed = "bg-red-200";
+        const textGray = "text-gray-700";
+
+        // Time slots from database
         const timeSlots = @json($time_slots);
-        // console.log(timeSlots);
 
         let currentDate = new Date();
+
+        // Empty object to house events
         const events = {};
-
-        const formatDate = (date) => {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-            const day = String(date.getDate()).padStart(2, '0');
-
-            return `${year}-${month}-${day}`;
-        };
-
-        function setTimeSlots(year, month, day) {
-            // clear time slots from previous iteration.
-            timeSlotsDiv.innerHTML = '';
-
-            const calendarDay = new Date(year, month, day);
-
-            const slotsForDate = timeSlots.filter(slot => slot.start_date ===
-                formatDate(calendarDay).toLocaleString());
-
-            if (slotsForDate.length > 0) {
-
-                slotsForDate.forEach(slot => {
-
-                    if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
-                        const newLabel = document.createElement('label');
-                        newLabel.classList.add("flex", "items-center", "mb-4");
-                        newLabel.innerHTML =
-                            `<div>
-                                <input type="radio" id="${slot.start_time}" name="timeslots" value="${slot.start_time}" class="mr-2">
-                                <label for="${slot.start_time}">${slot.start_time} - ${slot.end_time}</label>
-                            </div>`
-                        timeSlotsDiv.appendChild(newLabel)
-                    }
-                });
-            }
-        }
 
         function renderCalendar() {
             calendar.innerHTML = "";
@@ -132,12 +96,12 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const cell = document.createElement("div");
                 cell.textContent = day;
-                cell.classList.add("bg-white", "text-center", "p-2", "cursor-pointer", "hover:bg-blue-100");
+                cell.classList.add("bg-white", "text-center", "p-2", "cursor-pointer", "hover:bg-green-300");
 
                 const fullDate = `${year}-${month + 1}-${day}`;
 
                 if (events[fullDate]) {
-                    cell.classList.add("bg-red-200", "cursor-not-allowed");
+                    cell.classList.add(bgRed, "cursor-not-allowed");
                 }
 
                 if (
@@ -150,7 +114,7 @@
                 }
 
                 cell.addEventListener("click", () => {
-                    if (!cell.classList.contains("bg-red-200")) {
+                    if (!cell.classList.contains(bgRed)) {
                         modal.classList.remove("hidden");
                         selectedDate.textContent = `Date: ${fullDate}`;
                         eventName.value = "";
@@ -159,6 +123,8 @@
                     }
                 });
 
+
+                formatCellColors(cell, year, month, day, today);
 
                 calendar.appendChild(cell);
             }
@@ -195,6 +161,69 @@
         closeModal.addEventListener("click", () => {
             modal.classList.add("hidden");
         });
+
+        function formatCellColors(cell, year, month, day, today) {
+            const calendarDay = new Date(year, month, day);
+            const slotsForDate = timeSlots.filter(slot => slot.start_date ===
+                formatDate(calendarDay).toLocaleString());
+
+            if (slotsForDate.length == 0) {
+                cell.classList.remove("cursor-pointer");
+                cell.classList.add(bgRed, "cursor-not-allowed", textGray, "hover:bg-red-300");
+            } else {
+                cell.classList.add("font-bold", "text-green-600", "underline", "underline-offset-7");
+            }
+
+            if (slotsForDate.length == 0 && (day === today.getDate() &&
+                    month === today.getMonth() &&
+                    year === today.getFullYear())) {
+                cell.classList.remove(bgRed, textGray, "hover:bg-blue-100");
+                cell.classList.add("bg-blue-500", "text-white", "font-bold");
+            }
+
+            if (slotsForDate.length > 0 && (day === today.getDate() &&
+                    month === today.getMonth() &&
+                    year === today.getFullYear())) {
+                cell.classList.remove("text-green-600");
+                cell.classList.add("bg-blue-600", "text-white", "font-bold", "hover:text-green-600");
+            }
+        }
+
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const day = String(date.getDate()).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        };
+
+        function setTimeSlots(year, month, day) {
+            // TODO: Handle timezone effectively
+            // clear time slots from previous iteration.
+            timeSlotsDiv.innerHTML = '';
+
+            const calendarDay = new Date(year, month, day);
+
+            const slotsForDate = timeSlots.filter(slot => slot.start_date ===
+                formatDate(calendarDay).toLocaleString());
+
+            if (slotsForDate.length > 0) {
+
+                slotsForDate.forEach(slot => {
+
+                    if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
+                        const newLabel = document.createElement('label');
+                        newLabel.classList.add("flex", "items-center", "mb-4");
+                        newLabel.innerHTML =
+                            `<div>
+                                <input type="radio" id="${slot.start_time}" name="timeslots" value="${slot.start_time}" class="mr-2">
+                                <label for="${slot.start_time}">${slot.start_time} - ${slot.end_time}</label>
+                            </div>`
+                        timeSlotsDiv.appendChild(newLabel)
+                    }
+                });
+            }
+        }
 
         renderCalendar();
     </script>
