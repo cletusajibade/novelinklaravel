@@ -19,6 +19,7 @@
                     {{ session('warning') }}
                 </x-bladewind::alert>
             @endif
+
             <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
 
                 {{-- Calendar component --}}

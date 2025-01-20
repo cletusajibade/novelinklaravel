@@ -9,29 +9,47 @@
 </head>
 
 <body class="flex justify-center items-center h-screen bg-gray-100">
-    <div class="w-11/12 max-w-2xl h-[600px] bg-white shadow-md rounded-lg flex flex-col">
-        <div class="flex justify-between items-center p-4 bg-white text-blue-600">
-            <button id="prev-month" class="text-lg">&#9664;</button>
-            <h2 id="month-year" class="text-xl font-bold"></h2>
-            <button id="next-month" class="text-lg">&#9654;</button>
+
+    <div class="w-[90%] md:w-[70%] md:max-w-5xl flex flex-col gap-4">
+        @if (session('success'))
+            {{-- <x-alert type='success' :message="session('success')" /> --}}
+            <x-bladewind::alert type="success" shade="dark">
+                {{ session('success') }}
+            </x-bladewind::alert>
+        @endif
+        @if (session('warning'))
+            {{-- <x-alert type='success' :message="session('success')" /> --}}
+            <x-bladewind::alert type="warning" shade="dark">
+                {{ session('warning') }}
+            </x-bladewind::alert>
+        @endif
+        <div class="bg-white shadow-lg rounded px-2 py-4">
+            <h1 class="text-3xl">Book appointment by selecting available time slot</h1>
         </div>
+        <div class="flex flex-col bg-white shadow-lg rounded">
+            <div class="flex justify-between items-center p-4 bg-white text-blue-600">
+                <button id="prev-month" class="text-lg">&#9664;</button>
+                <h2 id="month-year" class="text-xl font-bold"></h2>
+                <button id="next-month" class="text-lg">&#9654;</button>
+            </div>
 
-        <div class="grid grid-cols-7 gap-px bg-gray-200 text-center font-semibold text-gray-700">
-            <div class="bg-white my-[1px]">Sun</div>
-            <div class="bg-white my-[1px]">Mon</div>
-            <div class="bg-white my-[1px]">Tue</div>
-            <div class="bg-white my-[1px]">Wed</div>
-            <div class="bg-white my-[1px]">Thu</div>
-            <div class="bg-white my-[1px]">Fri</div>
-            <div class="bg-white my-[1px]">Sat</div>
+            <div class="grid grid-cols-7 gap-px bg-gray-200 text-center font-semibold text-gray-700">
+                <div class="bg-white my-[1px]">Sun</div>
+                <div class="bg-white my-[1px]">Mon</div>
+                <div class="bg-white my-[1px]">Tue</div>
+                <div class="bg-white my-[1px]">Wed</div>
+                <div class="bg-white my-[1px]">Thu</div>
+                <div class="bg-white my-[1px]">Fri</div>
+                <div class="bg-white my-[1px]">Sat</div>
+            </div>
+
+            <div class="grid grid-cols-7 flex-grow gap-px bg-gray-200" id="calendar"></div>
+
+            <button id="today-button"
+                class="my-[10px] mx-auto py-2 px-5 bg-blue-600 text-white rounded hover:bg-blue-700 text-[13px]">
+                Today
+            </button>
         </div>
-
-        <div class="grid grid-cols-7 flex-grow gap-px bg-gray-200" id="calendar"></div>
-
-        <button id="today-button"
-            class="my-[10px] mx-auto py-2 px-5 bg-blue-600 text-white rounded hover:bg-blue-700 text-[13px]">
-            Today
-        </button>
     </div>
 
     <div id="event-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -40,15 +58,19 @@
             <p id="selected-date" class="mb-4"></p>
             <input type="text" id="event-name" placeholder="Event Name" class="w-full p-2 border rounded mb-4">
 
-            <div id="time-slots">
+            <form action="{{ route('appointment.store') }}" method="post">
+                @csrf
+                {{-- the time slot elements are dynamically generated and appended to this div --}}
+                <div id="time-slots"></div>
 
-            </div>
 
-            <div class="flex justify-end gap-2">
-                <button id="save-event" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
-                <button id="close-modal"
-                    class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Cancel</button>
-            </div>
+                <div class="flex justify-between gap-2">
+                    <button id="save-event"
+                        class="w-2/4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
+                    <button id="close-modal"
+                        class="w-2/4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -76,6 +98,7 @@
 
         // Empty object to house events
         const events = {};
+        const daysWithApointments = {};
 
         function renderCalendar() {
             calendar.innerHTML = "";
@@ -96,7 +119,7 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const cell = document.createElement("div");
                 cell.textContent = day;
-                cell.classList.add("bg-white", "text-center", "p-2", "cursor-pointer", "hover:bg-green-300");
+                cell.classList.add("bg-white", "text-center", "p-4", "md:p-7", "cursor-pointer", "hover:bg-green-300");
 
                 const fullDate = `${year}-${month + 1}-${day}`;
 
@@ -198,7 +221,7 @@
         };
 
         function setTimeSlots(year, month, day) {
-            // TODO: Handle timezone effectively
+            // TODO: Handle potential timezone issues effectively
             // clear time slots from previous iteration.
             timeSlotsDiv.innerHTML = '';
 
@@ -208,9 +231,7 @@
                 formatDate(calendarDay).toLocaleString());
 
             if (slotsForDate.length > 0) {
-
                 slotsForDate.forEach(slot => {
-
                     if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
                         const newLabel = document.createElement('label');
                         newLabel.classList.add("flex", "items-center", "mb-4");

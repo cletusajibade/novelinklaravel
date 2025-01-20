@@ -31,6 +31,7 @@ Route::view('/work-permit', 'work-permit')->name('work-permit');
 
 // Appointment routes
 Route::get('/book-appointment', [AppointmentController::class, 'create'])->name('appointment.create');
+Route::post('/book-appointment', [AppointmentController::class, 'store'])->name('appointment.store');
 
 
 // Stripe payment routes
