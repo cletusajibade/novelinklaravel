@@ -28,6 +28,21 @@
                 {{ session('warning') }}
             </x-bladewind::alert>
         @endif
+        @if (session('error'))
+            <x-bladewind::alert type="warning" shade="dark">
+                {{ session('error') }}
+            </x-bladewind::alert>
+        @endif
+        @if ($errors->any())
+            <div
+                style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 0.75rem 1rem; border-radius: 0.25rem; margin-bottom: 1rem;">
+                <ul style="list-style-type: none; padding: 0; margin: 0;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="bg-white shadow-lg rounded px-2 py-4">
             <h1 class="text-3xl">Book appointment by selecting available time slot</h1>
         </div>
@@ -137,7 +152,8 @@
                 }
 
                 cell.addEventListener("click", () => {
-                    if (!cell.classList.contains(bgRed)) {
+                    if (!cell.classList.contains("cursor-not-allowed")) {
+                        // if (!cell.classList.contains(bgRed)) {
                         modal.classList.remove("hidden");
                         selectedDate.textContent = `Date: ${fullDate}`;
                         // eventName.value = "";
@@ -174,18 +190,20 @@
             const form = document.getElementById('time-slots-form');
             const formData = new FormData(form);
             const selectedTimeSlot = formData.get('timeslots') || null;
-            console.log(selectedTimeSlot);
+            const meetingDuration = formData.get('duration') || 1;
+            console.log(selectedTimeSlot, meetingDuration);
 
 
             if (selectedTimeSlot) {
                 alert(`Is the meeting time ${selectedTimeSlot} okay for you?`);
                 modal.classList.add("hidden");
 
-                // Send date, time slot, and client_id back to the server to process
+                // Send client_id, date, time slot, and duration back to the server to process
                 const data = {
-                    date: bookTimeButton.dataset.date,
                     clientId: @json($client_id),
-                    timeSlot: selectedTimeSlot
+                    date: bookTimeButton.dataset.date,
+                    time: selectedTimeSlot,
+                    duration: meetingDuration
                 };
 
                 fetch(@json(route('appointment.store')), {
@@ -202,8 +220,6 @@
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
                         return response.json();
-
-
                     })
                     .then(result => {
                         console.log('Success:', result);
@@ -282,6 +298,7 @@
                         newLabel.classList.add("flex", "items-center", "mb-4");
                         newLabel.innerHTML =
                             `<div>
+                                <input type="hidden" id="duration" name="duration" value="${slot.duration}">
                                 <input type="radio" id="${slot.start_time}" name="timeslots" value="${slot.start_time}" class="mr-2">
                                 <label for="${slot.start_time}">${slot.start_time} - ${slot.end_time}</label>
                             </div>`

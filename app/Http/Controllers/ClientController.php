@@ -151,7 +151,8 @@ class ClientController extends Controller
         // Mark Step 2 as completed (agreement signed)
         $client->update(['registration_status' => 'step_2_completed']);
 
-        // Redirect to the appointment booking calendar page
-        return redirect()->route('appointment.create');
+        // Redirect to the paymentpage
+        return redirect()->route('stripe.create');
+
     }
 }

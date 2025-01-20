@@ -19,12 +19,12 @@ return new class extends Migration
             $table->time('start_time');
             $table->date('end_date');
             $table->time('end_time');
-            $table->boolean('is_available')->default(true); // Availability status
-            $table->unsignedBigInteger('booked_by')->nullable(); // Client who booked the slot
+            $table->boolean('blocked')->default(false); // Can be controlled by admin e.g blocking a time slot by setting this flag to 1.
+            $table->enum('status', ['available','booked', 'canceled'])->default('available');
+            $table->unsignedBigInteger('action_by')->nullable(); // Client who took an action on the slot
             $table->timestamps();
             // Foreign key constraint
-            $table->foreign('booked_by')->references('id')->on('clients')->onDelete('set null');
-
+            $table->foreign('action_by')->references('id')->on('clients')->onDelete('set null');
         });
     }
 

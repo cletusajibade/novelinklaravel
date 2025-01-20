@@ -18,7 +18,8 @@ class TimeSlot extends Model
         'start_time',
         'end_date',
         'end_time',
-        'is_available',
-        'booked_by'
+        'blocked',
+        'status',
+        'action_by'
     ];
 }

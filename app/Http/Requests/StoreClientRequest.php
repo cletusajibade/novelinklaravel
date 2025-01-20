@@ -27,7 +27,7 @@ class StoreClientRequest extends FormRequest
             'email' => 'required|string|email:rfc,dns|max:255',
             'phone' => 'required|string', //todo: implement phone input field validation
             // 'country_code' => 'required', //TODO: may be implemented later
-            'date_of_birth' => 'required|date',
+            'date_of_birth' => 'required|date|before:today',
             'country' => 'required|not_in:null',
             'country_of_residence' => 'required|not_in:null',
             'consultation_package' => 'required|array|min:1',
@@ -55,6 +55,7 @@ class StoreClientRequest extends FormRequest
             'phone.phone' => 'Invalid phone number or country mismatch.',
             // 'phone.unique' => 'The phone number is already registered.',
             'date_of_birth.required' => 'The Date of Birth field is required.',
+            'date_of_birth.before' => 'The Date of Birth field cannot be in the future',
             'country.required' => 'The Country of Citizenship field is required.',
             'country_of_residence.required' => 'The Country of Residence field is required.',
             'country_code.required' => 'Code required.',

@@ -14,8 +14,9 @@ return new class extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Client::class); // Foreign key to Consultations table
+            $table->foreignIdFor(Client::class); // Foreign key to Clients table
             $table->timestamp('appointment_date');
+            $table->time('appointment_time');
             $table->integer('duration')->nullable(); // Duration of the appointment (in minutes)
             $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled'])->default('pending');
             $table->string('location')->nullable(); // Location of the appointment, eg Zoom.
