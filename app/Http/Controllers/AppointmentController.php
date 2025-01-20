@@ -28,8 +28,8 @@ class AppointmentController extends Controller
         //Get this client from the DB using the already existing client_id in session
         $client = Client::find(session('client_id'));
 
-        // Send time slot data to the calendar
-        $time_slots = TimeSlot::all();
+        // Send unbooked/available time slots to the calendar view
+        $time_slots = TimeSlot::where('booked_by', null)->where('is_available', 1)->get();
         return view('appointment.calendar', compact('time_slots'));
     }
 
@@ -38,8 +38,22 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
-        return redirect()->back()->with('success', 'Appointment booked.');
+        $data = $request->all();
+
+        //Get the TimeSlot from the DB
+        $time_slot = TimeSlot::where('start_date', $request->date)->where('start_time', $request->timeSlot)->first();
+        if ($time_slot) {
+            $result = $time_slot->update(['booked_by' => $request->clientId]);
+            if ($result) {
+                // Flash a success message that can be retrieved from the view
+                session()->flash('success', 'Your appointment was successfully booked!');
+
+                return response()->json(['message' => 'Data received', 'data' => $data]);
+            } else {
+                session()->flash('warning', 'Error booking your appointment, try again or contact the admin.');
+                return response()->json(['error' => 'No record found'], 404);
+            }
+        }
     }
 
     /**

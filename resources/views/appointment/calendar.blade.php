@@ -1,9 +1,16 @@
+@if (session('client_id'))
+    @php
+        $client_id = session('client_id');
+    @endphp
+@endif
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Calendar Booking System</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -12,13 +19,11 @@
 
     <div class="w-[90%] md:w-[70%] md:max-w-5xl flex flex-col gap-4">
         @if (session('success'))
-            {{-- <x-alert type='success' :message="session('success')" /> --}}
             <x-bladewind::alert type="success" shade="dark">
                 {{ session('success') }}
             </x-bladewind::alert>
         @endif
         @if (session('warning'))
-            {{-- <x-alert type='success' :message="session('success')" /> --}}
             <x-bladewind::alert type="warning" shade="dark">
                 {{ session('warning') }}
             </x-bladewind::alert>
@@ -55,18 +60,18 @@
     <div id="event-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-lg font-bold mb-2">Book Appointment</h3>
-            <p id="selected-date" class="mb-4"></p>
-            <input type="text" id="event-name" placeholder="Event Name" class="w-full p-2 border rounded mb-4">
-
-            <form action="{{ route('appointment.store') }}" method="post">
+            <p id="selected-date" class="mb-2"></p>
+            <p class="mb-3">Select from the available meeting times</p>
+            {{-- <form id="time-slots-form" action="{{ route('appointment.store') }}" method="post"> --}}
+            <form id="time-slots-form">
                 @csrf
                 {{-- the time slot elements are dynamically generated and appended to this div --}}
                 <div id="time-slots"></div>
 
 
                 <div class="flex justify-between gap-2">
-                    <button id="save-event"
-                        class="w-2/4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
+                    <button id="book-time" class="w-2/4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Book
+                        Time</button>
                     <button id="close-modal"
                         class="w-2/4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Cancel</button>
                 </div>
@@ -81,11 +86,11 @@
         const nextMonth = document.getElementById("next-month");
         const modal = document.getElementById("event-modal");
         const selectedDate = document.getElementById("selected-date");
-        const eventName = document.getElementById("event-name");
-        const saveEvent = document.getElementById("save-event");
+        const bookTimeButton = document.getElementById("book-time");
         const closeModal = document.getElementById("close-modal");
         const todayButton = document.getElementById("today-button");
         const timeSlotsDiv = document.getElementById("time-slots");
+        const radioButtons = document.querySelectorAll('input[name="timeslots"]');
 
         // Some colors used to style the cell
         const bgRed = "bg-red-200";
@@ -96,8 +101,7 @@
 
         let currentDate = new Date();
 
-        // Empty object to house events
-        const events = {};
+        // Empty object to house days with appointments
         const daysWithApointments = {};
 
         function renderCalendar() {
@@ -123,10 +127,6 @@
 
                 const fullDate = `${year}-${month + 1}-${day}`;
 
-                if (events[fullDate]) {
-                    cell.classList.add(bgRed, "cursor-not-allowed");
-                }
-
                 if (
                     day === today.getDate() &&
                     month === today.getMonth() &&
@@ -140,8 +140,8 @@
                     if (!cell.classList.contains(bgRed)) {
                         modal.classList.remove("hidden");
                         selectedDate.textContent = `Date: ${fullDate}`;
-                        eventName.value = "";
-                        saveEvent.dataset.date = fullDate;
+                        // eventName.value = "";
+                        bookTimeButton.dataset.date = fullDate;
                         setTimeSlots(year, month, day);
                     }
                 });
@@ -168,20 +168,65 @@
             renderCalendar();
         });
 
-        saveEvent.addEventListener("click", () => {
-            const date = saveEvent.dataset.date;
-            const name = eventName.value.trim();
+        bookTimeButton.addEventListener("click", (e) => {
+            e.preventDefault();
 
-            if (name) {
-                events[date] = name;
+            const form = document.getElementById('time-slots-form');
+            const formData = new FormData(form);
+            const selectedTimeSlot = formData.get('timeslots') || null;
+            console.log(selectedTimeSlot);
+
+
+            if (selectedTimeSlot) {
+                alert(`Is the meeting time ${selectedTimeSlot} okay for you?`);
                 modal.classList.add("hidden");
+
+                // Send date, time slot, and client_id back to the server to process
+                const data = {
+                    date: bookTimeButton.dataset.date,
+                    clientId: @json($client_id),
+                    timeSlot: selectedTimeSlot
+                };
+
+                fetch(@json(route('appointment.store')), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                'content'), // Laravel CSRF Token
+                        },
+                        body: JSON.stringify(data),
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+
+
+                    })
+                    .then(result => {
+                        console.log('Success:', result);
+
+                        // reload the page to trigger the flashed success session message
+                        location.reload(true);
+
+                        // You can append a query string to the URL to ensure a fresh reload:
+                        // - window.location.href = window.location.href + '?cache=' + new Date().getTime();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+
                 renderCalendar();
             } else {
-                alert("Please enter an event name.");
+                alert("Please select a meeting time slot");
             }
         });
 
-        closeModal.addEventListener("click", () => {
+        closeModal.addEventListener("click", (e) => {
+            e.preventDefault();
             modal.classList.add("hidden");
         });
 
@@ -248,6 +293,7 @@
 
         renderCalendar();
     </script>
+    @include('includes.hide-bw-alert')
 </body>
 
 </html>
