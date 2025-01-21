@@ -1,7 +1,7 @@
 @php
     $action_icons = [
         "icon:chat-bubble-bottom-center-text | click:sendMessage('{first_name}', '{last_name}', '{email}')",
-        "icon:pencil | color:green | click:redirect('/consultations/{uuid}')",
+        "icon:pencil | color:green | click:redirect('/clients/{uuid}')",
         "icon:trash | color:red | click:deleteUser('{id}', '{first_name}','{last_name}')",
     ];
 
