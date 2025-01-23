@@ -7,9 +7,8 @@
       <meta name="description" content="Novelink Stripe payment processing" />
       <title>Novelink Booking</title>
 
-      <!-- Add some styles to the payment page-->
-      <link rel="stylesheet" href="{{ asset('themes/novelink/assets/css/bootstrap.css') }}" />
-      <link rel="stylesheet" href="{{ asset('css/payment-element-styles.css') }}">
+      <!-- Load Bundled Scripts -->
+      @vite(['resources/css/app.css', 'resources/js/app.js'])
 
       <!-- Load Stripe.js -->
       <script src="https://js.stripe.com/v3/"></script>
@@ -23,21 +22,26 @@
   </head>
 
   <body>
-      <div class="container" style="max-width: 31%; margin:5px auto;">
-          <div class="alert alert-info py-2" style="text-align: center" role="alert">
-              <img width="150" src="{{ asset('uploads/2020/08/novelink.png') }}" class="custom-logo"
-                  alt="Novelink" />
-              <span style="display:block; font-size:14px; margin-top:1rem;"> Complete your payment</span>
+      <div class="flex items-center justify-center">
+          <div class="bg-[#231f20] w-[420px] p-6 flex items-center justify-between">
+              <a href="{{ route('home') }}"> <img src="{{ asset('uploads/2020/08/novelink.png') }}" alt="Logo"
+                      width="120" /> </a>
+              <h2 class="text-white text-lg">Complete your payment</h2>
           </div>
       </div>
-      <div class="center">
+
+      <div class="mx-auto max-w-[30%] rounded-lg p-2 text-center">
           @if (session('success'))
               <div id="success-message">
                   <x-alert type="success" :message="session('success')" />
                   {{-- Go to the appointment booking calendar --}}
                   <form action="{{ route('appointment.create') }}">
                       @csrf
-                      <button type="submit">Book Appointment</button>
+                      <p>Click the button below to book your appointment now</p>
+                      <button type="submit"
+                          class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow-md">
+                          Book Appointment
+                      </button>
                   </form>
               </div>
           @endif
@@ -55,12 +59,16 @@
               <hr style="margin-top: 25px;">
               @isset($total_consultation_fee)
                   <div style="display: flex; justify-content: space-between; padding: 10px 0">
-                      <span class="amount">Total Amount</span>
+                      <span class="amount">Total Amount:</span>
                       <span class="amount">${{ $total_consultation_fee / 100 }} </span>
                   </div>
               @endisset
 
-              <button id="submit" class="btn">Make Payment</button>
+              <button id="submit"
+                  class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow-md">
+                  Make Payment
+              </button>
+
               <div id="error-message" style="color: red">
                   <!-- Display error message to your customers here -->
               </div>

@@ -9,7 +9,7 @@
 </head>
 
 <body class="bg-gray-100">
-    <div class="max-w-lg mx-auto sticky top-0 z-10 flex justify-center py-4" style="background: #231f20;">
+    <div class="max-w-lg mx-auto flex justify-center py-4" style="background: #231f20;">
         <a href="{{ route('home') }}"> <img src="{{ asset('uploads/2020/08/novelink.png') }}" alt="Logo"
                 width="160" /> </a>
     </div>

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Client;
 use App\Models\ConsultationPackages;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -43,6 +44,11 @@ class ClientController extends Controller
          **/
         $data = $request->validated();
 
+        // Get a sum of charges/amount of the selected package.
+        $totalAmount = ConsultationPackages::whereIn('id', array_values($data['consultation_package']))->sum('amount');
+        // Store this in session to be used on the checkout page.
+        session(['totalAmount' => $totalAmount]);
+
         try {
 
             // Using 'updateOrCreate' function here since we are dealing with
@@ -61,6 +67,24 @@ class ClientController extends Controller
                     'registration_status' => 'step_1_completed' // Mark Step 1 as completed
                 ],
             );
+
+            // Also insert record into Payments table
+            // Payment::create([
+            //     'client_id',
+            //     'payment_id',
+            //     'amount',
+            //     'currency',
+            //     'status',
+            //     'stripe_customer_id',
+            //     'payment_method_id',
+            //     'payment_method_type',
+            //     'card_brand',
+            //     'card_last4',
+            //     'description',
+            //     'refund_status',
+            //     'refund_amount',
+            //     'dispute_status',
+            // ]);
 
             // Store Client ID in session
             session(['client_id' => $client->id]);
@@ -153,6 +177,5 @@ class ClientController extends Controller
 
         // Redirect to the paymentpage
         return redirect()->route('stripe.create');
-
     }
 }
