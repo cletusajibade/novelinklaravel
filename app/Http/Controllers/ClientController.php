@@ -64,7 +64,7 @@ class ClientController extends Controller
                     'country' => $data['country'],
                     'country_of_residence' => $data['country_of_residence'],
                     'consultation_package' => json_encode($data['consultation_package']),
-                    'registration_status' => 'step_1_completed' // Mark Step 1 as completed
+                    'registration_status' => 'step_1_completed' // Mark Step 1 as completed (Form filled and submitted)
                 ],
             );
 

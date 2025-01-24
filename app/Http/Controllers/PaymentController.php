@@ -58,7 +58,7 @@ class PaymentController extends Controller
         // Send email
         Mail::to($email)->send(new ConsultationCreated($first_name, $app_name));
 
-        // Mark registration_status as completed (payment made)
+        // Mark Step 3 as completed (Payment made)
         $client->update(['registration_status' => 'step_3_completed']);
 
         return redirect()->back()->with('success', 'Payment successful');

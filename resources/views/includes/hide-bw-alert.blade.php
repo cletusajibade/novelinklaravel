@@ -5,5 +5,5 @@
          if (myDiv !== null) {
              myDiv.style.display = 'none';
          }
-     }, 10000);
+     }, 15000);
  </script>

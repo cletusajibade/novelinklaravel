@@ -28,20 +28,29 @@ class AppointmentController extends Controller
             return redirect()->route('client.create');
         }
 
-        //Get this client from the DB using the already existing client_id in session
-        $client = Client::find(session('client_id'));
+        try {
+            //Get this client from the DB using the already existing client_id in session
+            $client = Client::find(session('client_id'));
 
-        // Send unblocked, available or canceled time slots to the calendar view.
-        // Make sure they are dates not in the past i.e 'date >= today'
-        $today = Carbon::today();
-        $time_slots = TimeSlot::where('blocked', false)
-            ->where('start_date', '>=', $today)
-            ->where('status', 'available')
-            ->orWhere('status', 'canceled')
-            ->orderBy('start_date', 'asc')
-            ->get();
-            
-        return view('appointment.calendar', compact('time_slots'));
+            // Send unblocked, available or canceled time slots to the calendar view.
+            // Make sure they are dates not in the past i.e 'date >= today' and time >= 3hours
+            $now = Carbon::now();
+            $today = Carbon::today();
+            $timeThreshold = $now->addHours(0)->format('H:i:s');
+            Log::info($timeThreshold);
+            $time_slots = TimeSlot::where('start_date', '>=', $today)
+                ->where('start_time', '>=', $timeThreshold)
+                ->whereBetween('start_time', ['09:00:00', '18:00:00'])
+                ->where('blocked', false)
+                ->whereIn('status', ['available', 'canceled'])
+                ->orderBy('start_date', 'asc')
+                ->orderBy('start_time', 'asc')
+                ->get();
+
+            return view('appointment.calendar', compact('time_slots'));
+        } catch (\Exception $e) {
+            Log::error("Error: " . $e->getMessage());
+        }
     }
 
     /**
@@ -63,47 +72,53 @@ class AppointmentController extends Controller
                 'payment_status' => 'nullable|string|max:255', //
             ]);
 
-            Log::info($data);
+            // 1. First check that the client does not have a pending or confirmed appointment.
+            $pending_or_confirmed_appointment = Appointment::where('client_id', $data['clientId'])
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->orderBy('created_at', 'asc')
+                ->first();
+            if ($pending_or_confirmed_appointment) {
+                //2. Appointment already exists. The client should either reschedule or cancel.
+                // Flash an error message that can be retrieved from the view
+                session()->flash('error', 'You have a pending or an already confirmed appointment. You may reschedule, cancel or contact admin.');
+                return response()->json(['message' => 'Error: You have a pending or an already confirmed appointment.']);
+            } else {
+                //3. No pending or confirmed appointment.
+                // Get the selected TimeSlot from the time_slots table
+                $time_slot = TimeSlot::where('start_date', $data['date'])->where('start_time', $data['time'])->first();
+                if ($time_slot) {
+                    //4. Time slot found; update the 'action_by' and 'status' fields
+                    $result = $time_slot->update(['action_by' => $data['clientId'], 'status' => 'booked']);
+                    if ($result) {
+                        // 5. Time slot updated. Update appointments table also.
+                        $new_appointment = Appointment::create([
+                            'client_id' => $data['clientId'],
+                            'appointment_date' => $data['date'],
+                            'appointment_time' => $data['time'],
+                            'duration' => $data['duration'],
+                            'status' => 'pending',
+                            'location' => 'Zoom',
+                            'payment_status' => 'success', //This should come from Payments table
+                        ]);
 
-            //1. Get the TimeSlot from the DB
-            $time_slot = TimeSlot::where('start_date', $data['date'])->where('start_time', $data['time'])->first();
-            if ($time_slot) {
-                //2. Update it
-                $result = $time_slot->update(['action_by' => $data['clientId'], 'status' => 'booked']);
-                if ($result) {
-
-                    // 3. Insert a new record into appointments table
-                    Appointment::create([
-                        'client_id' => $data['clientId'],
-                        'appointment_date' => $data['date'],
-                        'appointment_time' => $data['time'],
-                        'duration' => $data['duration'],
-                        'status' => 'pending',
-                        'location' => 'Zoom',
-                        'payment_status' => 'success', //This should come from Payments table
-                    ]);
-
-                    // 4. Flash a success message that can be retrieved from the view
-                    session()->flash('success', 'Your appointment was successfully booked! You may close this tab or window.');
-
-                    // 5. Return a response.
-                    return response()->json(['message' => 'Data received', 'data' => $data]);
+                        if ($new_appointment) {
+                            // 4. New appointment created. Finally flash a success message that can be retrieved from the view
+                            session()->flash('success', 'Your appointment was successfully booked! You may close this tab or window.');
+                            return response()->json(['message' => 'success']);
+                        }
+                    } else {
+                        session()->flash('warning', 'Error booking your appointment, try again or contact the admin.');
+                        return response()->json(['error' => 'Update issues'], 404);
+                    }
                 } else {
                     session()->flash('warning', 'Error booking your appointment, try again or contact the admin.');
-                    return response()->json(['error' => 'Update issues'], 404);
+                    return response()->json(['error' => 'No record found'], 404);
                 }
-            } else {
-                session()->flash('warning', 'Error booking your appointment, try again or contact the admin.');
-                return response()->json(['error' => 'No record found'], 404);
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
         }
-
-
-
-        //     return response()->json(['error' => 'Storing appointment'], 404);
     }
 
     /**

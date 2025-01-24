@@ -29,7 +29,7 @@
             </x-bladewind::alert>
         @endif
         @if (session('error'))
-            <x-bladewind::alert type="warning" shade="dark">
+            <x-bladewind::alert type="error" shade="dark">
                 {{ session('error') }}
             </x-bladewind::alert>
         @endif
@@ -139,7 +139,7 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const cell = document.createElement("div");
                 cell.textContent = day;
-                cell.classList.add("bg-white", "text-center", "p-4", "md:p-7", "cursor-pointer", "hover:bg-green-300");
+                cell.classList.add("bg-white", "text-center", "p-4", "md:p-7", "cursor-pointer", "hover:bg-green-200");
 
                 const fullDate = `${year}-${month + 1}-${day}`;
 
@@ -194,7 +194,7 @@
             const meetingDuration = formData.get('duration') || 1;
 
             if (selectedTimeSlot) {
-                alert(`Is the meeting time ${selectedTimeSlot} okay for you?`);
+                alert(`Are you sure you want to book this time ${selectedTimeSlot}?`);
                 modal.classList.add("hidden");
 
                 // Send client_id, date, time slot, and duration back to the server to process
@@ -247,55 +247,28 @@
 
         function formatCellColors(cell, year, month, day, today) {
             const calendarDay = new Date(year, month, day);
-            const timeSlots = timeSlotData.filter(slot => slot.start_date === formatDate(calendarDay).toLocaleString());
+            const slotsForDate = timeSlotData.filter(slot => slot.start_date ===
+                formatDate(calendarDay).toLocaleString());
 
-            if (timeSlots.length == 0) {
+            if (slotsForDate.length == 0) {
                 cell.classList.remove("cursor-pointer");
                 cell.classList.add(bgRed, "cursor-not-allowed", textGray, "hover:bg-red-300");
-
-                if (day === today.getDate() &&
-                    month === today.getMonth() &&
-                    year === today.getFullYear()) {
-                    cell.classList.remove(bgRed, textGray, "hover:bg-blue-100");
-                    cell.classList.add("bg-blue-500", "text-white", "font-bold");
-                }
             } else {
+                cell.classList.add("font-bold", "text-green-600", "underline", "underline-offset-7");
+            }
 
-                timeSlots.forEach(slot => {
+            if (slotsForDate.length == 0 && (day === today.getDate() &&
+                    month === today.getMonth() &&
+                    year === today.getFullYear())) {
+                cell.classList.remove(bgRed, textGray, "hover:bg-blue-100");
+                cell.classList.add("bg-blue-500", "text-white", "font-bold");
+            }
 
-                    // console.log('Year, Month, Day: ', year, month, day);
-                    const startDate = new Date(slot.start_date);
-                    // console.log('startDate before setTime(0,0,0,0): ', startDate);
-                    startDate.setHours(0, 0, 0, 0)
-                    // console.log('startDate after: ', startDate);
-
-                    // console.log('today before setTime(0,0,0,0): : ', today);
-                    today.setHours(0, 0, 0, 0)
-                    // console.log('today after: ', today);
-
-                    if (startDate >= today) {
-                        cell.classList.add("font-bold", "text-green-600", "underline", "underline-offset-7");
-
-                        if (day === today.getDate() &&
-                            month === today.getMonth() &&
-                            year === today.getFullYear()) {
-                            cell.classList.remove("text-green-600");
-                            cell.classList.add("bg-blue-600", "text-white", "font-bold", "hover:text-green-600");
-                        }
-                    } else {
-                        // This date is now in the past, no more selectable.
-                        cell.classList.remove("cursor-pointer");
-                        cell.classList.add(bgRed, "cursor-not-allowed", textGray, "hover:bg-red-300");
-
-                        if (day === today.getDate() &&
-                            month === today.getMonth() &&
-                            year === today.getFullYear()) {
-                            cell.classList.remove("text-green-600");
-                            cell.classList.add("bg-blue-600", "text-white", "font-bold", "hover:text-green-600");
-                        }
-                    }
-                });
-
+            if (slotsForDate.length > 0 && (day === today.getDate() &&
+                    month === today.getMonth() &&
+                    year === today.getFullYear())) {
+                cell.classList.remove("text-green-600");
+                cell.classList.add("bg-blue-600", "text-white", "font-bold", "hover:text-green-600");
             }
         }
 
@@ -317,24 +290,17 @@
             const timeSlots = timeSlotData.filter(slot => slot.start_date === formatDate(calendarDay).toLocaleString());
             if (timeSlots.length > 0) {
                 timeSlots.forEach(slot => {
-                    const startDate = new Date(slot.start_date);
-                    const now = new Date();
-
-                    // Check if the date is not in the past
-                    if (startDate > now) {
-                        if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
-                            const newLabel = document.createElement('label');
-                            newLabel.classList.add("flex", "items-center", "mb-4");
-                            newLabel.innerHTML =
-                                `<div>
+                    if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
+                        const newLabel = document.createElement('label');
+                        newLabel.classList.add("flex", "items-center", "mb-4");
+                        newLabel.innerHTML =
+                            `<div>
                                 <input type="hidden" id="duration" name="duration" value="${slot.duration}">
                                 <input type="radio" id="${slot.start_time}" name="timeslots" value="${slot.start_time}" class="mr-2">
                                 <label for="${slot.start_time}">${slot.start_time} - ${slot.end_time}</label>
                             </div>`
-                            timeSlotsDiv.appendChild(newLabel)
-                        }
+                        timeSlotsDiv.appendChild(newLabel)
                     }
-
                 });
             }
         }
