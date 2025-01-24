@@ -8,6 +8,8 @@ use App\Models\TimeSlot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ConsultationCreated;
 
 class AppointmentController extends Controller
 {
@@ -36,10 +38,10 @@ class AppointmentController extends Controller
             // Make sure they are dates not in the past i.e 'date >= today' and time >= 3hours
             $now = Carbon::now();
             $today = Carbon::today();
-            $timeThreshold = $now->addHours(0)->format('H:i:s');
+            $timeThreshold = $now->addHours(1)->format('H:i:s');
             Log::info($timeThreshold);
             $time_slots = TimeSlot::where('start_date', '>=', $today)
-                ->where('start_time', '>=', $timeThreshold)
+                // ->where('start_time', '>=', $timeThreshold) 
                 ->whereBetween('start_time', ['09:00:00', '18:00:00'])
                 ->where('blocked', false)
                 ->whereIn('status', ['available', 'canceled'])
@@ -102,16 +104,33 @@ class AppointmentController extends Controller
                         ]);
 
                         if ($new_appointment) {
-                            // 4. New appointment created. Finally flash a success message that can be retrieved from the view
+                            //4. New appointment created.
+                            //Get this client from the DB
+                            $client = Client::find($data['clientId']);
+
+                            $first_name = $client->first_name;
+                            $email = $client->email;
+                            $app_name = config('app.name');
+
+                            // Send email
+                            Mail::to($email)->send(new ConsultationCreated($first_name, $app_name));
+
+                            // Mark final step 4 as completed (Appointment booked)
+                            $client->update(['registration_status' => 'step_4/4_completed']);
+
+                            //Finally flash a success message that can be retrieved from the view
                             session()->flash('success', 'Your appointment was successfully booked! You may close this tab or window.');
                             return response()->json(['message' => 'success']);
+                        } else {
+                            session()->flash('error', 'Error booking your appointment, try again or contact the admin.');
+                            return response()->json(['error' => 'Create issues'], 404);
                         }
                     } else {
-                        session()->flash('warning', 'Error booking your appointment, try again or contact the admin.');
+                        session()->flash('error', 'Error booking your appointment, try again or contact the admin.');
                         return response()->json(['error' => 'Update issues'], 404);
                     }
                 } else {
-                    session()->flash('warning', 'Error booking your appointment, try again or contact the admin.');
+                    session()->flash('error', 'Error booking your appointment, try again or contact the admin.');
                     return response()->json(['error' => 'No record found'], 404);
                 }
             }

@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Stripe\StripeClient;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ConsultationCreated;
 use App\Models\Client;
-use App\Models\Consultation;
+use App\Models\Payment;
 
 class PaymentController extends Controller
 {
@@ -50,18 +48,27 @@ class PaymentController extends Controller
 
         //Get this client from the DB using the already existing client_id in session
         $client = Client::find(session('client_id'));
-
-        $first_name = $client->first_name;
-        $email = $client->email;
-        $app_name = config('app.name');
-
-        // Send email
-        Mail::to($email)->send(new ConsultationCreated($first_name, $app_name));
-
         // Mark Step 3 as completed (Payment made)
-        $client->update(['registration_status' => 'step_3_completed']);
+        $client->update(['registration_status' => 'step_3/4_completed']);
+
+        // Update payment table
+        Payment::create([
+            'client_id' => $client->client_id,
+            'payment_id',
+            'amount',
+            'currency',
+            'status',
+            'stripe_customer_id',
+            'payment_method_id',
+            'payment_method_type',
+            'card_brand',
+            'card_last4',
+            'description',
+            'refund_status',
+            'refund_amount',
+            'dispute_status',
+        ]);
 
         return redirect()->back()->with('success', 'Payment successful');
-        // return view('stripe.success');
     }
 }

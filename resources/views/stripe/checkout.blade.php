@@ -37,7 +37,7 @@
                   {{-- Go to the appointment booking calendar --}}
                   <form action="{{ route('appointment.create') }}">
                       @csrf
-                      <p>Click the button below to book your appointment now</p>
+                      <p class="pb-4 pt-6">Click the button below to book your appointment now</p>
                       <button type="submit"
                           class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow-md">
                           Book Appointment

@@ -12,10 +12,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Calendar Booking System</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+      <!-- Load Bundled Scripts -->
+      {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="flex justify-center items-center h-screen bg-gray-100">
+<body class="font-figtree flex justify-center items-center h-screen bg-gray-100">
 
     <div class="w-[90%] md:w-[70%] md:max-w-5xl flex flex-col gap-4">
         @if (session('success'))
@@ -44,7 +51,7 @@
             </div>
         @endif
         <div class="bg-white shadow-lg rounded px-2 py-4">
-            <h1 class="text-3xl">Book appointment by selecting available time slot</h1>
+            <h1 class="text-2xl">Book appointment by selecting from the available time slots</h1>
         </div>
         <div class="flex flex-col bg-white shadow-lg rounded">
             <div class="flex justify-between items-center p-4 bg-white text-blue-600">
@@ -65,11 +72,14 @@
 
             <div class="grid grid-cols-7 flex-grow gap-px bg-gray-200" id="calendar"></div>
 
-            <button id="today-button"
-                class="my-[10px] mx-auto py-2 px-5 bg-blue-600 text-white rounded hover:bg-blue-700 text-[13px]">
-                Today
-            </button>
+            <div class="flex items-center justify-center border border-gray-200 ">
+                <button id="today-button"
+                    class="my-[10px] mx-auto py-2 px-5 bg-blue-600 text-white rounded hover:bg-blue-700 text-[13px]">
+                    Today
+                </button>
+            </div>
         </div>
+        <p>Note: Available dates are marked with <span class="text-green-600 font-bold">green</span> or <span class="text-white font-bold bg-black">white</span> text and an <span class="underline">underline</span></p>
     </div>
 
     <div id="event-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -107,13 +117,9 @@
         const timeSlotsDiv = document.getElementById("time-slots");
         const radioButtons = document.querySelectorAll('input[name="timeslots"]');
 
-        // Some colors used to style the cell
-        const bgRed = "bg-red-200";
-        const textGray = "text-gray-700";
-
         // Time slots from database
         const timeSlotData = @json($time_slots);
-        console.log(timeSlotData);
+        // console.log(timeSlotData);
 
         let currentDate = new Date();
 
@@ -154,7 +160,7 @@
 
                 cell.addEventListener("click", () => {
                     if (!cell.classList.contains("cursor-not-allowed")) {
-                        // if (!cell.classList.contains(bgRed)) {
+                        // if (!cell.classList.contains("bg-red-200")) {
                         modal.classList.remove("hidden");
                         selectedDate.textContent = `Date: ${fullDate}`;
                         // eventName.value = "";
@@ -194,7 +200,7 @@
             const meetingDuration = formData.get('duration') || 1;
 
             if (selectedTimeSlot) {
-                alert(`Are you sure you want to book this time ${selectedTimeSlot}?`);
+                alert(`Are you sure you want to book ${selectedTimeSlot} for your appointment?`);
                 modal.classList.add("hidden");
 
                 // Send client_id, date, time slot, and duration back to the server to process
@@ -251,8 +257,8 @@
                 formatDate(calendarDay).toLocaleString());
 
             if (slotsForDate.length == 0) {
-                cell.classList.remove("cursor-pointer");
-                cell.classList.add(bgRed, "cursor-not-allowed", textGray, "hover:bg-red-300");
+                cell.classList.remove("cursor-pointer", "bg-white");
+                cell.classList.add("bg-red-200", "cursor-not-allowed", "text-gray-700", "hover:bg-red-300");
             } else {
                 cell.classList.add("font-bold", "text-green-600", "underline", "underline-offset-7");
             }
@@ -260,7 +266,7 @@
             if (slotsForDate.length == 0 && (day === today.getDate() &&
                     month === today.getMonth() &&
                     year === today.getFullYear())) {
-                cell.classList.remove(bgRed, textGray, "hover:bg-blue-100");
+                cell.classList.remove("bg-red-200", "text-gray-700", "hover:bg-blue-100");
                 cell.classList.add("bg-blue-500", "text-white", "font-bold");
             }
 
