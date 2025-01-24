@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\TimeSlot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class AppointmentController extends Controller
 {
@@ -30,8 +31,16 @@ class AppointmentController extends Controller
         //Get this client from the DB using the already existing client_id in session
         $client = Client::find(session('client_id'));
 
-        // Send unblocked/available/canceled time slots to the calendar view
-        $time_slots = TimeSlot::where('blocked', false)->where('status', 'available')->orWhere('status', 'canceled')->get();
+        // Send unblocked, available or canceled time slots to the calendar view.
+        // Make sure they are dates not in the past i.e 'date >= today'
+        $today = Carbon::today();
+        $time_slots = TimeSlot::where('blocked', false)
+            ->where('start_date', '>=', $today)
+            ->where('status', 'available')
+            ->orWhere('status', 'canceled')
+            ->orderBy('start_date', 'asc')
+            ->get();
+            
         return view('appointment.calendar', compact('time_slots'));
     }
 

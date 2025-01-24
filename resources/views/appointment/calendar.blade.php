@@ -112,7 +112,8 @@
         const textGray = "text-gray-700";
 
         // Time slots from database
-        const timeSlots = @json($time_slots);
+        const timeSlotData = @json($time_slots);
+        console.log(timeSlotData);
 
         let currentDate = new Date();
 
@@ -191,8 +192,6 @@
             const formData = new FormData(form);
             const selectedTimeSlot = formData.get('timeslots') || null;
             const meetingDuration = formData.get('duration') || 1;
-            console.log(selectedTimeSlot, meetingDuration);
-
 
             if (selectedTimeSlot) {
                 alert(`Is the meeting time ${selectedTimeSlot} okay for you?`);
@@ -222,7 +221,7 @@
                         return response.json();
                     })
                     .then(result => {
-                        console.log('Success:', result);
+                        // console.log('Success:', result);
 
                         // reload the page to trigger the flashed success session message
                         location.reload(true);
@@ -248,28 +247,55 @@
 
         function formatCellColors(cell, year, month, day, today) {
             const calendarDay = new Date(year, month, day);
-            const slotsForDate = timeSlots.filter(slot => slot.start_date ===
-                formatDate(calendarDay).toLocaleString());
+            const timeSlots = timeSlotData.filter(slot => slot.start_date === formatDate(calendarDay).toLocaleString());
 
-            if (slotsForDate.length == 0) {
+            if (timeSlots.length == 0) {
                 cell.classList.remove("cursor-pointer");
                 cell.classList.add(bgRed, "cursor-not-allowed", textGray, "hover:bg-red-300");
+
+                if (day === today.getDate() &&
+                    month === today.getMonth() &&
+                    year === today.getFullYear()) {
+                    cell.classList.remove(bgRed, textGray, "hover:bg-blue-100");
+                    cell.classList.add("bg-blue-500", "text-white", "font-bold");
+                }
             } else {
-                cell.classList.add("font-bold", "text-green-600", "underline", "underline-offset-7");
-            }
 
-            if (slotsForDate.length == 0 && (day === today.getDate() &&
-                    month === today.getMonth() &&
-                    year === today.getFullYear())) {
-                cell.classList.remove(bgRed, textGray, "hover:bg-blue-100");
-                cell.classList.add("bg-blue-500", "text-white", "font-bold");
-            }
+                timeSlots.forEach(slot => {
 
-            if (slotsForDate.length > 0 && (day === today.getDate() &&
-                    month === today.getMonth() &&
-                    year === today.getFullYear())) {
-                cell.classList.remove("text-green-600");
-                cell.classList.add("bg-blue-600", "text-white", "font-bold", "hover:text-green-600");
+                    // console.log('Year, Month, Day: ', year, month, day);
+                    const startDate = new Date(slot.start_date);
+                    // console.log('startDate before setTime(0,0,0,0): ', startDate);
+                    startDate.setHours(0, 0, 0, 0)
+                    // console.log('startDate after: ', startDate);
+
+                    // console.log('today before setTime(0,0,0,0): : ', today);
+                    today.setHours(0, 0, 0, 0)
+                    // console.log('today after: ', today);
+
+                    if (startDate >= today) {
+                        cell.classList.add("font-bold", "text-green-600", "underline", "underline-offset-7");
+
+                        if (day === today.getDate() &&
+                            month === today.getMonth() &&
+                            year === today.getFullYear()) {
+                            cell.classList.remove("text-green-600");
+                            cell.classList.add("bg-blue-600", "text-white", "font-bold", "hover:text-green-600");
+                        }
+                    } else {
+                        // This date is now in the past, no more selectable.
+                        cell.classList.remove("cursor-pointer");
+                        cell.classList.add(bgRed, "cursor-not-allowed", textGray, "hover:bg-red-300");
+
+                        if (day === today.getDate() &&
+                            month === today.getMonth() &&
+                            year === today.getFullYear()) {
+                            cell.classList.remove("text-green-600");
+                            cell.classList.add("bg-blue-600", "text-white", "font-bold", "hover:text-green-600");
+                        }
+                    }
+                });
+
             }
         }
 
@@ -283,27 +309,32 @@
 
         function setTimeSlots(year, month, day) {
             // TODO: Handle potential timezone issues effectively
+
             // clear time slots from previous iteration.
             timeSlotsDiv.innerHTML = '';
 
             const calendarDay = new Date(year, month, day);
+            const timeSlots = timeSlotData.filter(slot => slot.start_date === formatDate(calendarDay).toLocaleString());
+            if (timeSlots.length > 0) {
+                timeSlots.forEach(slot => {
+                    const startDate = new Date(slot.start_date);
+                    const now = new Date();
 
-            const slotsForDate = timeSlots.filter(slot => slot.start_date ===
-                formatDate(calendarDay).toLocaleString());
-
-            if (slotsForDate.length > 0) {
-                slotsForDate.forEach(slot => {
-                    if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
-                        const newLabel = document.createElement('label');
-                        newLabel.classList.add("flex", "items-center", "mb-4");
-                        newLabel.innerHTML =
-                            `<div>
+                    // Check if the date is not in the past
+                    if (startDate > now) {
+                        if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
+                            const newLabel = document.createElement('label');
+                            newLabel.classList.add("flex", "items-center", "mb-4");
+                            newLabel.innerHTML =
+                                `<div>
                                 <input type="hidden" id="duration" name="duration" value="${slot.duration}">
                                 <input type="radio" id="${slot.start_time}" name="timeslots" value="${slot.start_time}" class="mr-2">
                                 <label for="${slot.start_time}">${slot.start_time} - ${slot.end_time}</label>
                             </div>`
-                        timeSlotsDiv.appendChild(newLabel)
+                            timeSlotsDiv.appendChild(newLabel)
+                        }
                     }
+
                 });
             }
         }
