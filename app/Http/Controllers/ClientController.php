@@ -6,12 +6,13 @@ use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Client;
 use App\Models\ConsultationPackages;
-use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use App\Mail\SendUserEmail;
+use Illuminate\Support\Facades\Mail;
 
 class ClientController extends Controller
 {
@@ -20,7 +21,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        $clients = Client::latest()->get();
+        return view('dashboard.clients', compact('clients'));
     }
 
     /**
@@ -29,6 +31,11 @@ class ClientController extends Controller
     public function create()
     {
         $packages = ConsultationPackages::all();
+
+        // Store the currency in session, to be used across app.
+        $currency = $packages->pluck('currency')->first();
+        session(['currency' => $currency]);
+
         return view('consultation.form', compact('packages'));
     }
 
@@ -46,8 +53,8 @@ class ClientController extends Controller
 
         // Get a sum of charges/amount of the selected package.
         $totalAmount = ConsultationPackages::whereIn('id', array_values($data['consultation_package']))->sum('amount');
-        // Store this in session to be used on the checkout page.
-        session(['totalAmount' => $totalAmount]);
+        // Store this in session to be used in PaymentController
+        session(['totalAmount' => intval($totalAmount)]);
 
         try {
 
@@ -90,9 +97,10 @@ class ClientController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Client $client)
+    public function edit(String $uuid)
     {
-        //
+        $client = Client::where('uuid', $uuid)->first();
+        return view('dashboard.client', compact('client'));
     }
 
     /**
@@ -106,9 +114,21 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Client $client)
+    public function destroy(Request $request)
     {
-        //
+        // dd($request->user_id);
+        Client::destroy($request->user_id);
+        return redirect()->back()->with('success', 'Client deleted successfully!');
+    }
+
+    public function sendEmail(Request $request)
+    {
+        try {
+            Mail::to($request->email)->send(new SendUserEmail($request->first_name, $request->last_name, $request->email_message, config('app.name')));
+            return redirect()->route('clients')->with('success', 'Email sent');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['error' => 'Email failure, please try again.']);
+        }
     }
 
     public function terms()

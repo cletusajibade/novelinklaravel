@@ -25,7 +25,7 @@
                                 @csrf
                             </form>
 
-                            <form method="post" action="{{ route('consultations.update') }}" class="mt-6 space-y-6">
+                            <form method="post" action="{{ route('client.update') }}" class="mt-6 space-y-6">
                                 @csrf
                                 @method('patch')
 

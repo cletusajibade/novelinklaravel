@@ -18,7 +18,8 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        //
+        $appointments = Appointment::latest()->get();
+        return view('dashboard.appointments', compact('appointments'));
     }
 
     /**
@@ -41,7 +42,7 @@ class AppointmentController extends Controller
             $timeThreshold = $now->addHours(1)->format('H:i:s');
             Log::info($timeThreshold);
             $time_slots = TimeSlot::where('start_date', '>=', $today)
-                // ->where('start_time', '>=', $timeThreshold) 
+                // ->where('start_time', '>=', $timeThreshold)
                 ->whereBetween('start_time', ['09:00:00', '18:00:00'])
                 ->where('blocked', false)
                 ->whereIn('status', ['available', 'canceled'])

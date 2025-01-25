@@ -39,7 +39,7 @@
     <!-- send message modal -->
     <x-bladewind::modal name="send-message" title="" ok_button_action="sendEmail()" close_after_action="false"
         backdrop_can_close="false">
-        <form method="post" action="{{ route('consultations.send-email') }}" class="email-form">
+        <form method="post" action="{{ route('client.send-email') }}" class="email-form">
             @csrf
             <div class="mb-6">
                 The message will be delivered to the registered email address.
@@ -58,7 +58,7 @@
     <x-bladewind::modal name="delete-user" type="error" title="Confirm User Deletion" ok_button_action="doDolete()">
         Are you really sure you want to delete <b class="title"></b>?
         This action cannot be reversed.
-        <form method="post" action="{{ route('consultations.destroy') }}" class="delete-form">
+        <form method="post" action="{{ route('client.destroy') }}" class="delete-form">
             @csrf
             @method('delete')
             <input type="hidden" name="user_id" value="" class="user_id">

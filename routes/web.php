@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TimeSlotController;
+use App\Models\Appointment;
 
 // Static frontend view routes
 Route::view('/', 'home')->name('home');
@@ -49,11 +50,11 @@ Route::post('/terms-and-conditions', [ClientController::class, 'post_terms'])->n
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/clients', [ConsultationsController::class, 'index'])->name('consultations');
-    Route::patch('/clients', [ConsultationsController::class, 'update'])->name('consultations.update');
-    Route::get('/clients/{uuid}', [ConsultationsController::class, 'edit'])->name('consultations.edit');
-    Route::post('/clients', [ConsultationsController::class, 'sendEmail'])->name('consultations.send-email');
-    Route::delete('/clients', [ConsultationsController::class, 'destroy'])->name('consultations.destroy');
+    Route::get('/clients', [ClientController::class, 'index'])->name('clients');
+    Route::patch('/clients', [ClientController::class, 'update'])->name('client.update');
+    Route::get('/clients/{uuid}', [ClientController::class, 'edit'])->name('client.edit');
+    Route::post('/clients', [ClientController::class, 'sendEmail'])->name('client.send-email');
+    Route::delete('/clients', [ClientController::class, 'destroy'])->name('client.destroy');
 
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
     Route::post('/calendar', [CalendarController::class, 'store'])->name('calendar.store');
@@ -63,6 +64,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/time-slots/{slot_id}', [TimeSlotController::class, 'edit'])->name('time-slots.edit');
 
     Route::get('/payments', [PaymentsController::class, 'index'])->name('payments');
+
+    Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
 
 });
 

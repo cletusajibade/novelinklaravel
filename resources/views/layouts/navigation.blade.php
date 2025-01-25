@@ -20,8 +20,14 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('consultations')" :active="request()->routeIs('consultations')">
+                    <x-nav-link :href="route('clients')" :active="request()->routeIs('consultations')">
                         {{ __('Clients') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('appointments')" :active="request()->routeIs('appointments')">
+                        {{ __('Appointments') }}
                     </x-nav-link>
                 </div>
 
@@ -107,14 +113,26 @@
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('consultations')" :active="request()->routeIs('consultations')">
-                {{ __('Consultations') }}
+            <x-responsive-nav-link :href="route('clients')" :active="request()->routeIs('clients')">
+                {{ __('Clients') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('clients')" :active="request()->routeIs('appointments')">
+                {{ __('Appointments') }}
             </x-responsive-nav-link>
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('calendar')" :active="request()->routeIs('calendar')">
                 {{ __('Calendar') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('time-slots')" :active="request()->routeIs('time-slots')">
+                {{ __('Time Slots') }}
             </x-responsive-nav-link>
         </div>
 
