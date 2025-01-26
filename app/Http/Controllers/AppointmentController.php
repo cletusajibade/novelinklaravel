@@ -40,7 +40,6 @@ class AppointmentController extends Controller
             $now = Carbon::now();
             $today = Carbon::today();
             $timeThreshold = $now->addHours(1)->format('H:i:s');
-            Log::info($timeThreshold);
             $time_slots = TimeSlot::where('start_date', '>=', $today)
                 // ->where('start_time', '>=', $timeThreshold)
                 ->whereBetween('start_time', ['09:00:00', '18:00:00'])
@@ -61,25 +60,30 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $data = $request->validate([
-                'clientId' => 'required|exists:clients,id',
-                'date' => 'required|date|after_or_equal:today',
-                'time' => 'required|date_format:H:i:s',
-                'duration' => 'nullable|integer|min:1',
-                'status' => 'nullable|in:pending,confirmed,completed,canceled',
-                'location' => 'nullable|string|max:255',
-                'notes' => 'nullable|string|max:65535',
-                'reminder_at' => 'nullable|date|after_or_equal:now',
-                'cancellation_reason' => 'nullable|string|max:65535',
-                'payment_status' => 'nullable|string|max:255', //
-            ]);
 
+        $data = $request->validate([
+            'clientId' => 'required|exists:clients,id',
+            'date' => 'required|date|after_or_equal:today',
+            'time' => 'required|date_format:H:i:s',
+            'duration' => 'nullable|integer|min:1',
+            'status' => 'nullable|in:pending,confirmed,completed,canceled',
+            'location' => 'nullable|string|max:255',
+            'notes' => 'nullable|string|max:65535',
+            'reminder_at' => 'nullable|date|after_or_equal:now',
+            'cancellation_reason' => 'nullable|string|max:65535',
+            'payment_status' => 'nullable|string|max:255', //
+        ]);
+
+        try {
             // 1. First check that the client does not have a pending or confirmed appointment.
             $pending_or_confirmed_appointment = Appointment::where('client_id', $data['clientId'])
                 ->whereIn('status', ['pending', 'confirmed'])
                 ->orderBy('created_at', 'asc')
                 ->first();
+
+            Log::info($pending_or_confirmed_appointment);
+            // dd($pending_or_confirmed_appointment);
+
             if ($pending_or_confirmed_appointment) {
                 //2. Appointment already exists. The client should either reschedule or cancel.
                 // Flash an error message that can be retrieved from the view
@@ -93,7 +97,7 @@ class AppointmentController extends Controller
                     //4. Time slot found; update the 'action_by' and 'status' fields
                     $result = $time_slot->update(['action_by' => $data['clientId'], 'status' => 'booked']);
                     if ($result) {
-                        // 5. Time slot updated. Update appointments table also.
+                        // 5. Time slot updated.Create an entry in appointments table also.
                         $new_appointment = Appointment::create([
                             'client_id' => $data['clientId'],
                             'appointment_date' => $data['date'],
@@ -101,7 +105,7 @@ class AppointmentController extends Controller
                             'duration' => $data['duration'],
                             'status' => 'pending',
                             'location' => 'Zoom',
-                            'payment_status' => 'success', //This should come from Payments table
+                            'payment_status' => session('payment_status') ?? null
                         ]);
 
                         if ($new_appointment) {
@@ -117,7 +121,7 @@ class AppointmentController extends Controller
                             Mail::to($email)->send(new ConsultationCreated($first_name, $app_name));
 
                             // Mark final step 4 as completed (Appointment booked)
-                            $client->update(['registration_status' => 'step_4/4_completed']);
+                            $client->update(['registration_status' => 'step_4/4_completed:appointment_booked']);
 
                             //Finally flash a success message that can be retrieved from the view
                             session()->flash('success', 'Your appointment was successfully booked! You may close this tab or window.');

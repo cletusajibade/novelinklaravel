@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Stripe\StripeClient;
 use App\Models\Client;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ConsultationCreated;
 
 class PaymentController extends Controller
 {
@@ -21,29 +22,33 @@ class PaymentController extends Controller
             return redirect()->route('client.create'); //->with('error', 'You cannot access this page.');;
         }
 
-        $pub_key = env('STRIPE_PUB_KEY');
-        $secret_key = env('STRIPE_SECRET_KEY');
+        try {
+            $pub_key = env('STRIPE_PUB_KEY');
+            $secret_key = env('STRIPE_SECRET_KEY');
 
-        $stripe = new StripeClient($secret_key);
+            $stripe = new StripeClient($secret_key);
 
-        //Note:  All API requests expect amount values in the currency’s minor unit. For example, enter:
-        // - 1000 to charge 10 USD (or any other two-decimal currency).
-        // - 10 to charge 10 JPY (or any other zero-decimal currency).
-        // https://docs.stripe.com/currencies
-        $total_consultation_fee = session('totalAmount') ?? 0;
-        $total_consultation_fee *= 100;
+            //Note:  All API requests expect amount values in the currency’s minor unit. For example, enter:
+            // - 1000 to charge 10 USD (or any other two-decimal currency).
+            // - 10 to charge 10 JPY (or any other zero-decimal currency).
+            // https://docs.stripe.com/currencies
+            $total_consultation_fee = session('totalAmount') ?? 0;
+            $total_consultation_fee *= 100;
 
 
-        $intent = $stripe->paymentIntents->create([
-            'amount' => $total_consultation_fee,
-            'currency' => strtolower(session('currency')) ?? 'cad',
-            'automatic_payment_methods' => ['enabled' => true], //these are all the payment methods enabled on Stripe dashboard
-        ]);
+            $intent = $stripe->paymentIntents->create([
+                'amount' => $total_consultation_fee,
+                'currency' => strtolower(session('currency')) ?? 'cad',
+                'automatic_payment_methods' => ['enabled' => true], //these are all the payment methods enabled on Stripe dashboard
+            ]);
 
-        // Pass url to the view to be used by the Stripe Payment Element as return_url
-        $return_url = route('stripe.success');
+            // Pass url to the view to be used by the Stripe Payment Element as return_url
+            $return_url = route('stripe.success');
 
-        return view('stripe.checkout', compact('intent', 'total_consultation_fee', 'pub_key', 'return_url'));
+            return view('stripe.checkout', compact('intent', 'total_consultation_fee', 'pub_key', 'return_url'));
+        } catch (\Exception $e) {
+            Log::error("Error: " . $e->getMessage());
+        }
     }
 
     public function success(Request $request)
@@ -66,16 +71,18 @@ class PaymentController extends Controller
 
             // Retrieve the payment intent using the id
             $paymentIntent = $stripe->paymentIntents->retrieve($payment_intent);
+            // Store payment status in session to be used by AppointmentController
+            session(['payment_status' => $paymentIntent->status]);
 
             // Get this client from the DB using the already existing client_id in session
             $client = Client::find(session('client_id'));
             if ($client) {
                 // Mark Step 3 as completed (Payment made)
-                $result = $client->update(['registration_status' => 'step_3/4_completed']);
+                $result = $client->update(['registration_status' => 'step_3/4_completed:payment_made']);
 
                 if ($result) {
-                    // Insert payment into table
-                    $payment = Payment::create([
+                    // Insert payment info into table
+                    $new_payment = Payment::create([
                         'client_id' => $client->id,
                         'payment_id' => $paymentIntent->id,
                         'amount' => doubleval($paymentIntent->amount) / 100.0,
@@ -92,11 +99,12 @@ class PaymentController extends Controller
                         'dispute_status',
                     ]);
 
-                    if ($payment) {
+                    if ($new_payment) {
+                        //TODO: Send Payment confirmation email.
+                        // Send along an appointment booking link in case they failed to book the appointment after payment stage.
 
-                        // Update pament status in Appointments table
-                        $appointment = Appointment::where('client_id', $client->id)->where('status', 'pending')->first();
-                        $appointment->update(['payment_status' => $paymentIntent->status]);
+                        // Send email
+                        Mail::to($client->email)->send(new ConsultationCreated($client->first_name, config('app.name')));
 
                         return redirect()->back()->with('success', 'Payment successful');
                     } else {

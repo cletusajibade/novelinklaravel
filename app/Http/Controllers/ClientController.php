@@ -71,7 +71,7 @@ class ClientController extends Controller
                     'country' => $data['country'],
                     'country_of_residence' => $data['country_of_residence'],
                     'consultation_package' => json_encode($data['consultation_package']),
-                    'registration_status' => 'step_1/4_completed' // Mark Step 1 as completed (Form filled and submitted)
+                    'registration_status' => 'step_1/4_completed:form_filled' // Mark Step 1 as completed (Form filled and submitted)
                 ],
             );
 
@@ -175,7 +175,7 @@ class ClientController extends Controller
         $client = Client::find(session('client_id'));
 
         // Mark Step 2 as completed (agreement signed)
-        $client->update(['registration_status' => 'step_2/4_completed']);
+        $client->update(['registration_status' => 'step_2/4_completed:agreement_signed']);
 
         // Redirect to the paymentpage
         return redirect()->route('stripe.create');
