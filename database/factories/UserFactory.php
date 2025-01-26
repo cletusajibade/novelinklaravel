@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
-            //Note: The password line below ensures that a hashed version of 'password123' is generated and stored in a static property (static::$password) the first time it is called.
+            //Note: The password line below ensures that a hashed version of the password is generated and stored in a static property (static::$password) the first time it is called.
             //Subsequent calls will reuse the already hashed password, avoiding repeated calls to Hash::make().
             'password' => static::$password ??= Hash::make(env('PASSWORD')),
             'email_verified_at' => now(),

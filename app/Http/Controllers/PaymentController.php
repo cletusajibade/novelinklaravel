@@ -8,7 +8,9 @@ use App\Models\Client;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ConsultationCreated;
+use App\Mail\PaymentCreated;
+use App\Models\Appointment;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -82,11 +84,13 @@ class PaymentController extends Controller
 
                 if ($result) {
                     // Insert payment info into table
+                    $amount = doubleval($paymentIntent->amount) / 100.0;
+                    $currency = $paymentIntent->currency;
                     $new_payment = Payment::create([
                         'client_id' => $client->id,
                         'payment_id' => $paymentIntent->id,
-                        'amount' => doubleval($paymentIntent->amount) / 100.0,
-                        'currency' => $paymentIntent->currency,
+                        'amount' => $amount,
+                        'currency' => $currency,
                         'status' => $paymentIntent->status,
                         'stripe_customer_id',
                         'payment_method_id',
@@ -100,13 +104,20 @@ class PaymentController extends Controller
                     ]);
 
                     if ($new_payment) {
-                        //TODO: Send Payment confirmation email.
+                        // Create a new Appointment entry ahead containing the client_id, unique_token and status.
+                        // This token is used to updated appoinments table when the client comes from a link in their email
+                        $appointment = Appointment::create([
+                            'client_id' => $client->id,
+                            'payment_status' => $request->redirect_status,
+                            'unique_token' => Str::uuid(),
+                        ]);
+
+                        // Send Payment confirmation email.
                         // Send along an appointment booking link in case they failed to book the appointment after payment stage.
+                        $link = route('appointment.create', ['token' => $appointment->unique_token]);
+                        Mail::to($client->email)->send(new PaymentCreated($client->first_name, config('app.name'), strtoupper($currency) . ' $' . $amount, $link));
 
-                        // Send email
-                        Mail::to($client->email)->send(new ConsultationCreated($client->first_name, config('app.name')));
-
-                        return redirect()->back()->with('success', 'Payment successful');
+                        return redirect()->back()->with('success', 'Payment successful. Please, check your email for confirmation.');
                     } else {
                         Log::error("Error creating a new Payment");
                     }

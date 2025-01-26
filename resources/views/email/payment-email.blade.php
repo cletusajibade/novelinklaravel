@@ -32,22 +32,15 @@
                                 Dear {{ $name }},
                             </p>
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                Welcome to {{ $app_name }}, and thanks for booking a consultation session
-                                with us.
+                                We are happy to inform you that your payment has been successfully recieved.
                             </p>
-
-                            {{-- <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                 Package: {{ $package }}<br/>
-                                 Amount: {{{{ $amount }}}}
-                            </p> --}}
-
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                Please join the Zoom meeting by clicking on the link:<br />
-                                <a href="{{ env('ZOOM_URL') }}">{{ env('ZOOM_URL') }}</a>
-                                <br /><br />
-                                Or use the login details below to join on your Zoom device:
-                                <br /> <strong>Meeting ID:</strong> {{ env('ZOOM_ID') }}
-                                <br /> <strong>Passcode:</strong> {{ env('ZOOM_PASSCODE') }}
+                                Amount recieved: {{ $amount }}
+                            </p>
+                            <p style="color: #333333; font-size: 14px; line-height: 1.5;">
+                                If you have not booked a consultation session with us, please do so now with
+                                this link: {{ $link }}. <br /><br />
+                                Ignore if you have done so already.
                             </p>
 
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">If you have any question or

@@ -1,6 +1,3 @@
-@php
-    $currency = session('currency') ?? 'CAD';
-@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,7 +37,8 @@
                 {{-- Go to the appointment booking calendar --}}
                 <form action="{{ route('appointment.create') }}">
                     @csrf
-                    <p class="pb-4 pt-6">Click the button below to book your appointment now</p>
+                    <p class="pb-4 pt-6">Click the button below to book your appointment now, or use the link in your
+                        email to do so later.</p>
                     <button type="submit"
                         class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow-md">
                         Book Appointment
@@ -63,7 +61,7 @@
             @isset($total_consultation_fee)
                 <div style="display: flex; justify-content: space-between; padding: 10px 0">
                     <span class="amount">Total Amount:</span>
-                    <span class="amount">{{ $currency }} ${{ $total_consultation_fee / 100 }} </span>
+                    <span class="amount">{{ session('currency') ?? 'CAD' }} ${{ $total_consultation_fee / 100 }} </span>
                 </div>
             @endisset
 

@@ -20,6 +20,7 @@ class Appointment extends Model
         'notes',
         'reminder_at',
         'cancellation_reason',
-        'payment_status'
+        'payment_status',
+        'unique_token'
     ];
 }

@@ -30,20 +30,23 @@ Route::view('/temporary-residence', 'temporary-residence')->name('temp-res');
 Route::view('/visitor-visa', 'visitor-visa')->name('visitor-visa');
 Route::view('/work-permit', 'work-permit')->name('work-permit');
 
-// Appointment routes
-Route::get('/book-appointment', [AppointmentController::class, 'create'])->name('appointment.create');
-Route::post('/book-appointment', [AppointmentController::class, 'store'])->name('appointment.store');
+// Consultation form routes
+Route::get('/book-consultation', [ClientController::class, 'create'])->name('client.create');
+Route::post('/book-consultation', [ClientController::class, 'store'])->name('client.store');
 
+// Agreement routes
+Route::get('/terms-and-conditions', [ClientController::class, 'terms'])->name('client.terms');
+Route::post('/terms-and-conditions', [ClientController::class, 'post_terms'])->name('client.post-terms');
 
 // Stripe payment routes
 Route::get('/payment', [PaymentController::class, 'create'])->name('stripe.create');
 Route::get('/payment/success', [PaymentController::class, 'success'])->name('stripe.success');
 
-// Frontend consultation booking routes
-Route::get('/book-consultation', [ClientController::class, 'create'])->name('client.create');
-Route::post('/book-consultation', [ClientController::class, 'store'])->name('client.store');
-Route::get('/terms-and-conditions', [ClientController::class, 'terms'])->name('client.terms');
-Route::post('/terms-and-conditions', [ClientController::class, 'post_terms'])->name('client.post-terms');
+// Appointment routes
+// Note the optional parameter 'token?', this helps to check whether a client is coming from email or booking appointment immediately after payment
+Route::get('/book-appointment/{token?}', [AppointmentController::class, 'create'])->name('appointment.create');
+Route::post('/book-appointment/{token?}', [AppointmentController::class, 'store'])->name('appointment.store');
+
 
 
 // Backend dashboard routes

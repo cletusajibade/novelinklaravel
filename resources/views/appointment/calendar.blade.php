@@ -3,7 +3,6 @@
         $client_id = session('client_id');
     @endphp
 @endif
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -87,13 +86,10 @@
             <h3 class="text-lg font-bold mb-2">Book Appointment</h3>
             <p id="selected-date" class="mb-2"></p>
             <p class="mb-3">Select from the available meeting times</p>
-            {{-- <form id="time-slots-form" action="{{ route('appointment.store') }}" method="post"> --}}
             <form id="time-slots-form">
                 @csrf
                 {{-- the time slot elements are dynamically generated and appended to this div --}}
                 <div id="time-slots"></div>
-
-
                 <div class="flex justify-between gap-2">
                     <button id="book-time" class="w-2/4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Book
                         Time</button>
@@ -119,7 +115,7 @@
 
         // Time slots from database
         const timeSlotData = @json($time_slots);
-        // console.log(timeSlotData);
+        console.log(timeSlotData);
 
         let currentDate = new Date();
 

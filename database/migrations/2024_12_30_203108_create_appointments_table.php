@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Client::class); // Foreign key to Clients table
-            $table->timestamp('appointment_date');
-            $table->time('appointment_time');
+            $table->timestamp('appointment_date')->nullable();
+            $table->time('appointment_time')->nullable();
             $table->integer('duration')->nullable(); // Duration of the appointment (in minutes)
             $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled'])->default('pending');
             $table->string('location')->nullable(); // Location of the appointment, eg Zoom.
@@ -24,6 +24,7 @@ return new class extends Migration
             $table->timestamp('reminder_at')->nullable(); // Reminder notification time
             $table->text('cancellation_reason')->nullable(); // Reason for cancellation (if canceled)
             $table->string('payment_status')->nullable(); // should come from Payments table
+            $table->string('unique_token')->nullable()->unique();
             $table->timestamps();
         });
     }
