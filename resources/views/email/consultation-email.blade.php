@@ -60,7 +60,6 @@
                                 <li><span style="color: red">Note:</span> 2. Also note the time/timezone of your appointment. This is your local time. If you have issues with timezone adjustments, please reach out to us.</li>
                             </ul>
 
-
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">In the meantime, if you have any question or
                                 need assistance, please do not hesitate to reach out to us
                                 at <a href="mailto:{{ env('REPLY_TO_ADDRESS') }}">{{ env('REPLY_TO_ADDRESS') }}</a>, or by phone: <a href="tel:{{ env('PHONE') }}">{{ env('PHONE') }}</a>.

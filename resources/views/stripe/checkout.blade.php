@@ -23,7 +23,7 @@
 
 <body>
     <div class="flex items-center justify-center">
-        <div class="bg-[#231f20] w-[420px] p-6 flex items-center justify-between">
+        <div class="bg-[#231f20] w-[30%] p-6 flex items-center justify-between">
             <a href="{{ route('home') }}"> <img src="{{ asset('uploads/2020/08/novelink.png') }}" alt="Logo"
                     width="120" /> </a>
             <h2 class="text-white text-lg">Complete your payment</h2>

@@ -43,12 +43,9 @@
                                 Ignore if you have done so already.
                             </p>
 
-                            <p style="color: #333333; font-size: 14px; line-height: 1.5;">If you have any question or
+                            <p style="color: #333333; font-size: 14px; line-height: 1.5;">In the meantime, if you have any question or
                                 need assistance, please do not hesitate to reach out to us
-                                at <a href="mailto:{{ env('REPLY_TO_ADDRESS') }}">{{ env('REPLY_TO_ADDRESS') }}</a>.
-                                <br /><br />
-
-                               Or by Phone: <a href="tel:{{ env('PHONE') }}">{{ env('PHONE') }}</a>.
+                                at <a href="mailto:{{ env('REPLY_TO_ADDRESS') }}">{{ env('REPLY_TO_ADDRESS') }}</a>, or by phone: <a href="tel:{{ env('PHONE') }}">{{ env('PHONE') }}</a>.
                             </p>
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">We are here to assist you with
                                 your Canada immigration plans.</p>
