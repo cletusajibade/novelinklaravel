@@ -126,8 +126,6 @@
         // Get the client's locale
         const locale = navigator.language || navigator.userLanguage;
 
-        console.log(timezone, locale);
-
         // Time slots from database
         const timeSlotData = @json($time_slots);
         // console.log(timeSlotData);
@@ -172,8 +170,9 @@
                 cell.addEventListener("click", () => {
                     if (!cell.classList.contains("cursor-not-allowed")) {
                         // if (!cell.classList.contains("bg-red-200")) {
+                        formattedDate = formatDateToClientLocale(fullDate, timezone, locale)
                         modal.classList.remove("hidden");
-                        selectedDate.textContent = `Date: ${fullDate}`;
+                        selectedDate.textContent = `Date: ${formattedDate}`;
                         // eventName.value = "";
                         bookTimeButton.dataset.date = fullDate;
                         setTimeSlots(year, month, day);
@@ -305,18 +304,72 @@
             if (timeSlots.length > 0) {
                 timeSlots.forEach(slot => {
                     if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
+                        clientTimeAndZtimexone = MstToClientTz(slot.start_time, timezone, locale);
                         const newLabel = document.createElement('label');
                         newLabel.classList.add("flex", "items-center", "mb-4");
                         newLabel.innerHTML =
                             `<div>
                                 <input type="hidden" id="duration" name="duration" value="${slot.duration}">
                                 <input type="radio" id="${slot.start_time}" name="timeslots" value="${slot.start_time}" class="mr-2">
-                                <label for="${slot.start_time}">${slot.start_time} - ${slot.end_time}</label>
+                                <label for="${slot.start_time}">${clientTimeAndZtimexone}</label>
                             </div>`
                         timeSlotsDiv.appendChild(newLabel)
                     }
                 });
             }
+        }
+
+        function MstToClientTz(mstTime, clientTimezone, locale) {
+            // Original time in MST (Mountain Standard Time) - no seconds part (H:i format)
+            mstTime = removeSeconds(mstTime);
+
+            // Get the current date of the client
+            const currentDate = new Date();
+            const currentDateString = currentDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+            // Combine the current date with the MST time string
+            const mstDateTimeString = `${currentDateString}T${mstTime}:00-07:00`; // Assuming MST (UTC -7)
+
+            // Convert the MST time to a JavaScript Date object
+            const mstDate = new Date(mstDateTimeString);
+
+            // Convert MST time to the client's time zone using toLocaleString
+            const options = {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: clientTimezone
+            };
+            const convertedTime = mstDate.toLocaleString(locale, options);
+
+            // Get the client's timezone abbreviation (automatically adjusts for DST (daylight saving))
+            const clientTimeAbbr = new Date().toLocaleString(locale, {
+                timeZone: clientTimezone,
+                timeZoneName: 'short'
+            }).split(' ').pop();
+
+            // Return the converted time along with the timezone abbreviation
+            return convertedTime + " " + clientTimeAbbr;
+        }
+
+        function removeSeconds(timeWithSeconds) {
+            // Split the time string into hours, minutes, and seconds
+            const [hours, minutes] = timeWithSeconds.split(':');
+            return `${hours}:${minutes}`;
+        }
+
+        function formatDateToClientLocale(dateString, clientTimezone, locale) {
+            // Convert the input string to a valid JavaScript Date object
+            const date = new Date(dateString);
+
+            // Format the date using the client's locale and timezone
+            const options = {
+                year: 'numeric',
+                month: 'long', // Full month name
+                day: 'numeric',
+                timeZone: clientTimezone // Ensure it respects the client's timezone
+            };
+
+            return date.toLocaleDateString(locale, options);
         }
 
         renderCalendar();

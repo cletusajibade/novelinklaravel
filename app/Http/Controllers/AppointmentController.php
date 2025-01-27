@@ -196,8 +196,10 @@ class AppointmentController extends Controller
                             // Convert time in MST to client's timezone and locale
                             $clientTzTime = UtilHelpers::convertMstToClientTz($data['time'], $data['timezone'] ?? 'UTC', $data['locale']);
 
+                            // Convert the date to client's locale
+                            $clientDateLocale = UtilHelpers::formatDateToClientLocale($data['date'], $data['timezone'] ?? 'UTC', $data['locale']);
                             // Send email
-                            Mail::to($email)->send(new ConsultationCreated($first_name, $data['date'], $clientTzTime));
+                            Mail::to($email)->send(new ConsultationCreated($first_name, $clientDateLocale, $clientTzTime));
 
                             // Mark final step 4 as completed (Appointment booked)
                             $client->update(['registration_status' => 'step_4/4_completed:appointment_booked']);

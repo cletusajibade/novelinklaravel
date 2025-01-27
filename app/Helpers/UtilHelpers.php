@@ -120,14 +120,32 @@ class UtilHelpers
 
     public static function convertMstToClientTz($mstTimeString, $timezone, $locale)
     {
+        // Set the locale for Carbon (this will format the date/time according to the locale)
+        Carbon::setLocale($locale);
+
+        // Create the MST time in 'America/Denver' timezone
         $mstTime = Carbon::createFromFormat('H:i:s', $mstTimeString, 'America/Denver');
 
         // Get the three-letter timezone abbreviation
         $carbonDate = Carbon::now($timezone);
         $timezoneAbbreviation = $carbonDate->format('T');
 
-        // Convert to client's timezone and return
-        return $mstTime->setTimezone($timezone)->format('H:i') . " " .
-            $timezoneAbbreviation;
+        // Convert to the client's timezone and format the time using the provided locale
+        $convertedTime = $mstTime->setTimezone($timezone)->isoFormat('hh:mm A'); //12-hour format
+
+        // Return the formatted converted time with the timezone abbreviation
+        return $convertedTime . " " . $timezoneAbbreviation;
+    }
+
+    public static function formatDateToClientLocale($dateString, $timezone, $locale)
+    {
+        // Ensure the input date is treated as a date-only (no timezone adjustment)
+        $date = Carbon::createFromFormat('Y-m-d', $dateString, 'UTC');
+
+        // Set the timezone and locale
+        $date->setTimezone($timezone)->locale($locale);
+
+        // Format the date for the client's locale
+        return $date->translatedFormat('F j, Y'); // Example: "January 31, 2025"
     }
 }
