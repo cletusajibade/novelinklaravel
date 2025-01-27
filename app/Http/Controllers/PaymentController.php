@@ -45,7 +45,6 @@ class PaymentController extends Controller
             $total_consultation_fee = session('totalAmount') ?? 0;
             $total_consultation_fee *= 100;
 
-
             $intent = $stripe->paymentIntents->create([
                 'amount' => $total_consultation_fee,
                 'currency' => strtolower(session('currency')) ?? 'cad',

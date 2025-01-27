@@ -8,7 +8,6 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TimeSlotController;
-use App\Models\Appointment;
 
 // Static frontend view routes
 Route::view('/', 'home')->name('home');

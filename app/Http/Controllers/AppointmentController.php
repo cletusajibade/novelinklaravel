@@ -76,8 +76,6 @@ class AppointmentController extends Controller
             'payment_status' => 'nullable|string|max:255', //
         ]);
 
-        // Log::info(($data));
-        // dd($data);
 
         // check if this client is coming from the appointment link in the email.
         // In that case $token should exist
@@ -151,8 +149,6 @@ class AppointmentController extends Controller
 
     private function processAppointment(array $data)
     {
-
-
         try {
             // 1. Since token exists, client_id already exists and was passed from the client,
             // so we can use it to fetch the placeholder appointment created in PaymentController
@@ -162,8 +158,6 @@ class AppointmentController extends Controller
                 ->whereNull('appointment_time')
                 ->orderBy('created_at', 'asc')
                 ->first();
-
-            Log::info('placeholder_appointment: ' . $placeholder_appointment);
 
             if ($placeholder_appointment) {
                 //3. Pending appointment.
@@ -225,8 +219,6 @@ class AppointmentController extends Controller
                 ->whereNotNull('appointment_time')
                 ->orderBy('created_at', 'asc')
                 ->first();
-
-            Log::info('pending_or_confirmed_appointment: ' . $pending_or_confirmed_appointment);
 
             if ($pending_or_confirmed_appointment) {
                 session()->flash('error', 'You have a pending or an already confirmed appointment. You may reschedule, cancel or contact admin.');
