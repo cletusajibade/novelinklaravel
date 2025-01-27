@@ -199,7 +199,7 @@ class AppointmentController extends Controller
                             $client->update(['registration_status' => 'step_4/4_completed:appointment_booked']);
 
                             //Finally flash a success message that can be retrieved from the view
-                            session()->flash('success', 'Your appointment was successfully booked! You may close this tab or window.');
+                            session()->flash('success', 'Your appointment was successfully booked! Please check your email for the meeting information. You may close this tab or window.');
                             return response()->json(['message' => 'Your appointment was successfully booked!'], 200);
                         }
                         session()->flash('error', 'Error booking your appointment. Create issues (404), try again or contact the admin.');
