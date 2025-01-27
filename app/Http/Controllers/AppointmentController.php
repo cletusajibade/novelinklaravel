@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\UtilHelpers;
 use App\Models\Appointment;
 use App\Models\Client;
 use App\Models\TimeSlot;
@@ -74,6 +73,9 @@ class AppointmentController extends Controller
             'payment_status' => 'nullable|string|max:255', //
         ]);
 
+        // Log::info(($data));
+        // dd($data);
+
         // check if this client is coming from the appointment link in the email.
         // In that case $token should exist
         if ($token) {
@@ -82,78 +84,10 @@ class AppointmentController extends Controller
                 return abort(404, 'Invalid token.');
             }
 
-            try {
-                // 1. First check that the client does not have a pending or confirmed appointment.
-                $pending_or_confirmed_appointment = Appointment::where('client_id', $data['clientId'])
-                    ->whereIn('status', ['pending', 'confirmed'])
-                    ->orderBy('created_at', 'asc')
-                    ->first();
-
-                Log::info($pending_or_confirmed_appointment);
-                // dd($pending_or_confirmed_appointment);
-
-                if ($pending_or_confirmed_appointment) {
-                    //2. Appointment already exists. The client should either reschedule or cancel.
-                    // Flash an error message that can be retrieved from the view
-                    session()->flash('error', 'You have a pending or an already confirmed appointment. You may reschedule, cancel or contact admin.');
-                    return response()->json(['message' => 'Error: You have a pending or an already confirmed appointment.']);
-                } else {
-                    //3. No pending or confirmed appointment.
-                    // Get the selected TimeSlot from the time_slots table
-                    $time_slot = TimeSlot::where('start_date', $data['date'])->where('start_time', $data['time'])->first();
-                    if ($time_slot) {
-                        //4. Time slot found; update the 'action_by' and 'status' fields
-                        $result = $time_slot->update(['action_by' => $data['clientId'], 'status' => 'booked']);
-                        if ($result) {
-                            // 5. Time slot updated.Create an entry in appointments table also.
-                            $new_appointment = Appointment::create([
-                                'client_id' => $data['clientId'],
-                                'appointment_date' => $data['date'],
-                                'appointment_time' => $data['time'],
-                                'duration' => $data['duration'],
-                                'status' => 'pending',
-                                'location' => 'Zoom',
-                                'payment_status' => session('payment_status') ?? null
-                            ]);
-
-                            if ($new_appointment) {
-                                //4. New appointment created.
-                                //Get this client from the DB
-                                $client = Client::find($data['clientId']);
-
-                                $first_name = $client->first_name;
-                                $email = $client->email;
-                                $app_name = config('app.name');
-
-                                // Send email
-                                Mail::to($email)->send(new ConsultationCreated($first_name, $app_name));
-
-                                // Mark final step 4 as completed (Appointment booked)
-                                $client->update(['registration_status' => 'step_4/4_completed:appointment_booked']);
-
-                                //Finally flash a success message that can be retrieved from the view
-                                session()->flash('success', 'Your appointment was successfully booked! You may close this tab or window.');
-                                return response()->json(['message' => 'success']);
-                            } else {
-                                session()->flash('error', 'Error booking your appointment, try again or contact the admin.');
-                                return response()->json(['error' => 'Create issues'], 404);
-                            }
-                        } else {
-                            session()->flash('error', 'Error booking your appointment, try again or contact the admin.');
-                            return response()->json(['error' => 'Update issues'], 404);
-                        }
-                    } else {
-                        session()->flash('error', 'Error booking your appointment, try again or contact the admin.');
-                        return response()->json(['error' => 'No record found'], 404);
-                    }
-                }
-            } catch (\Exception $e) {
-                Log::error($e->getMessage());
-                return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
-            }
-        } else {
             return $this->processAppointment($data);
         }
+
+        return $this->processAppointment($data);
     }
 
     /**
@@ -214,18 +148,21 @@ class AppointmentController extends Controller
 
     private function processAppointment(array $data)
     {
-        return response()->json(['message' => 'Your appointment was successfully booked!', 'data' => $data], 200);
+
 
         try {
-            // 1. Since token exists, client_id already exists and was passed from the client, so we can use it to fetch the appointment.
-            $pending_appointment = Appointment::where('client_id', $data['clientId'])
+            // 1. Since token exists, client_id already exists and was passed from the client,
+            // so we can use it to fetch the placeholder appointment created in PaymentController
+            $placeholder_appointment = Appointment::where('client_id', $data['clientId'])
                 ->whereIn('status', ['pending'])
                 ->whereNull('appointment_date')
                 ->whereNull('appointment_time')
                 ->orderBy('created_at', 'asc')
                 ->first();
 
-            if ($pending_appointment) {
+            Log::info('placeholder_appointment: ' . $placeholder_appointment);
+
+            if ($placeholder_appointment) {
                 //3. Pending appointment.
                 // Get the selected TimeSlot from the time_slots table
                 $time_slot = TimeSlot::where('start_date', $data['date'])->where('start_time', $data['time'])->first();
@@ -234,7 +171,7 @@ class AppointmentController extends Controller
                     $result = $time_slot->update(['action_by' => $data['clientId'], 'status' => 'booked']);
                     if ($result) {
                         // 5. Time slot updated. Update appointments table also.
-                        $updated_appointment = $pending_appointment->update([
+                        $updated_appointment = $placeholder_appointment->update([
                             'appointment_date' => $data['date'],
                             'appointment_time' => $data['time'],
                             'duration' => $data['duration'],
@@ -271,7 +208,7 @@ class AppointmentController extends Controller
                 return response()->json(['error' => 'Time slot not available.'], 404);
             }
             // Appointment time has been booked and is either pending or confirmed. The client should either reschedule or cancel.
-            // Flash an error message that can be retrieved from the view.
+            // Also flash an error message that can be retrieved from the view.
             $pending_or_confirmed_appointment = Appointment::where('client_id', $data['clientId'])
                 ->whereIn('status', ['pending', 'confirmed'])
                 ->whereNotNull('appointment_date')
@@ -279,9 +216,12 @@ class AppointmentController extends Controller
                 ->orderBy('created_at', 'asc')
                 ->first();
 
+            Log::info('pending_or_confirmed_appointment: ' . $pending_or_confirmed_appointment);
+
             if ($pending_or_confirmed_appointment) {
                 session()->flash('error', 'You have a pending or an already confirmed appointment. You may reschedule, cancel or contact admin.');
                 return response()->json(['error' => 'Error: You have a pending or an already confirmed appointment.'], 400);
+
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
