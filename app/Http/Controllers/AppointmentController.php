@@ -173,13 +173,12 @@ class AppointmentController extends Controller
                         // 5. Time slot updated. Update appointments table also.
 
                         // First check the payments table, get the payment_id and use that to
-                        
+
                         $updated_appointment = $placeholder_appointment->update([
                             'appointment_date' => $data['date'],
                             'appointment_time' => $data['time'],
                             'duration' => $data['duration'],
                             'location' => 'Zoom',
-                            'payment_status' => session('payment_status') ?? null
                         ]);
 
                         if ($updated_appointment) {

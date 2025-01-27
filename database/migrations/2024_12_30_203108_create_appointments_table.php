@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Client;
+use App\Models\Payment;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,7 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Client::class); // Foreign key to Clients table
+            $table->foreignIdFor(Payment::class);// Foreign key to Payments table
             $table->timestamp('appointment_date')->nullable();
             $table->time('appointment_time')->nullable();
             $table->integer('duration')->nullable(); // Duration of the appointment (in minutes)
@@ -23,7 +25,6 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamp('reminder_at')->nullable(); // Reminder notification time
             $table->text('cancellation_reason')->nullable(); // Reason for cancellation (if canceled)
-            $table->string('payment_status')->nullable(); // should come from Payments table
             $table->string('unique_token')->nullable()->unique();
             $table->timestamps();
         });

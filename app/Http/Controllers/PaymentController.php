@@ -15,6 +15,14 @@ use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return view('dashboard.payments');
+    }
+
+    /**
      * Show the form for creating a new resource.
      * In our case, we are creating a payment intent
      */
@@ -104,11 +112,12 @@ class PaymentController extends Controller
                     ]);
 
                     if ($new_payment) {
-                        // Create a new Appointment entry ahead containing the client_id, unique_token and status.
-                        // This token is used to updated appoinments table when the client comes from a link in their email
+                        // Create a placeholder Appointment entry ahead containing the client_id, payment_id, and a unique_token.
+                        // The unique token is used to update appoinments table when the client comes from a link in their email
+                        // The table also gets updated otherwise.
                         $appointment = Appointment::create([
                             'client_id' => $client->id,
-                            'payment_status' => $request->redirect_status,
+                            'payment_id' => $new_payment->id,
                             'unique_token' => Str::uuid(),
                         ]);
 

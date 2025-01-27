@@ -1,12 +1,9 @@
 <?php
 
 use App\Http\Controllers\AppointmentController;
-use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\ConsultationsController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
@@ -66,7 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/time-slots', [TimeSlotController::class, 'store'])->name('time-slots.store');
     Route::get('/time-slots/{slot_id}', [TimeSlotController::class, 'edit'])->name('time-slots.edit');
 
-    Route::get('/payments', [PaymentsController::class, 'index'])->name('payments');
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments');
 
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
 

@@ -12,6 +12,7 @@ class Appointment extends Model
 
     protected $fillable = [
         'client_id',
+        'payment_id',
         'appointment_date',
         'appointment_time',
         'duration',
@@ -20,7 +21,6 @@ class Appointment extends Model
         'notes',
         'reminder_at',
         'cancellation_reason',
-        'payment_status',
         'unique_token'
     ];
 }
