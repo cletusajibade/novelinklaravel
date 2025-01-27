@@ -171,6 +171,9 @@ class AppointmentController extends Controller
                     $result = $time_slot->update(['action_by' => $data['clientId'], 'status' => 'booked']);
                     if ($result) {
                         // 5. Time slot updated. Update appointments table also.
+
+                        // First check the payments table, get the payment_id and use that to
+                        
                         $updated_appointment = $placeholder_appointment->update([
                             'appointment_date' => $data['date'],
                             'appointment_time' => $data['time'],
@@ -221,7 +224,6 @@ class AppointmentController extends Controller
             if ($pending_or_confirmed_appointment) {
                 session()->flash('error', 'You have a pending or an already confirmed appointment. You may reschedule, cancel or contact admin.');
                 return response()->json(['error' => 'Error: You have a pending or an already confirmed appointment.'], 400);
-
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());

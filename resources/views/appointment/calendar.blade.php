@@ -18,6 +18,8 @@
     <!-- Load Bundled Scripts -->
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -115,6 +117,11 @@
         const timeSlotsDiv = document.getElementById("time-slots");
         const radioButtons = document.querySelectorAll('input[name="timeslots"]');
 
+        // Set the CSRF token for all Axios requests
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute(
+            'content');
+
+
         // Time slots from database
         const timeSlotData = @json($time_slots);
         // console.log(timeSlotData);
@@ -209,36 +216,29 @@
                     duration: meetingDuration
                 };
 
-                fetch(@json(route('appointment.store')), {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                'content'), // Laravel CSRF Token
-                        },
-                        body: JSON.stringify(data),
-                    })
+                // Send POST request
+                axios.post(@json(route('appointment.store')), data)
                     .then(response => {
-                        if (!response.ok) {
-                            return response.json().then((error) => {
-                                throw new Error(error.message || 'An error occurred');
-                            });
-                        }
-                        return response.json();
-                    })
-                    .then(result => {
-                        console.log('Success:', result);
+                        console.log('response.data.message: ', response.data.message);
 
-                        // reload the page to trigger the flashed success session message
+                        // Reload the page for the flashed success message to display
                         location.reload(true);
-
-                        // You can append a query string to the URL to ensure a fresh reload:
-                        // - window.location.href = window.location.href + '?cache=' + new Date().getTime();
                     })
                     .catch(error => {
-                        console.error('Error:', error);
-                    });
+                        if (error.response) {
+                            // Server responded with a status code
+                            console.error('Error:', error.response.data.error);
+                        } else if (error.request) {
+                            // Request was made but no response received
+                            console.error('No response received:', error.request);
+                        } else {
+                            // Something else caused the error
+                            console.error('Error:', error.message);
+                        }
 
+                        // Reload the page for the flashed error message to display
+                        location.reload(true);
+                    });
 
                 renderCalendar();
             } else {
