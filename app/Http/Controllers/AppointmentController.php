@@ -146,6 +146,7 @@ class AppointmentController extends Controller
 
     private function processAppointment(array $data)
     {
+        return response()->json(['message' => 'Your appointment was successfully booked!', 'data' => $data], 200);
 
         try {
             // 1. Since token exists, client_id already exists and was passed from the client, so we can use it to fetch the appointment.

@@ -15,8 +15,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-      <!-- Load Bundled Scripts -->
-      {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    <!-- Load Bundled Scripts -->
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -78,7 +78,9 @@
                 </button>
             </div>
         </div>
-        <p>Note: Available dates are marked with <span class="text-green-600 font-bold">green</span> or <span class="text-white font-bold bg-black">white</span> text and an <span class="underline">underline</span></p>
+        <p>Note: Available dates are marked with <span class="text-green-600 font-bold">green</span> or <span
+                class="text-white font-bold bg-black">white</span> text and an <span class="underline">underline</span>
+        </p>
     </div>
 
     <div id="event-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -115,7 +117,7 @@
 
         // Time slots from database
         const timeSlotData = @json($time_slots);
-        console.log(timeSlotData);
+        // console.log(timeSlotData);
 
         let currentDate = new Date();
 
@@ -218,12 +220,14 @@
                     })
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
+                            return response.json().then((error) => {
+                                throw new Error(error.message || 'An error occurred');
+                            });
                         }
                         return response.json();
                     })
                     .then(result => {
-                        // console.log('Success:', result);
+                        console.log('Success:', result);
 
                         // reload the page to trigger the flashed success session message
                         location.reload(true);
