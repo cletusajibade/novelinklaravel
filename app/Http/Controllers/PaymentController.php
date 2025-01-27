@@ -98,7 +98,7 @@ class PaymentController extends Controller
                         'client_id' => $client->id,
                         'payment_id' => $paymentIntent->id,
                         'amount' => $amount,
-                        'currency' => $currency,
+                        'currency' => strtoupper($currency),
                         'status' => $paymentIntent->status,
                         'stripe_customer_id',
                         'payment_method_id',

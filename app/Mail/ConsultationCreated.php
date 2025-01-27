@@ -17,7 +17,7 @@ class ConsultationCreated extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(private $name, private $app_name)
+    public function __construct(private $first_name, private $date, private $time)
     {
         //
     }
@@ -32,7 +32,7 @@ class ConsultationCreated extends Mailable
             replyTo: [
                 new Address(env('REPLY_TO_ADDRESS'), env('MAIL_FROM_NAME')),
             ],
-            subject: $this->app_name . ': Consultation Recieved',
+            subject: config('app.name') . ': Consultation Recieved',
         );
     }
 
@@ -43,7 +43,7 @@ class ConsultationCreated extends Mailable
     {
         return new Content(
             view: 'email.consultation-email',
-            with: ['name' => $this->name, 'app_name' => $this->app_name]
+            with: ['first_name' => $this->first_name, 'date' => $this->date, 'time' => $this->time]
         );
     }
 

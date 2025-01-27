@@ -48,7 +48,7 @@
                                 at <a href="mailto:{{ env('REPLY_TO_ADDRESS') }}">{{ env('REPLY_TO_ADDRESS') }}</a>.
                                 <br /><br />
 
-                               <a href="tel:{{ env('PHONE') }}">Or by Phone: {{ env('PHONE') }}</a>.
+                               Or by Phone: <a href="tel:{{ env('PHONE') }}">{{ env('PHONE') }}</a>.
                             </p>
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">We are here to assist you with
                                 your Canada immigration plans.</p>

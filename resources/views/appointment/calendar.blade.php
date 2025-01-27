@@ -121,6 +121,12 @@
         axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute(
             'content');
 
+        // Get the client's timezone
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        // Get the client's locale
+        const locale = navigator.language || navigator.userLanguage;
+
+        console.log(timezone, locale);
 
         // Time slots from database
         const timeSlotData = @json($time_slots);

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to {{ $app_name }}</title>
+    <title>Welcome to {{ config('app.name') }}</title>
 </head>
 
 <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
@@ -29,11 +29,11 @@
                     <tr>
                         <td style="padding: 20px;">
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                Dear {{ $name }},
+                                Dear {{ $first_name }},
                             </p>
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                Welcome to {{ $app_name }}, and thanks for booking a consultation session
-                                with us.
+                                Welcome to {{ config('app.name') }}, and thanks for booking a consultation session
+                                with us. Below are the details of your pending appointment.
                             </p>
 
                             {{-- <p style="color: #333333; font-size: 14px; line-height: 1.5;">
@@ -42,19 +42,30 @@
                             </p> --}}
 
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">
-                                Please join the Zoom meeting by clicking on the link:<br />
-                                <a href="{{ env('ZOOM_URL') }}">{{ env('ZOOM_URL') }}</a>
-                                <br /><br />
-                                Or use the login details below to join on your Zoom device:
+                                <span style="font-weight:bold; text-decoration:underline">Meeting
+                                    Information</span><br />
+                                <strong>Date:</strong> {{ $date }}
+                                <br />
+                                <strong>Time:</strong> {{ $time }} MST.
+                                <br />
+                                <strong>Zoom Link:</strong> <a href="{{ env('ZOOM_URL') }}">{{ env('ZOOM_URL') }}</a>
+                                <br />
+                                Or use details below to join on your Zoom device:
                                 <br /> <strong>Meeting ID:</strong> {{ env('ZOOM_ID') }}
                                 <br /> <strong>Passcode:</strong> {{ env('ZOOM_PASSCODE') }}
                             </p>
 
-                            <p style="color: #333333; font-size: 14px; line-height: 1.5;">If you have any question or
+                            <ul>
+                                <li>Note: 1. Please, monitor your email for appointment confirmation from us. We will get back to you as soon as possible.</li>
+                                <li>Note: 2. Also note the time zone of your appointment. That's MST (Mountain Standard Time). Please adjust to your time zone.</li>
+                            </ul>
+
+
+                            <p style="color: #333333; font-size: 14px; line-height: 1.5;">In the meantime, if you have any question or
                                 need assistance, please do not hesitate to reach out to us
                                 at <a href="mailto:{{ env('REPLY_TO_ADDRESS') }}">{{ env('REPLY_TO_ADDRESS') }}</a>.
                                 <br /><br />
-                                <a href="tel:{{ env('PHONE') }}">Or by Phone: {{ env('PHONE') }}</a>.
+                                Or by Phone: <a href="tel:{{ env('PHONE') }}">{{ env('PHONE') }}</a>.
                             </p>
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">We are here to assist you with
                                 your Canada immigration plans.</p>
@@ -62,7 +73,7 @@
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">Best regards,</p>
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">
                                 Ruth Olasupo<br />
-                                CEO/Founder, <br /> {{ $app_name }}
+                                CEO/Founder, <br /> {{ config('app.name') }}
                             </p>
                         </td>
                     </tr>
@@ -72,7 +83,7 @@
                         <td style="border-top: 1px solid #a8a8a8; padding: 10px; text-align: center;">
                             <p style="font-size: 14px; margin: 0;">
                                 &copy; {{ date('Y') }} <a href="{{ route('home') }}"
-                                    style="text-decoration:none">{{ $app_name }}</a>.
+                                    style="text-decoration:none">{{ config('app.name') }}</a>.
                                 All
                                 rights reserved.
                             </p>

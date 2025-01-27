@@ -191,7 +191,7 @@ class AppointmentController extends Controller
                             $app_name = config('app.name');
 
                             // Send email
-                            Mail::to($email)->send(new ConsultationCreated($first_name, $app_name));
+                            Mail::to($email)->send(new ConsultationCreated($first_name, $data['date'], $data['time']));
 
                             // Mark final step 4 as completed (Appointment booked)
                             $client->update(['registration_status' => 'step_4/4_completed:appointment_booked']);
