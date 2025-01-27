@@ -46,7 +46,7 @@
                                     Information</span><br />
                                 <strong>Date:</strong> {{ $date }}
                                 <br />
-                                <strong>Time:</strong> {{ $time }} MST.
+                                <strong>Time:</strong> {{ $time }}
                                 <br />
                                 <strong>Zoom Link:</strong> <a href="{{ env('ZOOM_URL') }}">{{ env('ZOOM_URL') }}</a>
                                 <br />
@@ -56,16 +56,14 @@
                             </p>
 
                             <ul>
-                                <li>Note: 1. Please, monitor your email for appointment confirmation from us. We will get back to you as soon as possible.</li>
-                                <li>Note: 2. Also note the time zone of your appointment. That's MST (Mountain Standard Time). Please adjust to your time zone.</li>
+                                <li><span style="color: red">Note:</span> 1. Please, monitor your email for appointment confirmation from us. We will get back to you as soon as possible.</li>
+                                <li><span style="color: red">Note:</span> 2. Also note the time/timezone of your appointment. This is your local time. If you have issues with timezone adjustments, please reach out to us.</li>
                             </ul>
 
 
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">In the meantime, if you have any question or
                                 need assistance, please do not hesitate to reach out to us
-                                at <a href="mailto:{{ env('REPLY_TO_ADDRESS') }}">{{ env('REPLY_TO_ADDRESS') }}</a>.
-                                <br /><br />
-                                Or by Phone: <a href="tel:{{ env('PHONE') }}">{{ env('PHONE') }}</a>.
+                                at <a href="mailto:{{ env('REPLY_TO_ADDRESS') }}">{{ env('REPLY_TO_ADDRESS') }}</a>, or by phone: <a href="tel:{{ env('PHONE') }}">{{ env('PHONE') }}</a>.
                             </p>
                             <p style="color: #333333; font-size: 14px; line-height: 1.5;">We are here to assist you with
                                 your Canada immigration plans.</p>

@@ -117,4 +117,17 @@ class UtilHelpers
 
         return $dates;
     }
+
+    public static function convertMstToClientTz($mstTimeString, $timezone, $locale)
+    {
+        $mstTime = Carbon::createFromFormat('H:i:s', $mstTimeString, 'America/Denver');
+
+        // Get the three-letter timezone abbreviation
+        $carbonDate = Carbon::now($timezone);
+        $timezoneAbbreviation = $carbonDate->format('T');
+
+        // Convert to client's timezone and return
+        return $mstTime->setTimezone($timezone)->format('H:i') . " " .
+            $timezoneAbbreviation;
+    }
 }

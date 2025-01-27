@@ -219,7 +219,9 @@
                     clientId: @json($client_id),
                     date: bookTimeButton.dataset.date,
                     time: selectedTimeSlot,
-                    duration: meetingDuration
+                    duration: meetingDuration,
+                    timezone: timezone,
+                    locale: locale
                 };
 
                 // Send POST request

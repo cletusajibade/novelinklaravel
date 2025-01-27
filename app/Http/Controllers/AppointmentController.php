@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UtilHelpers;
 use App\Models\Appointment;
 use App\Models\Client;
 use App\Models\TimeSlot;
@@ -65,6 +66,8 @@ class AppointmentController extends Controller
             'date' => 'required|date|after_or_equal:today',
             'time' => 'required|date_format:H:i:s',
             'duration' => 'nullable|integer|min:1',
+            'timezone' => 'nullable|string',
+            'locale' => 'nullable|string',
             'status' => 'nullable|in:pending,confirmed,completed,canceled',
             'location' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:65535',
@@ -190,8 +193,11 @@ class AppointmentController extends Controller
                             $email = $client->email;
                             $app_name = config('app.name');
 
+                            // Convert time in MST to client's timezone and locale
+                            $clientTzTime = UtilHelpers::convertMstToClientTz($data['time'], $data['timezone'] ?? 'UTC', $data['locale']);
+
                             // Send email
-                            Mail::to($email)->send(new ConsultationCreated($first_name, $data['date'], $data['time']));
+                            Mail::to($email)->send(new ConsultationCreated($first_name, $data['date'], $clientTzTime));
 
                             // Mark final step 4 as completed (Appointment booked)
                             $client->update(['registration_status' => 'step_4/4_completed:appointment_booked']);
