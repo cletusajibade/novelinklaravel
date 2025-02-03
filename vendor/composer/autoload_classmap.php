@@ -29,7 +29,6 @@ return array(
     'App\\Http\\Requests\\Auth\\LoginRequest' => $baseDir . '/app/Http/Requests/Auth/LoginRequest.php',
     'App\\Http\\Requests\\ProfileUpdateRequest' => $baseDir . '/app/Http/Requests/ProfileUpdateRequest.php',
     'App\\Http\\Requests\\StoreConsultationRequest' => $baseDir . '/app/Http/Requests/StoreConsultationRequest.php',
-    'App\\Mail\\ConsultationCreated' => $baseDir . '/app/Mail/ConsultationCreated.php',
     'App\\Mail\\SendUserEmail' => $baseDir . '/app/Mail/SendUserEmail.php',
     'App\\Models\\Appointment' => $baseDir . '/app/Models/Appointment.php',
     'App\\Models\\Consultation' => $baseDir . '/app/Models/Consultation.php',

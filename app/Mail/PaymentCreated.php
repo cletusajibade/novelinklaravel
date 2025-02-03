@@ -17,7 +17,7 @@ class PaymentCreated extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(private $name, private $app_name, private $amount, private $link)
+    public function __construct(private $first_name, private $app_name, private $amount, private $links, private $packages)
     {
         //
     }
@@ -43,7 +43,7 @@ class PaymentCreated extends Mailable
     {
         return new Content(
             view: 'email.payment-email',
-            with: ['name' => $this->name, 'app_name' => $this->app_name, 'amount' => $this->amount, 'link' => $this->link]
+            with: ['first_name' => $this->first_name, 'app_name' => $this->app_name, 'amount' => $this->amount, 'links' => $this->links, 'packages' => $this->packages]
         );
     }
 

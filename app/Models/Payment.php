@@ -11,8 +11,9 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'uuid',
         'client_id',
-        'payment_id',
+        'stripe_payment_id',
         'amount',
         'currency',
         'status',

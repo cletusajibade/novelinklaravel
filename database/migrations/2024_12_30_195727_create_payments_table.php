@@ -14,8 +14,9 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Client::class); // Foreign key to Client table
-            $table->string('payment_id')->unique();
+            $table->uuid('uuid')->unique();
+            $table->foreignIdFor(Client::class)->constrained();; // Foreign key to clients table
+            $table->string('stripe_payment_id')->unique();
             $table->decimal('amount', 15, 2);
             $table->string('currency', 3);
             $table->string('status');

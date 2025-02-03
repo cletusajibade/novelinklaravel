@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->string('latest_stripe_payment_id')->unique()->nullable();
+            $table->date('latest_payment_date')->nullable();
             $table->string('first_name', length: 32);
             $table->string('last_name', length: 32);
             $table->string('email', length: 64)->unique();
@@ -39,6 +41,7 @@ return new class extends Migration
             $table->text('other_information')->nullable();
             $table->json('consultation_package')->nullable();
             $table->string('registration_status', length: 64)->nullable();
+            $table->string('unique_token')->nullable()->unique();
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use App\Mail\SendUserEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Helpers\UtilHelpers;
 
 class ClientController extends Controller
 {
@@ -21,7 +22,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::latest()->get();
+        $clients = Client::latest()->where('active', 1)->get();
         return view('dashboard.clients', compact('clients'));
     }
 
@@ -30,6 +31,10 @@ class ClientController extends Controller
      */
     public function create()
     {
+        UtilHelpers::clearSessionData();
+
+        // print_r(session()->all());
+
         $packages = ConsultationPackages::all();
 
         // Store the currency in session, to be used across app.
@@ -57,13 +62,11 @@ class ClientController extends Controller
         session(['totalAmount' => intval($totalAmount)]);
 
         try {
-
-            // Using 'updateOrCreate' function here since we are dealing with
-            // clients who can return for conultations at a later date.
-            $client = Client::updateOrCreate(
-                ['email' => $data['email']],
-                [
-                    'uuid' => Str::uuid(),
+            // Check if the client's email already exists
+            // $client = Client::find($data['email']);// Note: this line does not work because 'find()' expects a primary key to be passed, else it returns null
+            $client = Client::where('email', $data['email'])->first();
+            if ($client) {
+                $client->update([
                     'first_name' => $data['first_name'],
                     'last_name' => $data['last_name'],
                     'phone' => $data['phone'],
@@ -72,17 +75,34 @@ class ClientController extends Controller
                     'country_of_residence' => $data['country_of_residence'],
                     'consultation_package' => json_encode($data['consultation_package']),
                     'registration_status' => 'step_1/4_completed:form_filled' // Mark Step 1 as completed (Form filled and submitted)
-                ],
-            );
+                ]);
+
+            } else {
+                // Create a new client
+                $client = Client::create([
+                    'uuid' => Str::uuid(),
+                    'first_name' => $data['first_name'],
+                    'last_name' => $data['last_name'],
+                    'email' => $data['email'],
+                    'phone' => $data['phone'],
+                    'date_of_birth' => $data['date_of_birth'],
+                    'country' => $data['country'],
+                    'country_of_residence' => $data['country_of_residence'],
+                    'consultation_package' => json_encode($data['consultation_package']),
+                    'registration_status' => 'step_1/4_completed:form_filled' // Mark Step 1 as completed (Form filled and submitted)
+                ]);
+            }
 
             // Store Client ID in session
             session(['client_id' => $client->id]);
 
+            $link_reschedule = route('appointment.edit', ['token' => 'e8w6euweuwe6we7w67e6', 'payment_id'=>'ajhdajd3r686']);
+            Log::info('link_reschedule: '.$link_reschedule);
             //Redirect to the terms of agreement page
             return redirect()->route('client.terms');
         } catch (Exception $e) {
             Log::error('Error updating or creating record: ' . $e->getMessage());
-            return redirect()->back()->withInput()->withErrors(['error' => 'An error occurred while processing your application. Please try again or conatct us for assistance.']);
+            return redirect()->back()->withInput()->withErrors(['catch_error' => 'An error occurred while processing your application. Please try again or conatct us for assistance.']);
         }
     }
 
@@ -133,6 +153,8 @@ class ClientController extends Controller
 
     public function terms()
     {
+        print_r(session()->all());
+
         if (!session('client_id')) {
             return redirect()->route('client.create');
         }

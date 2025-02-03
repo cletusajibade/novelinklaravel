@@ -37,13 +37,18 @@ Route::post('/terms-and-conditions', [ClientController::class, 'post_terms'])->n
 // Stripe payment routes
 Route::get('/payment', [PaymentController::class, 'create'])->name('stripe.create');
 Route::get('/payment/success', [PaymentController::class, 'success'])->name('stripe.success');
+Route::get('/payment/error', [PaymentController::class, 'error'])->name('stripe.error');
+Route::get('/payment/error/pending', [PaymentController::class, 'pending'])->name('stripe.error.pending');
 
-// Appointment routes
-// Note the optional parameter 'token?', this helps to check whether a client is coming from email or booking appointment immediately after payment
-Route::get('/book-appointment/{token?}', [AppointmentController::class, 'create'])->name('appointment.create');
-Route::post('/book-appointment/{token?}', [AppointmentController::class, 'store'])->name('appointment.store');
+// Appointment routes. Note the optional parameter 'token?',
+// this helps to check whether a client is coming from email or booking appointment immediately after payment
+Route::get('/book-appointment/{token?}/{payment_id?}', [AppointmentController::class, 'create'])->name('appointment.create');
+Route::post('/book-appointment/{token?}/{payment_id?}', [AppointmentController::class, 'store'])->name('appointment.store');
 
+Route::get('/appointment/{appointment_uuid?}/reschedule', [AppointmentController::class, 'showRescheduleCalendar'])->name('appointment.show-reschedule-calendar');
+Route::post('/appointment/{appointment_uuid?}/reschedule', [AppointmentController::class, 'reschedule'])->name('appointment.reschedule');
 
+Route::get('/appointment/{appointment_uuid?}/cancel', [AppointmentController::class, 'cancel'])->name('appointment.cancel');
 
 // Backend dashboard routes
 Route::middleware(['auth', 'verified'])->group(function () {

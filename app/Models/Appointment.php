@@ -11,8 +11,10 @@ class Appointment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'uuid',
         'client_id',
         'payment_id',
+        'time_slot_id',
         'appointment_date',
         'appointment_time',
         'duration',
@@ -20,7 +22,6 @@ class Appointment extends Model
         'location',
         'notes',
         'reminder_at',
-        'cancellation_reason',
-        'unique_token'
+        'cancellation_reason'
     ];
 }

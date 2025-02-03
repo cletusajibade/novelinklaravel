@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Confirmation</title>
+    <title>Appointment Confirmation</title>
 </head>
 
 <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
@@ -21,44 +21,47 @@
             </tr>
         </table>
         <p style="padding: 5px; font-size: 24px; font-weight: bold; text-align: center">
-            YOUR PAYMENT IS CONFIRMED
+            YOUR APPOINTMENT IS CONFIRMED
         </p>
         <div style="padding: 10px;">
             <p>Dear {{ $first_name }},</p>
-            <p>We are happy to inform you that your payment has been successfully processed.</p>
-            <p>Your payment confirmation number is <strong>2079778271</strong>. </p>
+            <p>Welcome to {{ config('app.name') }}. Thank you for booking an appointment with us.</p>
+            <p>Your confirmation number is <strong>2079778271</strong>. Your appointment details are as below. Please do
+                not hesitate to reach out to us with the contact details below should you have any question.</p>
 
-            <h2 style="color: #333333; margin-bottom: 10px;">Payment Details</h2>
+            <h2 style="color: #333333; margin-bottom: 10px;">Appointment Details</h2>
             <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
                 <tr>
                     <th
                         style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd; background-color: #f4f4f4; color: #333333; font-weight: bold;">
-                        Amount received</th>
-                    <td style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">{{ $amount }}</td>
+                        Date</th>
+                    <td style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">{{ $date }}</td>
                 </tr>
                 <tr>
                     <th
                         style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd; background-color: #f4f4f4; color: #333333; font-weight: bold;">
-                        For Consultation Package(s)</th>
-                    <td style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">{{ $packages }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="padding-top:10px;">
-                        If you have not booked a consultation session with us, please do so now with
-                        this link
-                    </td>
+                        Time</th>
+                    <td style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">{{ $time }}</td>
                 </tr>
                 <tr>
                     <th
                         style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd; background-color: #f4f4f4; color: #333333; font-weight: bold;">
-                        Appointment Link </th>
+                        Meeting Link (Zoom)</th>
                     <td style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">
-                        {{ $links['booking'] }}.
-                        <p>Ignore if you have done so already.</p>
+                        {{ env('ZOOM_URL') }} <br />
+                        <br /> <strong>Meeting ID:</strong> {{ env('ZOOM_ID') }}
+                        <br /> <strong>Passcode:</strong> {{ env('ZOOM_PASSCODE') }}
                     </td>
                 </tr>
             </table>
-            
+
+            <h2 style="color: #333333; margin-bottom: 10px;">Quick Links</h2>
+            <p style="color: #007BFF; text-decoration: none;">
+                <a href="{{ $links['reschedule'] }}" style="color: #007BFF; text-decoration: none;">Reschedule
+                    Appointment</a> |
+                <a href="{{ $links['cancel'] }}" style="color: #007BFF; text-decoration: none;">Cancel Appointment</a>
+            </p>
+
             <h2 style="color: #333333; margin-bottom: 10px;">Contact Us</h2>
             <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
                 <tr>
@@ -72,7 +75,8 @@
                     <th
                         style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd; background-color: #f4f4f4; color: #333333; font-weight: bold;">
                         Phone</th>
-                    <td style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">{{ env('PHONE') }}</td>
+                    <td style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">{{ env('PHONE') }}
+                    </td>
                 </tr>
             </table>
             <p style="color: #333333; font-size: 14px; line-height: 1.5;">Best regards,</p>

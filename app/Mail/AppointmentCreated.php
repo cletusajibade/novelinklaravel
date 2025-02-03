@@ -10,14 +10,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ConsultationCreated extends Mailable
+class AppointmentCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(private $first_name, private $date, private $time)
+    public function __construct(private $first_name, private $date, private $time, private $links)
     {
         //
     }
@@ -32,7 +32,7 @@ class ConsultationCreated extends Mailable
             replyTo: [
                 new Address(env('REPLY_TO_ADDRESS'), env('MAIL_FROM_NAME')),
             ],
-            subject: config('app.name') . ': Consultation Recieved',
+            subject: config('app.name') . ': Appointment Booked',
         );
     }
 
@@ -42,8 +42,8 @@ class ConsultationCreated extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'email.consultation-email',
-            with: ['first_name' => $this->first_name, 'date' => $this->date, 'time' => $this->time]
+            view: 'email.appointment-email',
+            with: ['first_name' => $this->first_name, 'date' => $this->date, 'time' => $this->time, 'links'=> $this->links]
         );
     }
 

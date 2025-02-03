@@ -15,6 +15,13 @@
     </div>
     <div class="max-w-lg mx-auto mt-0 mb-5 bg-white shadow-lg rounded-bl-lg rounded-br-lg p-6">
         <h1 class="text-2xl font-bold text-center text-gray-700 mb-6">Consultation Form</h1>
+        @if ($errors->has('catch_error'))
+            <div class="alert alert-danger">
+                <x-bladewind::alert type="error" shade="dark">
+                    {{ $errors->first('catch_error') }}
+                </x-bladewind::alert>
+            </div>
+        @endif
         <form action="{{ route('client.store') }}" method="post">
             @csrf
             <div class="mb-4">

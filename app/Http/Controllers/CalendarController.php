@@ -16,7 +16,7 @@ class CalendarController extends Controller
      */
     public function index()
     {
-        return view('dashboard.calendar');
+        return view('dashboard.admin-calendar');
     }
 
     public function store(Request $request)

@@ -10,16 +10,14 @@ class TimeSlot extends Model
     /** @use HasFactory<\Database\Factories\TimeSlotFactory> */
     use HasFactory;
 
-    protected $primaryKey = 'slot_id'; // Set custom primary key
-
     protected $fillable = [
+        'client_id',
         'duration',
         'start_date',
         'start_time',
         'end_date',
         'end_time',
         'blocked',
-        'status',
-        'action_by'
+        'status'
     ];
 }

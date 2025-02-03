@@ -52,7 +52,16 @@
             </div>
         @endif
         <div class="bg-white shadow-lg rounded px-2 py-4">
-            <h1 class="text-2xl">Book appointment by selecting from the available time slots</h1>
+            @if (session('isRescheduling'))
+                <h1 class="text-xl">Reschedule your appointment by selecting from the available time slots</h1>
+                <div class="border rounded-md mt-3 p-3">
+                    <div class="underline">Current Appointment Schedule</div>
+                    <div id="currentDate"></div>
+                    <div id="currentTime"></div>
+                </div>
+            @else
+                <h1 class="text-2xl">Book appointment by selecting from the available time slots</h1>
+            @endif
         </div>
         <div class="flex flex-col bg-white shadow-lg rounded">
             <div class="flex justify-between items-center p-4 bg-white text-blue-600">
@@ -116,6 +125,8 @@
         const todayButton = document.getElementById("today-button");
         const timeSlotsDiv = document.getElementById("time-slots");
         const radioButtons = document.querySelectorAll('input[name="timeslots"]');
+        const currentAppointmentDate = document.getElementById("currentDate");
+        const currentAppointmentTime = document.getElementById("currentTime");
 
         // Set the CSRF token for all Axios requests
         axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute(
@@ -129,6 +140,14 @@
         // Time slots from database
         const timeSlotData = @json($time_slots);
         // console.log(timeSlotData);
+
+        const currentAppointment = @json($current_appointment);
+        const convertedCurrentTime = mstToClientTz(currentAppointment.start_time, timezone, locale);
+        currentAppointmentDate.innerHTML = `Date: ${currentAppointment.start_date}`;
+        currentAppointmentTime.innerHTML = `Time: ${convertedCurrentTime}`;
+
+        // Get the current route
+        const route = window.location.href;
 
         let currentDate = new Date();
 
@@ -154,7 +173,7 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const cell = document.createElement("div");
                 cell.textContent = day;
-                cell.classList.add("bg-white", "text-center", "p-4", "md:p-7", "cursor-pointer", "hover:bg-green-200");
+                cell.classList.add("bg-white", "text-center", "p-4", "md:p-4", "cursor-pointer", "hover:bg-green-200");
 
                 const fullDate = `${year}-${month + 1}-${day}`;
 
@@ -206,28 +225,29 @@
 
             const form = document.getElementById('time-slots-form');
             const formData = new FormData(form);
-            const selectedTimeSlot = formData.get('timeslots') || null;
+            // const selectedTimeSlot = formData.get('timeslots') || null;
+            const slotId = formData.get('timeslotId') || 0;
             const meetingDuration = formData.get('duration') || 1;
 
-            if (selectedTimeSlot) {
-                alert(`Are you sure you want to book ${selectedTimeSlot} for your appointment?`);
+            if (slotId > 0) {
+                alert(`Are you sure you want to book ${slotId} for your appointment?`);
                 modal.classList.add("hidden");
 
                 // Send client_id, date, time slot, and duration back to the server to process
                 const data = {
                     clientId: @json($client_id),
+                    slotId: slotId,
                     date: bookTimeButton.dataset.date,
-                    time: selectedTimeSlot,
-                    duration: meetingDuration,
+                    // time: selectedTimeSlot,
+                    // duration: meetingDuration,
                     timezone: timezone,
                     locale: locale
                 };
 
                 // Send POST request
-                axios.post(@json(route('appointment.store')), data)
+                axios.post(route, data)
                     .then(response => {
-                        console.log('response.data.message: ', response.data.message);
-
+                        // console.log('response.data.message: ', response.data.message);
                         // Reload the page for the flashed success message to display
                         location.reload(true);
                     })
@@ -294,8 +314,6 @@
         };
 
         function setTimeSlots(year, month, day) {
-            // TODO: Handle potential timezone issues effectively
-
             // clear time slots from previous iteration.
             timeSlotsDiv.innerHTML = '';
 
@@ -304,14 +322,13 @@
             if (timeSlots.length > 0) {
                 timeSlots.forEach(slot => {
                     if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
-                        clientTimeAndZtimexone = MstToClientTz(slot.start_time, timezone, locale);
+                        const convertedTime = mstToClientTz(slot.start_time, timezone, locale);
                         const newLabel = document.createElement('label');
                         newLabel.classList.add("flex", "items-center", "mb-4");
                         newLabel.innerHTML =
                             `<div>
-                                <input type="hidden" id="duration" name="duration" value="${slot.duration}">
-                                <input type="radio" id="${slot.start_time}" name="timeslots" value="${slot.start_time}" class="mr-2">
-                                <label for="${slot.start_time}">${clientTimeAndZtimexone}</label>
+                                <input type="radio" id="${slot.start_time}" name="timeslotId" value="${slot.id}" class="mr-2">
+                                <label for="${slot.start_time}">${convertedTime}</label>
                             </div>`
                         timeSlotsDiv.appendChild(newLabel)
                     }
@@ -319,7 +336,7 @@
             }
         }
 
-        function MstToClientTz(mstTime, clientTimezone, locale) {
+        function mstToClientTz(mstTime, clientTimezone, locale) {
             // Original time in MST (Mountain Standard Time) - no seconds part (H:i format)
             mstTime = removeSeconds(mstTime);
 
@@ -374,7 +391,7 @@
 
         renderCalendar();
     </script>
-    @include('includes.hide-bw-alert')
+    {{-- @include('includes.hide-bw-alert') --}}
 </body>
 
 </html>

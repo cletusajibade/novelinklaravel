@@ -31,10 +31,18 @@
     </div>
 
     <div class="mx-auto max-w-[30%] rounded-lg p-2 text-center">
-        @if (session('success'))
+        {{-- @if ($errors->has('error_pending_or_confirmed_appointment'))
+            <div class="alert alert-danger">
+                <x-bladewind::alert type="error" shade="dark">
+                    {{ $errors->first('error_pending_or_confirmed_appointment') }}
+                </x-bladewind::alert>
+            </div>
+        @endif --}}
+
+        {{-- @if (session('success'))
             <div id="success-message">
                 <x-alert type="success" :message="session('success')" />
-                {{-- Go to the appointment booking calendar --}}
+                <!-- Go to the appointment booking calendar -->
                 <form action="{{ route('appointment.create') }}">
                     @csrf
                     <p class="pb-4 pt-6">Click the button below to book your appointment now, or use the link in your
@@ -45,7 +53,7 @@
                     </button>
                 </form>
             </div>
-        @endif
+        @endif --}}
 
 
         <!-- This form inflates/loads the Stripe Payment Element  -->

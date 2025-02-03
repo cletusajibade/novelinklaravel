@@ -148,4 +148,15 @@ class UtilHelpers
         // Format the date for the client's locale
         return $date->translatedFormat('F j, Y'); // Example: "January 31, 2025"
     }
+
+    public static function clearSessionData(){
+        session()->forget('client_id');
+        session()->forget('currency');
+        session()->forget('totalAmount');
+        session()->forget('isRescheduling');
+        session()->forget('token');
+        session()->forget('stripe_payment_id');
+        session()->forget('payment_status');
+        session()->forget('payment_id');
+    }
 }
