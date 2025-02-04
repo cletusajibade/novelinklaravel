@@ -32,7 +32,6 @@ class ClientController extends Controller
     public function create()
     {
         UtilHelpers::clearSessionData();
-
         // print_r(session()->all());
 
         $packages = ConsultationPackages::all();
@@ -63,7 +62,6 @@ class ClientController extends Controller
 
         try {
             // Check if the client's email already exists
-            // $client = Client::find($data['email']);// Note: this line does not work because 'find()' expects a primary key to be passed, else it returns null
             $client = Client::where('email', $data['email'])->first();
             if ($client) {
                 $client->update([
@@ -89,15 +87,14 @@ class ClientController extends Controller
                     'country' => $data['country'],
                     'country_of_residence' => $data['country_of_residence'],
                     'consultation_package' => json_encode($data['consultation_package']),
-                    'registration_status' => 'step_1/4_completed:form_filled' // Mark Step 1 as completed (Form filled and submitted)
+                    'registration_status' => 'step_1/4_completed:form_filled', // Mark Step 1 as completed (Form filled and submitted)
+                    'unique_token' => Str::uuid()
                 ]);
             }
 
             // Store Client ID in session
             session(['client_id' => $client->id]);
 
-            $link_reschedule = route('appointment.edit', ['token' => 'e8w6euweuwe6we7w67e6', 'payment_id'=>'ajhdajd3r686']);
-            Log::info('link_reschedule: '.$link_reschedule);
             //Redirect to the terms of agreement page
             return redirect()->route('client.terms');
         } catch (Exception $e) {
@@ -153,7 +150,7 @@ class ClientController extends Controller
 
     public function terms()
     {
-        print_r(session()->all());
+        // print_r(session()->all());
 
         if (!session('client_id')) {
             return redirect()->route('client.create');

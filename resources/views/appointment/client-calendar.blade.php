@@ -1,8 +1,13 @@
 @if (session('client_id'))
-    @php
-        $client_id = session('client_id');
-    @endphp
+    @php $client_id = session('client_id'); @endphp
 @endif
+@if (session('isRescheduling'))
+    @php $isRescheduling = session('isRescheduling'); @endphp
+@endif
+@if (session('appointmentExists'))
+    @php $appointmentExists = session('appointmentExists');@endphp
+@endif
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,8 +57,16 @@
             </div>
         @endif
         <div class="bg-white shadow-lg rounded px-2 py-4">
-            @if (session('isRescheduling'))
+            @if (isset($isRescheduling))
                 <h1 class="text-xl">Reschedule your appointment by selecting from the available time slots</h1>
+                <div class="border rounded-md mt-3 p-3">
+                    <div class="underline">Current Appointment Schedule</div>
+                    <div id="currentDate"></div>
+                    <div id="currentTime"></div>
+                </div>
+            @elseif (isset($appointmentExists))
+                <h1 class="text-xl">You already have a scheduled appointment. You can reschedule your with this link
+                </h1>
                 <div class="border rounded-md mt-3 p-3">
                     <div class="underline">Current Appointment Schedule</div>
                     <div id="currentDate"></div>
@@ -141,13 +154,17 @@
         const timeSlotData = @json($time_slots);
         // console.log(timeSlotData);
 
-        const currentAppointment = @json($current_appointment);
-        const convertedCurrentTime = mstToClientTz(currentAppointment.start_time, timezone, locale);
-        currentAppointmentDate.innerHTML = `Date: ${currentAppointment.start_date}`;
-        currentAppointmentTime.innerHTML = `Time: ${convertedCurrentTime}`;
+        // Variable $current_appointment only exists during rescheduling, it does not exists during fresh appoientment creation.
+        const currentAppointment = @json($current_appointment ?? null);
+        if (currentAppointment !== null) {
+            const convertedCurrentTime = mstToClientTz(currentAppointment.start_time, timezone, locale);
+            currentAppointmentDate.innerHTML = `Date: ${currentAppointment.start_date}`;
+            currentAppointmentTime.innerHTML = `Time: ${convertedCurrentTime}`;
+        }
 
         // Get the current route
         const route = window.location.href;
+        console.log('current route: ', route);
 
         let currentDate = new Date();
 

@@ -158,5 +158,6 @@ class UtilHelpers
         session()->forget('stripe_payment_id');
         session()->forget('payment_status');
         session()->forget('payment_id');
+        session()->forget('isRescheduling');
     }
 }

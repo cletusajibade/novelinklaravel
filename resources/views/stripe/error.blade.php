@@ -1,9 +1,3 @@
-@php
-    $token = session('token') ?? '';
-    $appointment_route = route('appointment.create', ['token' => $token]);
-
-    // print_r(session()->all());
-@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -103,8 +97,6 @@
                 </svg>
                 Back to Home
             </a>
-            {{-- <a href="{{ $appointment_route }}" class="contact-link">Book
-                Appointment</a> --}}
         </div>
     </div>
 </body>

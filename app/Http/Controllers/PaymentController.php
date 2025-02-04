@@ -29,51 +29,58 @@ class PaymentController extends Controller
      */
     public function create(Request $request)
     {
-        print_r(session()->all());
+        // print_r(session()->all());
 
         // Is the client id still in session?
         if (!session('client_id')) {
-            return redirect()->route('client.create'); //->with('error', 'You cannot access this page.');;
+            return redirect()->route('client.create');
         }
 
         // If for some reason this client id in session no longer exists in the DB,
         // redirect to create a new consulation.
-        $client = Client::find(session('client_id'))->first();
+        $client = Client::find(session('client_id'));
         if (!$client) {
             return redirect()->route('client.create');
         }
 
-        // This client should only make payment if a previous appointment is not 'pending' or 'confirmed' and payment 'succeeded'.
-        $paid_but_pending_or_confirmed_appointment = Appointment::join('payments', 'appointments.payment_id', '=', 'payments.id')
-            ->where('appointments.client_id', session('client_id'))
-            ->whereIn('appointments.status', ['pending', 'confirmed'])
-            ->whereNotNull('appointments.time_slot_id')
-            ->where('payments.status', 'succeeded')
-            ->orderBy('appointments.created_at', 'asc')
-            ->first();
-
-            Log::info("pending_or_confirmed_appointment: ".$paid_but_pending_or_confirmed_appointment);
-
-        // Retrieve stripe payment id from clients_table
+        // Retrieve the latest stripe payment id of this Client from clients_table
         $stripe_payment_id = $client->pluck('latest_stripe_payment_id');
 
-        Log::info('stripe_payment_id from clients table: '.$stripe_payment_id );
+        Log::info('stripe_payment_id from clients table: '.$stripe_payment_id);
 
-        // Get this payment from the DB
-        $payment_status = Payment::where('stripe_payment_id', $stripe_payment_id[0])->pluck('status');
+        // Check if this payment exists in the appointments table
+        if($stripe_payment_id){
+            $payment = Payment::where('stripe_payment_id', $stripe_payment_id[0])->where('status','succeeded')->first();
+            if($payment){
+                $payment_exists = $payment;
+                $payment_id = $payment->id;
+                $latest_payment_in_appointments_table = Appointment::where('payment_id', $payment_id)->first();
+                Log::info('latest_payment_in_appointments_table: '.$latest_payment_in_appointments_table);
 
-        // dd($payment_status);
-        // $payment_exists = $payment_status ? ($payment_status[0] == 'succeeded'? true : false): null;
-        $payment_exists = is_array($payment_status) && isset($payment_status[0]) && $payment_status[0] === 'succeeded';
+                $latest_pending_or_confirmed_appointment = Appointment::where('payment_id',$payment_id)
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->first();
+                Log::info('latest_pending_or_confirmed_appointment: '.$latest_pending_or_confirmed_appointment);
+            }
+        }
+
+        // Check if there is any previous pending or confirmed appointment
+        $previous_pending_or_confirmed_appointment = Appointment::where('client_id',$client->id)
+        ->whereIn('status', ['pending', 'confirmed'])
+        ->first();
+        Log::info('previous_pending_or_confirmed_appointment: '.$previous_pending_or_confirmed_appointment);
 
 
-        Log::info('payment_exists: '.$payment_exists );
-
-
-        if ($paid_but_pending_or_confirmed_appointment) {
+        if ($previous_pending_or_confirmed_appointment){
             return redirect()->route('stripe.error');
-        } else if(is_null($paid_but_pending_or_confirmed_appointment) and $payment_exists){
+        }
+        else if (isset($latest_payment_in_appointments_table) and !$latest_payment_in_appointments_table) {
+            return redirect()->route('stripe.error.pending');
+        }
+        else if(isset($latest_payment_in_appointments_table) and ($latest_payment_in_appointments_table and (isset($latest_pending_or_confirmed_appointment) and $latest_pending_or_confirmed_appointment))){
             session(['token' => $client->unique_token]);
+            return redirect()->route('stripe.error');
+        }else if(isset($payment_exists) and $payment_exists){
             return redirect()->route('stripe.error.pending');
         }
          else {
@@ -166,11 +173,6 @@ class PaymentController extends Controller
                     // Store payment id in session to be used in Appointment controller
                     session(['payment_id' => $new_payment->id]);
 
-                    // Assign a unique token to the client
-                    // This token is used to retrieve a client and in turn to check payment info before booking an appointment.
-                    $client->unique_token = Str::uuid();
-                    $client->save();
-
                     // Convert the consultation packages JSON string to array
                     $array_packages = json_decode($client->consultation_package);
 
@@ -181,7 +183,7 @@ class PaymentController extends Controller
                     // Send Payment confirmation email.
                     // Send along an appointment booking and rescheduling links with the unique token and payment_id in case they failed to book the appointment after payment stage.
                     // This enables the client to book an appointment at a later time
-                    $link_book = route('appointment.create', ['token' => $client->unique_token, 'payment_id' => $new_payment->uuid]);
+                    $link_book = route('appointment.create', ['token' => $client->unique_token, 'payment_uuid' => $new_payment->uuid]);
                     Log::info('$link_book: '.$link_book);
                     $links = ['booking' => $link_book];
                     Mail::to($client->email)->send(new PaymentCreated($client->first_name, config('app.name'), strtoupper($currency) . ' $' . $amount, $links, $str_packages));
