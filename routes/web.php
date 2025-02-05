@@ -37,7 +37,7 @@ Route::post('/consultation/terms-and-conditions', [ClientController::class, 'pos
 // Stripe payment routes
 Route::get('/payment', [PaymentController::class, 'create'])->name('stripe.create');
 Route::get('/payment/success', [PaymentController::class, 'success'])->name('stripe.success');
-Route::get('/payment/info', [PaymentController::class, 'error'])->name('stripe.error');
+Route::get('/payment/info/{token?}/{appointment_uuid?}', [PaymentController::class, 'error'])->name('stripe.error');
 Route::get('/payment/info/confirmed', [PaymentController::class, 'pending'])->name('stripe.error.pending');
 
 // Appointment routes. Note the optional parameter 'token?',
@@ -48,7 +48,8 @@ Route::post('/book-appointment/{token?}/{payment_uuid?}', [AppointmentController
 Route::get('/appointment/{appointment_uuid?}/reschedule', [AppointmentController::class, 'showRescheduleCalendar'])->name('appointment.show-reschedule-calendar');
 Route::post('/appointment/{appointment_uuid?}/reschedule', [AppointmentController::class, 'reschedule'])->name('appointment.reschedule');
 
-Route::get('/appointment/{appointment_uuid?}/cancel', [AppointmentController::class, 'cancel'])->name('appointment.cancel');
+Route::get('/appointment/{appointment_uuid?}/cancel', [AppointmentController::class, 'showCancelForm'])->name('appointment.cancel');
+Route::post('/appointment/{appointment_uuid?}/cancel', [AppointmentController::class, 'cancel'])->name('cancel');
 
 // Backend dashboard routes
 Route::middleware(['auth', 'verified'])->group(function () {

@@ -44,13 +44,13 @@ class PaymentController extends Controller
         }
 
         // Retrieve the latest stripe payment id of this Client from clients_table
-        $stripe_payment_id = $client->pluck('latest_stripe_payment_id');
+        $stripe_payment_id = $client->latest_stripe_payment_id;
 
         Log::info('stripe_payment_id from clients table: '.$stripe_payment_id);
 
         // Check if this payment exists in the appointments table
         if($stripe_payment_id){
-            $payment = Payment::where('stripe_payment_id', $stripe_payment_id[0])->where('status','succeeded')->first();
+            $payment = Payment::where('stripe_payment_id', $stripe_payment_id)->where('status','succeeded')->first();
             if($payment){
                 $payment_exists = $payment;
                 $payment_id = $payment->id;
@@ -72,14 +72,13 @@ class PaymentController extends Controller
 
 
         if ($previous_pending_or_confirmed_appointment){
-            return redirect()->route('stripe.error');
+            return redirect()->route('stripe.error',['token'=>$client->unique_token, 'appointment_uuid'=>$previous_pending_or_confirmed_appointment->uuid]);
         }
         else if (isset($latest_payment_in_appointments_table) and !$latest_payment_in_appointments_table) {
             return redirect()->route('stripe.error.pending');
         }
         else if(isset($latest_payment_in_appointments_table) and ($latest_payment_in_appointments_table and (isset($latest_pending_or_confirmed_appointment) and $latest_pending_or_confirmed_appointment))){
-            session(['token' => $client->unique_token]);
-            return redirect()->route('stripe.error');
+            return redirect()->route('stripe.error',['token'=>$client->unique_token, 'appointment_uuid'=>$latest_pending_or_confirmed_appointment->uuid]);
         }else if(isset($payment_exists) and $payment_exists){
             return redirect()->route('stripe.error.pending');
         }
@@ -198,13 +197,20 @@ class PaymentController extends Controller
         }
     }
 
-    public function error()
+    public function error(string $unique_token=null, string $appointment_uuid=null)
     {
         if (!session()->has('client_id')) {
             return redirect()->route('client.create');
         }
 
-        return view('stripe.error');
+        if($unique_token and $appointment_uuid){
+            $client = Client::where('unique_token', $unique_token)->first();
+            $first_name = $client->first_name;
+            $reschedule_link = route('appointment.show-reschedule-calendar', ['appointment_uuid'=>$appointment_uuid]);
+            return view('stripe.error', compact('first_name','reschedule_link'));
+        }else{
+            return view('stripe.error');
+        }
     }
 
     public function pending()

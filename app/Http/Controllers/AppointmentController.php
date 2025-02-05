@@ -37,7 +37,7 @@ class AppointmentController extends Controller
         // Remove this variable from session storage,
         // we are crearing a new appointment not rescheduling.
         session()->forget('isRescheduling');
-         Log::info(session()->all());
+        //  Log::info(session()->all());
 
         // check if this client is routing to the /book-appointment route from their email.
         // In that case $client_token and $payment_uuid should exist
@@ -76,15 +76,19 @@ class AppointmentController extends Controller
 
 
             if($previous_pending_or_confirmed_appointment){
+                Log::info("cond 1");
                 return redirect()->route('stripe.error');
             }
             if(isset($payment_in_appointments_table) and !$payment_in_appointments_table){
+                Log::info("cond 2");
                 return redirect()->route('appointment.create');
             }
             else if (isset($payment_in_appointments_table) and ($payment_in_appointments_table and  (isset($pending_or_confirmed_appointment) and $pending_or_confirmed_appointment))) {
+                Log::info("cond 3");
                 return redirect()->route('stripe.error');
             }
             else if(isset($payment_exists) and $payment_exists){
+                Log::info("cond 4");
                 return redirect()->route('stripe.error.pending');
             }
             else {
@@ -138,12 +142,12 @@ class AppointmentController extends Controller
                     $result = $time_slot->update(['client_id' => $data['clientId'], 'status' => 'booked']);
                     if ($result) {
                         // Retrieve the latest stripe payment id of this Client from clients_table
-                        $stripe_payment_id = $client->pluck('latest_stripe_payment_id');
+                        $stripe_payment_id = $client->latest_stripe_payment_id;
 
                         Log::info('stripe_payment_id from clients table: '.$stripe_payment_id);
 
                         // Get payment id from payments table
-                        $payment = Payment::where('stripe_payment_id', $stripe_payment_id[0])->where('status','succeeded')->first();
+                        $payment = Payment::where('stripe_payment_id', $stripe_payment_id)->where('status','succeeded')->first();
                         $payment_id = $payment->id;
 
                         // Create a new appointment.
@@ -202,65 +206,78 @@ class AppointmentController extends Controller
             // Get the client using the id in session storage
             $client = Client::find(session('client_id'));
 
-            try{
-                $time_slot = TimeSlot::find($data['slotId']);
-                if ($time_slot) {
-                    // Time slot found; update the 'client_id' and 'status' fields
-                    $result = $time_slot->update(['client_id' => $data['clientId'], 'status' => 'booked']);
-                    if ($result) {
-                        // Retrieve the latest stripe payment id of this Client from clients_table
-                        $stripe_payment_id = $client->pluck('latest_stripe_payment_id');
+            $pending_or_confirmed_appointment = Appointment::where('client_id', $data['clientId'])
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->whereNotNull('time_slot_id')
+                ->whereNotNull('payment_id')
+                ->orderBy('created_at', 'asc')
+                ->first();
 
-                        Log::info('stripe_payment_id from clients table: '.$stripe_payment_id);
+            if(!$pending_or_confirmed_appointment ){
+                try{
+                    $time_slot = TimeSlot::find($data['slotId']);
+                    if ($time_slot) {
+                        // Time slot found; update the 'client_id' and 'status' fields
+                        $result = $time_slot->update(['client_id' => $data['clientId'], 'status' => 'booked']);
+                        if ($result) {
+                            // Retrieve the latest stripe payment id of this Client from clients_table
+                            $stripe_payment_id = $client->latest_stripe_payment_id;
 
-                        // Get payment id from payments table
-                        $payment = Payment::where('stripe_payment_id', $stripe_payment_id[0])->where('status','succeeded')->first();
-                        $payment_id = $payment->id;
+                            Log::info('stripe_payment_id from clients table: '.$stripe_payment_id);
 
-                        // Create a new appointment.
-                        $new_appointment = Appointment::create([
-                            'uuid'=>Str::uuid(),
-                            'client_id' => $data['clientId'],
-                            'payment_id' => $payment_id,
-                            'time_slot_id' => $time_slot->id,
-                            'status' => 'confirmed',
-                            'location' => 'Zoom',
-                        ]);
+                            // Get payment id from payments table
+                            $payment = Payment::where('stripe_payment_id', $stripe_payment_id)->where('status','succeeded')->first();
+                            $payment_id = $payment->id;
 
-                        if ($new_appointment) {
+                            // Create a new appointment.
+                            $new_appointment = Appointment::create([
+                                'uuid'=>Str::uuid(),
+                                'client_id' => $data['clientId'],
+                                'payment_id' => $payment_id,
+                                'time_slot_id' => $time_slot->id,
+                                'status' => 'confirmed',
+                                'location' => 'Zoom',
+                            ]);
 
-                            $first_name = $client->first_name;
-                            $email = $client->email;
+                            if ($new_appointment) {
 
-                            // Convert time in MST to client's timezone and locale
-                            $clientTzTime = UtilHelpers::convertMstToClientTz($time_slot->start_time, $data['timezone'] ?? 'UTC', $data['locale']);
+                                $first_name = $client->first_name;
+                                $email = $client->email;
 
-                            // Convert the date to client's locale
-                            $clientDateLocale = UtilHelpers::formatDateToClientLocale($data['date'], $data['timezone'] ?? 'UTC', $data['locale']);
+                                // Convert time in MST to client's timezone and locale
+                                $clientTzTime = UtilHelpers::convertMstToClientTz($time_slot->start_time, $data['timezone'] ?? 'UTC', $data['locale']);
 
-                            // Send email
-                            $link_reschedule = route('appointment.show-reschedule-calendar', ['appointment_uuid'=>$new_appointment->uuid]);
-                            $link_cancel = route('appointment.cancel', ['appointment_uuid'=>$new_appointment->uuid]);
-                            Mail::to($email)->send(new AppointmentCreated($first_name, $clientDateLocale, $clientTzTime, ['reschedule' => $link_reschedule, 'cancel' => $link_cancel]));
+                                // Convert the date to client's locale
+                                $clientDateLocale = UtilHelpers::formatDateToClientLocale($data['date'], $data['timezone'] ?? 'UTC', $data['locale']);
 
-                            // Mark final step 4 as completed (Appointment booked)
-                            $client->update(['registration_status' => 'step_4/4_completed:appointment_booked']);
+                                // Send email
+                                $link_reschedule = route('appointment.show-reschedule-calendar', ['appointment_uuid'=>$new_appointment->uuid]);
+                                $link_cancel = route('appointment.cancel', ['appointment_uuid'=>$new_appointment->uuid]);
+                                Mail::to($email)->send(new AppointmentCreated($first_name, $clientDateLocale, $clientTzTime, ['reschedule' => $link_reschedule, 'cancel' => $link_cancel]));
 
-                            //Finally flash a success message that can be retrieved from the view
-                            session()->flash('success', 'Your appointment was successfully booked! Please check your email for the meeting information. You may close this tab or window.');
-                            return response()->json(['message' => 'Your appointment was successfully booked!'], 200);
+                                // Mark final step 4 as completed (Appointment booked)
+                                $client->update(['registration_status' => 'step_4/4_completed:appointment_booked']);
+
+                                //Finally flash a success message that can be retrieved from the view
+                                session()->flash('success', 'Your appointment was successfully booked! Please check your email for the meeting information. You may close this tab or window.');
+                                return response()->json(['message' => 'Your appointment was successfully booked!'], 200);
+                            }
+                            session()->flash('error', 'Error booking your appointment. Create issues (404), try again or contact the admin.');
+                            return response()->json(['error' => 'Failed to update appointment.'], 500);
                         }
-                        session()->flash('error', 'Error booking your appointment. Create issues (404), try again or contact the admin.');
-                        return response()->json(['error' => 'Failed to update appointment.'], 500);
+                        session()->flash('error', 'Error booking your appointment. Update issues (404), try again or contact the admin.');
+                        return response()->json(['error' => 'Update issues'], 404);
                     }
-                    session()->flash('error', 'Error booking your appointment. Update issues (404), try again or contact the admin.');
-                    return response()->json(['error' => 'Update issues'], 404);
+                    session()->flash('error', 'Error booking your appointment. No record found (404), try again or contact the admin.');
+                    return response()->json(['error' => 'Time slot not available.'], 404);
+                } catch (\Exception $e) {
+                    Log::error($e->getMessage());
+                    return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
                 }
-                session()->flash('error', 'Error booking your appointment. No record found (404), try again or contact the admin.');
-                return response()->json(['error' => 'Time slot not available.'], 404);
-            } catch (\Exception $e) {
-                Log::error($e->getMessage());
-                return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
+            }
+            else{
+                 session()->flash('error', 'You have a pending or an already confirmed appointment. You may reschedule, cancel or contact admin.');
+                return response()->json(['error' => 'Error: You have a pending or an already confirmed appointment.'], 400);
             }
         }
     }
@@ -365,35 +382,59 @@ class AppointmentController extends Controller
         }
     }
 
-    public function cancel(string $token = null, string $appointment_id = null, string $payment_id = null)
+    public function showCancelForm(string $appointment_uuid)
     {
         // check if this client is routing to the reschedule-appointment link from their email.
         // In that case $token should exist
-        if ($token and $payment_id) {
-            $client = Client::where('unique_token', $token)->first();
-            $payment = Payment::where('payment_id', $payment_id)->first();
+        if ($appointment_uuid) {
+            $appointment = Appointment::where('uuid', $appointment_uuid)->first();
+            $time_slot_id = $appointment->time_slot_id;
+            $client_id = $appointment->client_id;
 
-            if (!$client) {
-                return abort(404, 'Invalid token.');
-            }
-            if (!$payment) {
-                return abort(404, 'Invalid link.');
-            }
+            $client = Client::find($client_id);
+            $first_name = $client->first_name;
+            $last_name = $client->last_name;
 
-            // set a rescheduling flag
-            session(['isCanceling' => true]);
+            $time_slot = TimeSlot::find($time_slot_id);
+            $date = $time_slot->start_date;
+            $time = $time_slot->start_time;
 
-            // Store the client_id in session. This is needed going forward.
-            session(['client_id' => $client->id]);
+            return view('appointment.cancel', compact('client_id', 'first_name', 'last_name', 'date','time'));
+        }
+        else {
+            return abort(404, 'No appointment found');
+        }
+    }
 
-            // Load time slots and pass them to the calendar view
-            $time_slots = $this->loadTimeSlots();
+    public function cancel(Request $request, string $appointment_uuid)
+    {
+         $data = $request->validate([
+            'clientId' => 'required|exists:clients,id',
+            'timezone' => 'nullable|string',
+            'locale' => 'nullable|string',
+        ]);
 
-            return view('appointment.client-calendar', compact('time_slots'));
-        } else {
-            // Token is null or Client is not coming from email.
-            // They are hitting the route "/reschedule-appointment" directly.
+        Log::info($data );
 
+        // check if this client is routing to the reschedule-appointment link from their email.
+        // In that case $token should exist
+        if ($appointment_uuid) {
+            $appointment = Appointment::where('uuid', $appointment_uuid)->first();
+            $time_slot_id = $appointment->time_slot_id;
+            $client_id = $appointment->client_id;
+
+            $client = Client::find($client_id);
+            $first_name = $client->first_name;
+            $last_name = $client->last_name;
+
+            $time_slot = TimeSlot::find($time_slot_id);
+            $date = $time_slot->start_date;
+            $time = $time_slot->start_time;
+
+            //Finally flash a success message that can be retrieved from the view
+            session()->flash('success', 'Your appointment was successfully cancelled! Please check your email for next steps or reach out to us with any questions.');
+        }
+        else {
             return abort(404, 'No appointment found');
         }
     }
