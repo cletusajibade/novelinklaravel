@@ -28,7 +28,7 @@
                     Are you really sure you want to delete <b class="title"></b>?
                     This action cannot be reversed.
                 </x-bladewind::modal>
-                <x-bladewind::table :data="$data" include_columns="client_id,appointment_date,appointment_time,status,notes,payment_id"
+                <x-bladewind::table :data="$data" include_columns="client_id,appointment_date,appointment_time,status,notes"
                     paginated="true" page_size="10" show_row_numbers="true" show_total_pages="true"
                     pagination_style="arrows" :action_icons="$action_icons" searchable="true"
                     no_data_message="No time slots yet" />

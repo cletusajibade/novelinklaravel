@@ -23,7 +23,17 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::latest()->get();
+        // $appointments = Appointment::latest()->get();
+        $appointments = Appointment::join('time_slots', 'appointments.time_slot_id', '=', 'time_slots.id')
+            ->select(
+                'appointments.*',
+                'time_slots.start_date as appointment_date',
+                'time_slots.start_time as appointment_time',
+                'time_slots.duration as duration'
+            )
+            ->orderBy('appointments.created_at', 'desc')
+            ->get();
+
         return view('dashboard.appointments', compact('appointments'));
     }
 
