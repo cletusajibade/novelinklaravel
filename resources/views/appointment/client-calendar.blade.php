@@ -246,8 +246,12 @@
             const slotId = formData.get('timeslotId') || 0;
             const meetingDuration = formData.get('duration') || 1;
 
+            // time-label has been inflated dynamically, so it's available for reference here.
+            const timeLabel = document.getElementById('time-label');
+            const timeText = timeLabel.textContent;
+
             if (slotId > 0) {
-                alert(`Are you sure you want to book ${slotId} for your appointment?`);
+                alert(`Are you sure you want to book ${timeText} for your appointment?`);
                 modal.classList.add("hidden");
 
                 // Send client_id, date, time slot, and duration back to the server to process
@@ -345,7 +349,7 @@
                         newLabel.innerHTML =
                             `<div>
                                 <input type="radio" id="${slot.start_time}" name="timeslotId" value="${slot.id}" class="mr-2">
-                                <label for="${slot.start_time}">${convertedTime}</label>
+                                <label for="${slot.start_time}" id="time-label">${convertedTime}</label>
                             </div>`
                         timeSlotsDiv.appendChild(newLabel)
                     }
