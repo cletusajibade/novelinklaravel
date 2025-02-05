@@ -20,7 +20,8 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        return view('dashboard.payments');
+        $payments = Payment::latest()->get();
+        return view('dashboard.payments', compact('payments'));
     }
 
     /**

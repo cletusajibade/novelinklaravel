@@ -32,7 +32,7 @@ class AppointmentCanceled extends Mailable
             replyTo: [
                 new Address(env('REPLY_TO_ADDRESS'), env('MAIL_FROM_NAME')),
             ],
-            subject:'Yourt Appointment Has Been Canceled',
+            subject:'Your Appointment Has Been Canceled',
         );
     }
 
