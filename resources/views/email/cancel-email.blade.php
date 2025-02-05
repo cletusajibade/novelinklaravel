@@ -21,13 +21,11 @@
             </tr>
         </table>
         <p style="padding: 5px; font-size: 24px; font-weight: bold; text-align: center">
-            YOUR APPOINTMENT IS CONFIRMED
+            YOUR APPOINTMENT HAS BEEN CANCELED
         </p>
         <div style="padding: 10px;">
             <p>Dear {{ $first_name }},</p>
-            <p>Welcome to {{ config('app.name') }}. Thank you for booking an appointment with us.</p>
-            <p>Your confirmation number is <strong>{{$confirmation_no}}</strong>. Your appointment details are as below. Please do
-                not hesitate to reach out to us with the contact details below should you have any question.</p>
+            <p>We are glad to inform you that your earlier scheduled appointment has been canceled, at your request. </p>
 
             <h2 style="color: #333333; margin-bottom: 10px;">Appointment Details</h2>
             <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
@@ -43,24 +41,7 @@
                         Time</th>
                     <td style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">{{ $time }}</td>
                 </tr>
-                <tr>
-                    <th
-                        style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd; background-color: #f4f4f4; color: #333333; font-weight: bold;">
-                        Meeting Link (Zoom)</th>
-                    <td style="text-align: left; padding: 10px; border-bottom: 1px solid #ddd;">
-                        {{ env('ZOOM_URL') }} <br />
-                        <br /> <strong>Meeting ID:</strong> {{ env('ZOOM_ID') }}
-                        <br /> <strong>Passcode:</strong> {{ env('ZOOM_PASSCODE') }}
-                    </td>
-                </tr>
             </table>
-
-            <h2 style="color: #333333; margin-bottom: 10px;">Quick Links</h2>
-            <p style="color: #007BFF; text-decoration: none;">
-                <a href="{{ $links['reschedule'] }}" style="color: #007BFF; text-decoration: none;">Reschedule
-                    Appointment</a> |
-                <a href="{{ $links['cancel'] }}" style="color: #007BFF; text-decoration: none;">Cancel Appointment</a>
-            </p>
 
             <h2 style="color: #333333; margin-bottom: 10px;">Contact Us</h2>
             <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">

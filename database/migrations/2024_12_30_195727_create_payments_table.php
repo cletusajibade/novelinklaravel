@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('amount', 15, 2);
             $table->string('currency', 3);
             $table->string('status');
+            $table->string('confirmation_no')->nullable();
             $table->string('stripe_customer_id')->nullable();
             $table->string('payment_method_id')->nullable();
             $table->string('payment_method_type')->nullable();

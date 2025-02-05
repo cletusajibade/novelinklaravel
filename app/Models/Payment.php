@@ -17,6 +17,7 @@ class Payment extends Model
         'amount',
         'currency',
         'status',
+        'confirmation_no',
         'stripe_customer_id',
         'payment_method_id',
         'payment_method_type',

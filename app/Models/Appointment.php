@@ -19,6 +19,7 @@ class Appointment extends Model
         'appointment_time',
         'duration',
         'status',
+        'confirmation_no',
         'location',
         'notes',
         'reminder_at',

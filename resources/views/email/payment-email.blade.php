@@ -26,7 +26,7 @@
         <div style="padding: 10px;">
             <p>Dear {{ $first_name }},</p>
             <p>We are happy to inform you that your payment has been successfully processed.</p>
-            <p>Your payment confirmation number is <strong>2079778271</strong>. </p>
+            <p>Your payment confirmation number is <strong>{{$confirmation_no}}</strong>. </p>
 
             <h2 style="color: #333333; margin-bottom: 10px;">Payment Details</h2>
             <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
@@ -58,7 +58,7 @@
                     </td>
                 </tr>
             </table>
-            
+
             <h2 style="color: #333333; margin-bottom: 10px;">Contact Us</h2>
             <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
                 <tr>

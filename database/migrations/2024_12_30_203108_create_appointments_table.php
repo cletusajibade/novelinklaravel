@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignIdFor(Payment::class)->nullable()->constrained();
             $table->foreignIdFor(TimeSlot::class)->nullable()->constrained();
             $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled'])->default('pending');
+            $table->string('confirmation_no')->nullable();
             $table->string('location')->nullable();
             $table->text('notes')->nullable();
             $table->timestamp('reminder_at')->nullable();

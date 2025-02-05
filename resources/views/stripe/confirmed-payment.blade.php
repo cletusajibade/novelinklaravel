@@ -1,3 +1,4 @@
+
 @php
     $token = session('token') ?? '';
     $appointment_route = route('appointment.create', ['token' => $token]);

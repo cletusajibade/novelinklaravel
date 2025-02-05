@@ -17,7 +17,7 @@ class AppointmentCreated extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(private $first_name, private $date, private $time, private $links)
+    public function __construct(private $first_name, private $date, private $time, private $confirmation_no, private $links)
     {
         //
     }
@@ -32,7 +32,7 @@ class AppointmentCreated extends Mailable
             replyTo: [
                 new Address(env('REPLY_TO_ADDRESS'), env('MAIL_FROM_NAME')),
             ],
-            subject: config('app.name') . ': Appointment Booked',
+            subject: 'Appointment Booked',
         );
     }
 
@@ -43,7 +43,7 @@ class AppointmentCreated extends Mailable
     {
         return new Content(
             view: 'email.appointment-email',
-            with: ['first_name' => $this->first_name, 'date' => $this->date, 'time' => $this->time, 'links'=> $this->links]
+            with: ['first_name' => $this->first_name, 'date' => $this->date, 'time' => $this->time,'confirmation_no'=>$this->confirmation_no, 'links'=> $this->links]
         );
     }
 

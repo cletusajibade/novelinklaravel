@@ -10,14 +10,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PaymentCreated extends Mailable
+class AppointmentCanceled extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(private $first_name, private $app_name, private $amount, private $links, private $packages, private $confirmation_no)
+    public function __construct(private $first_name, private $date, private $time)
     {
         //
     }
@@ -32,7 +32,7 @@ class PaymentCreated extends Mailable
             replyTo: [
                 new Address(env('REPLY_TO_ADDRESS'), env('MAIL_FROM_NAME')),
             ],
-            subject: 'Payment Recieved',
+            subject:'Yourt Appointment Has Been Canceled',
         );
     }
 
@@ -42,8 +42,8 @@ class PaymentCreated extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'email.payment-email',
-            with: ['first_name' => $this->first_name, 'app_name' => $this->app_name, 'amount' => $this->amount, 'links' => $this->links, 'packages' => $this->packages, 'confirmation_no'=>$this->confirmation_no]
+            view: 'email.cancel-email',
+            with: ['first_name' => $this->first_name, 'date' => $this->date, 'time' => $this->time]
         );
     }
 

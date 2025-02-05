@@ -29,93 +29,122 @@ class PaymentController extends Controller
      */
     public function create(Request $request)
     {
-        // print_r(session()->all());
-
-        // Is the client id still in session?
+        // Check if client_id is in session
         if (!session('client_id')) {
             return redirect()->route('client.create');
         }
 
-        // If for some reason this client id in session no longer exists in the DB,
-        // redirect to create a new consulation.
         $client = Client::find(session('client_id'));
+
+        // Redirect if client does not exist in database
         if (!$client) {
             return redirect()->route('client.create');
         }
 
-        // Retrieve the latest stripe payment id of this Client from clients_table
-        $stripe_payment_id = $client->latest_stripe_payment_id;
+        $stripePaymentId = $client->latest_stripe_payment_id;
+        Log::info('Stripe Payment ID from clients table: ' . $stripePaymentId);
 
-        Log::info('stripe_payment_id from clients table: '.$stripe_payment_id);
+        // Check for existing payments and appointments
+        $payment = $stripePaymentId
+            ? Payment::where('stripe_payment_id', $stripePaymentId)
+                ->where('status', 'succeeded')
+                ->first()
+            : null;
 
-        // Check if this payment exists in the appointments table
-        if($stripe_payment_id){
-            $payment = Payment::where('stripe_payment_id', $stripe_payment_id)->where('status','succeeded')->first();
-            if($payment){
-                $payment_exists = $payment;
-                $payment_id = $payment->id;
-                $latest_payment_in_appointments_table = Appointment::where('payment_id', $payment_id)->first();
-                Log::info('latest_payment_in_appointments_table: '.$latest_payment_in_appointments_table);
+        $latestAppointment = $payment
+            ? Appointment::where('payment_id', $payment->id)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->first()
+            : null;
 
-                $latest_pending_or_confirmed_appointment = Appointment::where('payment_id',$payment_id)
-                    ->whereIn('status', ['pending', 'confirmed'])
-                    ->first();
-                Log::info('latest_pending_or_confirmed_appointment: '.$latest_pending_or_confirmed_appointment);
-            }
+        $latestAppointmentCompletedOrCanceled = $payment
+        ? Appointment::where('payment_id', $payment->id)
+            ->whereIn('status', ['completed', 'canceled'])
+            ->first()
+        : null;
+
+        Log::info('Latest pending or confirmed appointment: ' . json_encode($latestAppointment));
+
+        $previousAppointment = Appointment::where('client_id', $client->id)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->first();
+
+        $previousAppointmentCompletedOrCanceled = Appointment::where('client_id', $client->id)
+            ->whereIn('status', ['completed', 'canceled'])
+            ->first();
+
+        Log::info('Previous pending or confirmed appointment: ' . json_encode($previousAppointment));
+
+        $hasAppointments = Appointment::where('client_id', $client->id)->exists();
+        Log::info("hasAppointments: ". $hasAppointments);
+
+        // Handle redirect logic based on appointment and payment status
+        if ($payment && !$hasAppointments) {
+            Log::info("Cond 1");
+            return redirect()->route('stripe.info.confirmed-payment');
         }
 
-        // Check if there is any previous pending or confirmed appointment
-        $previous_pending_or_confirmed_appointment = Appointment::where('client_id',$client->id)
-        ->whereIn('status', ['pending', 'confirmed'])
-        ->first();
-        Log::info('previous_pending_or_confirmed_appointment: '.$previous_pending_or_confirmed_appointment);
-
-
-        if ($previous_pending_or_confirmed_appointment){
-            return redirect()->route('stripe.error',['token'=>$client->unique_token, 'appointment_uuid'=>$previous_pending_or_confirmed_appointment->uuid]);
+        if ($previousAppointment) {
+            Log::info("Cond 2");
+            return redirect()->route('stripe.info.pending-or-confirmed-appointment', [
+                'token' => $client->unique_token,
+                'appointment_uuid' => $previousAppointment->uuid,
+            ]);
         }
-        else if (isset($latest_payment_in_appointments_table) and !$latest_payment_in_appointments_table) {
-            return redirect()->route('stripe.error.pending');
+
+        if ($payment && $latestAppointment) {
+            Log::info("Cond 3");
+            return redirect()->route('stripe.info.confirmed-payment');
         }
-        else if(isset($latest_payment_in_appointments_table) and ($latest_payment_in_appointments_table and (isset($latest_pending_or_confirmed_appointment) and $latest_pending_or_confirmed_appointment))){
-            return redirect()->route('stripe.error',['token'=>$client->unique_token, 'appointment_uuid'=>$latest_pending_or_confirmed_appointment->uuid]);
-        }else if(isset($payment_exists) and $payment_exists){
-            return redirect()->route('stripe.error.pending');
+
+        if ($latestAppointment) {
+            Log::info("Cond 4");
+            return redirect()->route('stripe.info.pending-or-confirmed-appointment', [
+                'token' => $client->unique_token,
+                'appointment_uuid' => $latestAppointment->uuid,
+            ]);
         }
-         else {
-            try {
-                $pub_key = env('STRIPE_PUB_KEY');
-                $secret_key = env('STRIPE_SECRET_KEY');
 
-                $stripe = new StripeClient($secret_key);
+        // if($latestAppointmentCompletedOrCanceled || $previousAppointmentCompletedOrCanceled){
+        //     Log::info("Cond 5");
+        //     return redirect()->route('appointment.completed');
+        // }
 
-                //Note:  All API requests expect amount values in the currency’s minor unit. For example, enter:
-                // - 1000 to charge 10 USD (or any other two-decimal currency).
-                // - 10 to charge 10 JPY (or any other zero-decimal currency).
-                // https://docs.stripe.com/currencies
-                $total_consultation_fee = session('totalAmount') ?? 0;
-                $total_consultation_fee *= 100;
+        // Create a new Stripe payment intent if no valid appointments or payments exist
+        try {
+            $stripe = new StripeClient(env('STRIPE_SECRET_KEY'));
 
-                $intent = $stripe->paymentIntents->create(
-                    [
-                        'amount' => $total_consultation_fee,
-                        'currency' => strtolower(session('currency')) ?? 'cad',
-                        'automatic_payment_methods' => ['enabled' => true], //these are all the payment methods enabled on Stripe dashboard
-                    ],
-                    [
-                        'idempotency_key' => Str::uuid(), // to prevent multiple payments
-                    ]
-                );
+            //Note:  All API requests expect amount values in the currency’s minor unit. For example, enter:
+            // - 1000 to charge 10 USD (or any other two-decimal currency).
+            // - 10 to charge 10 JPY (or any other zero-decimal currency).
+            // https://docs.stripe.com/currencies
+            $totalFee = (session('totalAmount') ?? 0) * 100; // Convert to minor currency unit
+            $currency = strtolower(session('currency') ?? 'cad');
 
-                // Pass url to the view to be used by the Stripe Payment Element as return_url
-                $return_url = route('stripe.success');
+            $intent = $stripe->paymentIntents->create([
+                'amount' => $totalFee,
+                'currency' => $currency,
+                'automatic_payment_methods' => ['enabled' => true],
+            ], [
+                'idempotency_key' => Str::uuid(),
+            ]);
 
-                return view('stripe.checkout', compact('intent', 'total_consultation_fee', 'pub_key', 'return_url'));
-            } catch (\Exception $e) {
-                Log::error("Error: " . $e->getMessage());
-            }
+            Log::info('Stripe Payment Intent created successfully', ['intent_id' => $intent->id]);
+
+            $return_url = route('stripe.success');
+
+            return view('stripe.checkout', [
+                'intent' => $intent,
+                'total_consultation_fee' => $totalFee,
+                'pub_key' => env('STRIPE_PUB_KEY'),
+                'return_url' => $return_url,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Stripe Payment Intent creation failed: ' . $e->getMessage());
+            return redirect()->route('client.create')->with('error', 'An error occurred while processing your payment.');
         }
     }
+
 
     public function success(Request $request)
     {
@@ -157,6 +186,7 @@ class PaymentController extends Controller
                     'amount' => $amount,
                     'currency' => strtoupper($currency),
                     'status' => $paymentIntent->status,
+                    'confirmation_no'=> $transactionNumber = str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
                     'stripe_customer_id',
                     'payment_method_id',
                     'payment_method_type',
@@ -179,13 +209,16 @@ class PaymentController extends Controller
                     $packages = ConsultationPackages::whereIn('id', $array_packages)->pluck('package_name');
                     $str_packages = implode(", ", $packages->toArray());
 
+                    $confirmation_no = $new_payment->confirmation_no;
+
+
                     // Send Payment confirmation email.
                     // Send along an appointment booking and rescheduling links with the unique token and payment_id in case they failed to book the appointment after payment stage.
                     // This enables the client to book an appointment at a later time
                     $link_book = route('appointment.create', ['token' => $client->unique_token, 'payment_uuid' => $new_payment->uuid]);
                     Log::info('$link_book: '.$link_book);
                     $links = ['booking' => $link_book];
-                    Mail::to($client->email)->send(new PaymentCreated($client->first_name, config('app.name'), strtoupper($currency) . ' $' . $amount, $links, $str_packages));
+                    Mail::to($client->email)->send(new PaymentCreated($client->first_name, config('app.name'), strtoupper($currency) . ' $' . $amount, $links, $str_packages, $confirmation_no));
 
                     return view('stripe.success-v2');
                 } else {
@@ -197,7 +230,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function error(string $unique_token=null, string $appointment_uuid=null)
+    public function pendingOrConfirmedAppointment(string $unique_token=null, string $appointment_uuid=null)
     {
         if (!session()->has('client_id')) {
             return redirect()->route('client.create');
@@ -207,18 +240,18 @@ class PaymentController extends Controller
             $client = Client::where('unique_token', $unique_token)->first();
             $first_name = $client->first_name;
             $reschedule_link = route('appointment.show-reschedule-calendar', ['appointment_uuid'=>$appointment_uuid]);
-            return view('stripe.error', compact('first_name','reschedule_link'));
+            return view('stripe.confirmed-or-pending-appointment', compact('first_name','reschedule_link'));
         }else{
-            return view('stripe.error');
+            return view('stripe.confirmed-or-pending-appointment');
         }
     }
 
-    public function pending()
+    public function confirmedPayment()
     {
         if (!session()->has('client_id')) {
             return redirect()->route('client.create');
         }
 
-        return view('stripe.pending');
+        return view('stripe.confirmed-payment');
     }
 }

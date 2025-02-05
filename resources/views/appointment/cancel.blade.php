@@ -115,8 +115,9 @@
         <div class="cancel-header">Cancel Appointment</div>
         <div class="cancel-details">
             <p><strong>Name:</strong> {{$first_name." ".$last_name}}</p>
-            <p><strong>Appointment Date:</strong> {{$date}}</p>
-            <p><strong>Time:</strong> {{$time}}</p>
+            {{-- <p><strong>Date: </strong><span id="date"></span></p> --}}<!-- TODO: date not formating correctly -->
+            <p><strong>Date:</strong> {{$date}}</span></p>
+            <p><strong>Time: </strong><span id="time"></span></p>
         </div>
         <div class="button-container">
             <a href="{{route('home')}}" class="button home-button">Back to Home</a>
@@ -125,6 +126,8 @@
     </div>
     <script>
         const cancelButton = document.querySelector('.cancel-button');
+        const clientTime = document.getElementById('time');
+        // const clientDate = document.getElementById('date');
 
         // Set the CSRF token for all Axios requests
         axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute(
@@ -132,16 +135,22 @@
 
         // Get the client's timezone
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
         // Get the client's locale
         const locale = navigator.language || navigator.userLanguage;
 
         // Get the current route
         const route = window.location.href;
 
+        const convertedTime = mstToClientTz(@json($time), timezone, locale);
+        clientTime.innerHTML = convertedTime;
+
+        // const formatedDate = formatDateToClientLocale(@json($date), timezone, locale);
+        // clientDate.innerHTML = formatedDate;
+
         cancelButton.addEventListener("click", (e) => {
             e.preventDefault();
 
-            // Send client_id, date, time slot, and duration back to the server to process
             const data = {
                 clientId: @json($client_id),
                 timezone: timezone,
@@ -172,6 +181,60 @@
                     location.reload(true);
                 });
         });
+
+         function mstToClientTz(mstTime, clientTimezone, locale) {
+            // Original time in MST (Mountain Standard Time) - no seconds part (H:i format)
+            mstTime = removeSeconds(mstTime);
+
+            // Get the current date of the client
+            const currentDate = new Date();
+            const currentDateString = currentDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+            // Combine the current date with the MST time string
+            const mstDateTimeString = `${currentDateString}T${mstTime}:00-07:00`; // Assuming MST (UTC -7)
+
+            // Convert the MST time to a JavaScript Date object
+            const mstDate = new Date(mstDateTimeString);
+
+            // Convert MST time to the client's time zone using toLocaleString
+            const options = {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: clientTimezone
+            };
+            const convertedTime = mstDate.toLocaleString(locale, options);
+
+            // Get the client's timezone abbreviation (automatically adjusts for DST (daylight saving))
+            const clientTimeAbbr = new Date().toLocaleString(locale, {
+                timeZone: clientTimezone,
+                timeZoneName: 'short'
+            }).split(' ').pop();
+
+            // Return the converted time along with the timezone abbreviation
+            return convertedTime + " " + clientTimeAbbr;
+        }
+
+         function removeSeconds(timeWithSeconds) {
+            // Split the time string into hours, minutes, and seconds
+            const [hours, minutes] = timeWithSeconds.split(':');
+            return `${hours}:${minutes}`;
+        }
+
+        function formatDateToClientLocale(dateString, clientTimezone, locale) {
+            // Convert the input string to a valid JavaScript Date object
+            const date = new Date(dateString);
+
+            // Format the date using the client's locale and timezone
+            const options = {
+                year: 'numeric',
+                month: 'long', // Full month name
+                day: 'numeric',
+                timeZone: clientTimezone // Ensure it respects the client's timezone
+            };
+
+            return date.toLocaleDateString(locale, options);
+        }
+
     </script>
 </body>
 
