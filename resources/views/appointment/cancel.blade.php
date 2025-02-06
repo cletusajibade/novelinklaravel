@@ -193,7 +193,7 @@
                         // Request was made but no response received
                         console.error('No response received:', error.request);
                         errorMessageDiv.innerHTML =
-                            `<x-bladewind::alert type="error" shade="dark">Error processing your appointment request. Contact us for further help.</x-bladewind::alert>`;
+                            `<x-bladewind::alert type="error" shade="dark">Error processing your cancelation request. Contact us for further help.</x-bladewind::alert>`;
                         errorMessageDiv.style.display = 'block';
                     } else {
                         // Something else caused the error
