@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Error</title>
+    <title>Appointment Info</title>
     <!-- Load Bundled Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -50,7 +50,7 @@
 
         .contact-link,
         .home-link,
-        .reschedule-link {
+        .book-link {
             display: inline-flex;
             align-items: center;
             padding: 10px 20px;
@@ -61,14 +61,6 @@
             transition: background-color 0.3s;
         }
 
-        .contact-link {
-            background-color: #007bff;
-        }
-
-        .contact-link:hover {
-            background-color: #0056b3;
-        }
-
         .home-link {
             background-color: #28a745;
         }
@@ -77,31 +69,25 @@
             background-color: #218838;
         }
 
+        .book-link {
+            background-color: #0072fe;
+        }
+
+        .book-link:hover {
+            background-color: #0857b7;
+        }
+
         .home-link svg {
             margin-right: 8px;
-        }
-
-        .reschedule-link {
-            background-color: #007bff;
-        }
-
-        .reschedule-link:hover {
-            background-color: #0056b3;
         }
     </style>
 </head>
 
 <body>
     <div class="error-container">
-        <div class="error-header">
-            @if (isset($first_name))
-                Hello, {{$first_name}}
-            @else
-                Appointment Info
-            @endif
-        </div>
+        <div class="error-header">Appointment Info</div>
         <div class="error-message">
-           You already have a pending or confirmed appointment. You may reschedule or cancel your appointment, or contact <strong> {{config('app.name')}} ({{env('REPLY_TO_ADDRESS')}}) </strong> with any question.
+            No account or appointment found. You may book another consultation session, or contact us <strong>({{env('REPLY_TO_ADDRESS')}})</strong> with any question.
         </div>
         <div class="button-container">
             <a href="{{ route('home') }}" class="home-link">
@@ -112,14 +98,13 @@
                 </svg>
                 Back to Home
             </a>
-             @if (session('reschedule_link'))
-               <a href="{{session('reschedule_link')}}" class="reschedule-link">
-                    Reschedule
+            @if (session('showCreateClient'))
+                <a href="{{ route('client.create') }}" class="book-link">
+                    Book Consultation
                 </a>
-             @endif
+            @endif
         </div>
     </div>
 </body>
 
 </html>
-

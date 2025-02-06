@@ -1,6 +1,3 @@
-@if (session('client_id'))
-    @php $client_id = session('client_id'); @endphp
-@endif
 @if (session('isRescheduling'))
     @php $isRescheduling = session('isRescheduling'); @endphp
 @endif
@@ -246,13 +243,9 @@
                 alert(`Are you sure you want to book ${timeText} for your appointment?`);
                 modal.classList.add("hidden");
 
-                // Send client_id, date, time slot, and duration back to the server to process
                 const data = {
-                    clientId: @json($client_id),
                     slotId: slotId,
                     date: bookTimeButton.dataset.date,
-                    // time: selectedTimeSlot,
-                    // duration: meetingDuration,
                     timezone: timezone,
                     locale: locale
                 };
@@ -260,33 +253,58 @@
                 // Send POST request
                 axios.post(route, data)
                     .then(response => {
-                        console.log('response.data.message: ', response.data.message);
-                        successMessageDiv.innerHTML =`<x-bladewind::alert type="success" shade="dark">${response.data.message}</x-bladewind::alert>`;
+                        // console.log('response.data.message: ', response.data.message);
+                        successMessageDiv.innerHTML =
+                            `<x-bladewind::alert type="success" shade="dark">
+                                ${response.data.message}
+                            </x-bladewind::alert>`;
                         successMessageDiv.style.display = 'block';
 
-                        // Reload the page for the flashed success message to display
-                        // location.reload(true);
+                        if (response.data.redirect) {
+                            window.location.href = response.data.redirect_url;
+                        }
                     })
                     .catch(error => {
+                        // console.log('error:', error);
                         if (error.response) {
                             // Server responded with a status code
                             console.error('Error:', error.response.data.error);
-                            errorMessageDiv.innerHTML =`<x-bladewind::alert type="error" shade="dark">${error.response.data.error}</x-bladewind::alert>`;
-                            errorMessageDiv.style.display = 'block';
+
+                            if (error.response.data.redirect) {
+                                if (error.response.data.delay_redirect) {
+                                    errorMessageDiv.innerHTML =
+                                    `<x-bladewind::alert type="error" shade="dark">
+                                            ${error.response.data.error}
+                                        </x-bladewind::alert>`;
+                                    errorMessageDiv.style.display = 'block';
+
+                                    window.setTimeout(function() {
+                                        window.location.href = error.response.data.redirect_url;
+                                    }, 5000);
+                                } else {
+                                    window.location.href = error.response.data.redirect_url;
+                                }
+                            } else {
+                                errorMessageDiv.innerHTML =
+                                    `<x-bladewind::alert type="error" shade="dark">
+                                        ${error.response.data.error}
+                                    </x-bladewind::alert>`;
+                                errorMessageDiv.style.display = 'block';
+                            }
+
                         } else if (error.request) {
                             // Request was made but no response received
                             console.error('No response received:', error.request);
-                            errorMessageDiv.innerHTML =`<x-bladewind::alert type="error" shade="dark">${error.request}</x-bladewind::alert>`;
+                            errorMessageDiv.innerHTML =
+                                `<x-bladewind::alert type="error" shade="dark">Error processing your appointment request. Contact us for further help.</x-bladewind::alert>`;
                             errorMessageDiv.style.display = 'block';
                         } else {
                             // Something else caused the error
                             console.error('Error:', error.message);
-                            errorMessageDiv.innerHTML =`<x-bladewind::alert type="error" shade="dark">${error.message}</x-bladewind::alert>`;
+                            errorMessageDiv.innerHTML =
+                                `<x-bladewind::alert type="error" shade="dark">${error.message}</x-bladewind::alert>`;
                             errorMessageDiv.style.display = 'block';
                         }
-
-                        // Reload the page for the flashed error message to display
-                        // location.reload(true);
                     });
 
                 renderCalendar();

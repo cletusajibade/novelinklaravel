@@ -86,21 +86,10 @@
 
 <body>
     <div class="cancel-container">
-         @if (session('success'))
-            <x-bladewind::alert type="success" shade="dark">
-                {{ session('success') }}
-            </x-bladewind::alert>
-        @endif
-        @if (session('warning'))
-            <x-bladewind::alert type="warning" shade="dark">
-                {{ session('warning') }}
-            </x-bladewind::alert>
-        @endif
-        @if (session('error'))
-            <x-bladewind::alert type="error" shade="dark">
-                {{ session('error') }}
-            </x-bladewind::alert>
-        @endif
+       <div id="successMessage" style="display: none;"></div>
+        <div id="warningMessage" style="display: none;"></div>
+        <div id="errorMessage" style="display: none;"></div>
+
         @if ($errors->any())
             <div
                 style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 0.75rem 1rem; border-radius: 0.25rem; margin-bottom: 1rem;">
@@ -127,7 +116,9 @@
     <script>
         const cancelButton = document.querySelector('.cancel-button');
         const clientTime = document.getElementById('time');
-        // const clientDate = document.getElementById('date');
+        const successMessageDiv = document.getElementById('successMessage');
+        const warningMessageDiv = document.getElementById('warningMessage');
+        const errorMessageDiv = document.getElementById('errorMessage');
 
         // Set the CSRF token for all Axios requests
         axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute(
@@ -152,7 +143,6 @@
             e.preventDefault();
 
             const data = {
-                clientId: @json($client_id),
                 timezone: timezone,
                 locale: locale
             };
@@ -161,24 +151,57 @@
             axios.post(route, data)
                 .then(response => {
                     // console.log('response.data.message: ', response.data.message);
+                    successMessageDiv.innerHTML =
+                        `<x-bladewind::alert type="success" shade="dark">
+                            ${response.data.message}
+                        </x-bladewind::alert>`;
+                    successMessageDiv.style.display = 'block';
 
-                    // Reload the page for the flashed success message to display
-                    location.reload(true);
+                    if (response.data.redirect) {
+                        window.location.href = response.data.redirect_url;
+                    }
                 })
                 .catch(error => {
+                   // console.log('error:', error);
                     if (error.response) {
                         // Server responded with a status code
                         console.error('Error:', error.response.data.error);
+
+                        if (error.response.data.redirect) {
+                            if (error.response.data.delay_redirect) {
+                                errorMessageDiv.innerHTML =
+                                `<x-bladewind::alert type="error" shade="dark">
+                                        ${error.response.data.error}
+                                    </x-bladewind::alert>`;
+                                errorMessageDiv.style.display = 'block';
+
+                                window.setTimeout(function() {
+                                    window.location.href = error.response.data.redirect_url;
+                                }, 5000);
+                            } else {
+                                window.location.href = error.response.data.redirect_url;
+                            }
+                        } else {
+                            errorMessageDiv.innerHTML =
+                                `<x-bladewind::alert type="error" shade="dark">
+                                    ${error.response.data.error}
+                                </x-bladewind::alert>`;
+                            errorMessageDiv.style.display = 'block';
+                        }
+
                     } else if (error.request) {
                         // Request was made but no response received
                         console.error('No response received:', error.request);
+                        errorMessageDiv.innerHTML =
+                            `<x-bladewind::alert type="error" shade="dark">Error processing your appointment request. Contact us for further help.</x-bladewind::alert>`;
+                        errorMessageDiv.style.display = 'block';
                     } else {
                         // Something else caused the error
                         console.error('Error:', error.message);
+                        errorMessageDiv.innerHTML =
+                            `<x-bladewind::alert type="error" shade="dark">${error.message}</x-bladewind::alert>`;
+                        errorMessageDiv.style.display = 'block';
                     }
-
-                    // Reload the page for the flashed error message to display
-                    location.reload(true);
                 });
         });
 

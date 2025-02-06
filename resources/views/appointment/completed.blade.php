@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Error</title>
+    <title>Appointment Info</title>
     <!-- Load Bundled Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -49,7 +49,8 @@
         }
 
         .contact-link,
-        .home-link {
+        .home-link,
+        .book-link {
             display: inline-flex;
             align-items: center;
             padding: 10px 20px;
@@ -68,6 +69,14 @@
             background-color: #218838;
         }
 
+        .book-link {
+            background-color: #0072fe;
+        }
+
+        .book-link:hover {
+            background-color: #0857b7;
+        }
+
         .home-link svg {
             margin-right: 8px;
         }
@@ -78,7 +87,7 @@
     <div class="error-container">
         <div class="error-header">Appointment Info</div>
         <div class="error-message">
-           Your appointment has been completed or canceled. You may book another consultation session with us.
+            Your appointment has been completed or canceled. You may book another consultation session with us.
         </div>
         <div class="button-container">
             <a href="{{ route('home') }}" class="home-link">
@@ -89,6 +98,11 @@
                 </svg>
                 Back to Home
             </a>
+            @if (session('showCreateClient'))
+                <a href="{{ route('client.create') }}" class="book-link">
+                    Book Consultation
+                </a>
+            @endif
         </div>
     </div>
 </body>

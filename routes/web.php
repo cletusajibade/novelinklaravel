@@ -53,6 +53,8 @@ Route::post('/appointment/{appointment_uuid?}/cancel', [AppointmentController::c
 
 Route::get('/appointment/completed', [AppointmentController::class, 'completed'])->name('appointment.completed');
 
+Route::get('/appointment/no-account', [AppointmentController::class, 'noAccountOrAppointment'])->name('appointment.no-account');
+
 // Backend dashboard routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
