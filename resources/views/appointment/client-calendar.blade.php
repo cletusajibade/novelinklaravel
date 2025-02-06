@@ -31,21 +31,10 @@
 <body class="font-figtree flex justify-center items-center h-screen bg-gray-100">
 
     <div class="w-[90%] md:w-[70%] md:max-w-5xl flex flex-col gap-4">
-        @if (session('success'))
-            <x-bladewind::alert type="success" shade="dark">
-                {{ session('success') }}
-            </x-bladewind::alert>
-        @endif
-        @if (session('warning'))
-            <x-bladewind::alert type="warning" shade="dark">
-                {{ session('warning') }}
-            </x-bladewind::alert>
-        @endif
-        @if (session('error'))
-            <x-bladewind::alert type="error" shade="dark">
-                {{ session('error') }}
-            </x-bladewind::alert>
-        @endif
+        <div id="successMessage" style="display: none;"></div>
+        <div id="warningMessage" style="display: none;"></div>
+        <div id="errorMessage" style="display: none;"></div>
+
         @if ($errors->any())
             <div
                 style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 0.75rem 1rem; border-radius: 0.25rem; margin-bottom: 1rem;">
@@ -140,6 +129,9 @@
         const radioButtons = document.querySelectorAll('input[name="timeslots"]');
         const currentAppointmentDate = document.getElementById("currentDate");
         const currentAppointmentTime = document.getElementById("currentTime");
+        const successMessageDiv = document.getElementById('successMessage');
+        const warningMessageDiv = document.getElementById('warningMessage');
+        const errorMessageDiv = document.getElementById('errorMessage');
 
         // Set the CSRF token for all Axios requests
         axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute(
@@ -268,24 +260,33 @@
                 // Send POST request
                 axios.post(route, data)
                     .then(response => {
-                        // console.log('response.data.message: ', response.data.message);
+                        console.log('response.data.message: ', response.data.message);
+                        successMessageDiv.innerHTML =`<x-bladewind::alert type="success" shade="dark">${response.data.message}</x-bladewind::alert>`;
+                        successMessageDiv.style.display = 'block';
+
                         // Reload the page for the flashed success message to display
-                        location.reload(true);
+                        // location.reload(true);
                     })
                     .catch(error => {
                         if (error.response) {
                             // Server responded with a status code
                             console.error('Error:', error.response.data.error);
+                            errorMessageDiv.innerHTML =`<x-bladewind::alert type="error" shade="dark">${error.response.data.error}</x-bladewind::alert>`;
+                            errorMessageDiv.style.display = 'block';
                         } else if (error.request) {
                             // Request was made but no response received
                             console.error('No response received:', error.request);
+                            errorMessageDiv.innerHTML =`<x-bladewind::alert type="error" shade="dark">${error.request}</x-bladewind::alert>`;
+                            errorMessageDiv.style.display = 'block';
                         } else {
                             // Something else caused the error
                             console.error('Error:', error.message);
+                            errorMessageDiv.innerHTML =`<x-bladewind::alert type="error" shade="dark">${error.message}</x-bladewind::alert>`;
+                            errorMessageDiv.style.display = 'block';
                         }
 
                         // Reload the page for the flashed error message to display
-                        location.reload(true);
+                        // location.reload(true);
                     });
 
                 renderCalendar();

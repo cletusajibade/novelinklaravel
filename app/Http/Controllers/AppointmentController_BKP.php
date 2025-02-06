@@ -43,13 +43,137 @@ class AppointmentController extends Controller
     public function create(string $client_token = null, string $payment_uuid = null)
     {
         Log::info('client_token: ' . $client_token);
-        Log::info('payment_uuid: ' . $payment_uuid);
 
         // Remove rescheduling flag from session
         session()->forget('isRescheduling');
 
-        $time_slots = $this->loadTimeSlots();
-        return view('appointment.client-calendar', compact('time_slots'));
+        // If client_token is provided, handle email-based appointment booking
+        if ($client_token) {
+            $client = Client::where('unique_token', $client_token)->first();
+            Log::info("client: " . $client);
+
+            if (!$client) {
+                return abort(404, 'Invalid token.');
+            }
+
+            // *********************************************************************
+            // **** Begin Appointment Calendar View Conditions: Token Available ****
+            // *********************************************************************
+            // Step 1. Get the client's latest successful payment from payments table
+            if ($payment_uuid) {
+                Log::info("payment_uuid: ".$payment_uuid);
+                $payment = Payment::where('uuid', $payment_uuid)
+                    ->where('status', 'succeeded')
+                    ->first();
+
+                // 1.1 If Payment exists goto-> Step 2
+                if ($payment) {
+                    // Step 2. Check if that payment has an appointment
+                    $payment_has_appointment = Appointment::where('payment_id', $payment->id)->exists();
+                    if($payment_has_appointment){
+                        // 2.1 - If completed or canceled appointment goto-> create client form
+                        $appointment_is_completed_or_canceled = Appointment::where('payment_id', $payment->id)
+                        ->whereIn('status', ['completed', 'canceled'])
+                        ->first();
+                        if($appointment_is_completed_or_canceled){
+                            return redirect()->route('client.create');
+                        }
+
+                        // 2.2 - If pending or confirmed appointment goto-> show appointment-pending message
+                        $pending_or_confirmed_appointment = Appointment::where('payment_id', $payment->id)
+                        ->whereIn('status', ['pending', 'confirmed'])
+                        ->first();
+                        if($pending_or_confirmed_appointment){
+                            return redirect()->route('stripe.info.pending-or-confirmed-appointment');
+                        }
+
+                        // 2.3 - If no appointment goto-> Step 3
+                    }
+
+                }
+                else{
+                    // 1.2 If no payment exists goto-> create client form
+                    return redirect()->route('client.create');
+                }
+
+                // Step 3 - Show calendar to book appointment
+                $time_slots = $this->loadTimeSlots();
+                return view('appointment.client-calendar', compact('time_slots'));
+
+                // ********************************************************************
+                // ***************** End Appointment Calendar View Conditions *********
+                // ********************************************************************
+            }
+        }
+        else{
+            // Handle direct route access without client_token
+            if (!session('client_id')) {
+                return redirect()->route('client.create');
+            }
+
+            $client = Client::find(session('client_id'));
+            Log::info("client: " . $client);
+
+            if (!$client) {
+                return abort(404, 'Invalid token.');
+            }
+
+            // ********************************************************************
+            // ****** Begin Appointment Calendar View Conditions: No Token ********
+            // ********************************************************************
+            // Step 1. Get the client's latest successful payment from payments table
+            Log::info("Step 1");
+            $latestPayment = Payment::where('client_id', $client->id)
+                ->where('status', 'succeeded')
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            // 1.1 If Payment exists goto-> Step 2
+            Log::info("Step 1.1");
+            if ($latestPayment) {
+                // Step 2. Check if that payment has an appointment
+                Log::info("Step 2");
+                $payment_has_appointment = Appointment::where('payment_id', $latestPayment->id)->exists();
+                if($payment_has_appointment){
+                    // 2.1 - If completed or canceled appointment goto-> create client form
+                    $appointment_is_completed_or_canceled = Appointment::where('payment_id', $latestPayment->id)
+                        ->whereIn('status', ['completed', 'canceled'])
+                        ->first();
+                    if($appointment_is_completed_or_canceled){
+                        Log::info("Step 2.1");
+                        return redirect()->route('client.create');
+                    }
+
+                    // 2.2 - If pending or confirmed appointment goto-> show appointment-pending message
+                    $pending_or_confirmed_appointment = Appointment::where('payment_id', $latestPayment->id)
+                        ->whereIn('status', ['pending', 'confirmed'])
+                        ->first();
+                    if($pending_or_confirmed_appointment){
+                        Log::info("Step 2.2");
+                        return redirect()->route('stripe.info.pending-or-confirmed-appointment');
+                    }
+                }
+                else{
+                    // 2.3 - No appointment, program logic jumps to Step 3 below.
+                    Log::info("Step 2.3");
+                }
+            }
+            else{
+                // 1.2 - No payment exists goto-> create client form
+                Log::info("Step 1.2");
+                return redirect()->route('client.create');
+            }
+
+            // Step 3 - Show calendar to book appointment
+            Log::info("Step 3");
+            $time_slots = $this->loadTimeSlots();
+            return view('appointment.client-calendar', compact('time_slots'));
+
+            // ********************************************************************
+            // ***************** End Appointment Calendar View Conditions *********
+            // ********************************************************************
+        }
+
     }
 
 
@@ -65,7 +189,6 @@ class AppointmentController extends Controller
             'timezone' => 'nullable|string',
             'locale' => 'nullable|string',
         ]);
-        Log::info("Token: client_token: ". $client_token);
 
         if ($client_token) {
             // Client is coming from email, use the token to retrieve the client.
@@ -98,8 +221,7 @@ class AppointmentController extends Controller
                         ->first();
                         if($appointment_is_completed_or_canceled){
                             Log::info("Token: Step 2.1");
-                            // return redirect()->route('appointment.completed');
-                            return response()->json(['error' => "Your appointment has been completed or canceled. You may book another consultation session with us."], 500);
+                            return redirect()->route('appointment.completed');
                         }
 
                         // 2.2 - If pending or confirmed appointment goto-> show appointment-pending message
@@ -108,8 +230,7 @@ class AppointmentController extends Controller
                         ->first();
                         if($pending_or_confirmed_appointment){
                             Log::info("Token: Step 2.2");
-                            // return redirect()->route('stripe.info.pending-or-confirmed-appointment');
-                            return response()->json(['error' => "You already have a pending or confirmed appointment. Contact us (". env('REPLY_TO_ADDRESS'). ") or check your appointment confirmation email for a reschedule or cancel link."], 500);
+                            return redirect()->route('stripe.info.pending-or-confirmed-appointment');
                         }
                     }else{
                         // 2.3 - If no appointment goto-> Step 3
@@ -175,23 +296,23 @@ class AppointmentController extends Controller
                                     $client->update(['registration_status' => 'step_4/4_completed:appointment_booked']);
 
                                     //Finally flash a success message that can be retrieved from the view
-                                    // session()->flash('success', 'Your appointment was successfully booked! Please check your email for the meeting information. You may close this tab or window.');
-                                    return response()->json(['message' => 'Your appointment was successfully booked! Please check your email for the meeting information. You may close this tab or window.'], 200);
+                                    session()->flash('success', 'Your appointment was successfully booked! Please check your email for the meeting information. You may close this tab or window.');
+                                    return response()->json(['message' => 'Your appointment was successfully booked!'], 200);
                                 }
                             }
                         }
-                        // session()->flash('error', 'Error booking your appointment. Try again or contact the admin.');
-                        return response()->json(['error' => 'Error booking your appointment. Try again or contact the admin.'], 500);
+                        session()->flash('error', 'Error booking your appointment. Try again or contact the admin.');
+                        return response()->json(['error' => 'Failed to update appointment.'], 500);
                     }
-                    // session()->flash('error', 'Error booking your appointment. Try again or contact the admin.');
-                    return response()->json(['error' => 'Error booking your appointment. Try again or contact the admin.'], 500);
+                    session()->flash('error', 'Error booking your appointment. Try again or contact the admin.');
+                    return response()->json(['error' => 'Update issues'], 404);
                 }
-                // session()->flash('error', 'Error booking your appointment. Try again or contact the admin.');
-                return response()->json(['error' => 'Error booking your appointment. Try again or contact the admin.'], 404);
+                session()->flash('error', 'Error booking your appointment. Try again or contact the admin.');
+                return response()->json(['error' => 'Time slot not available.'], 404);
             } catch (\Exception $e) {
                 Log::error($e->getMessage());
-                // session()->flash('error', 'Error booking your appointment. Try again or contact the admin.');
-                return response()->json(['error' => 'Error booking your appointment. Try again or contact the admin.'], 500);
+                session()->flash('error', 'Error booking your appointment. Try again or contact the admin.');
+                return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
             }
 
         }
@@ -227,8 +348,7 @@ class AppointmentController extends Controller
                         ->first();
                     if($appointment_is_completed_or_canceled){
                         Log::info("Step 2.1");
-                        // return redirect()->route('appointment.completed');
-                        return response()->json(['error' => "Your appointment has been completed or canceled. You may book another consultation session with us."], 500);
+                        return redirect()->route('appointment.completed');
                     }
 
                     // 2.2 - If pending or confirmed appointment goto-> show appointment-pending message
@@ -237,8 +357,7 @@ class AppointmentController extends Controller
                         ->first();
                     if($pending_or_confirmed_appointment){
                         Log::info("Step 2.2");
-                        // return redirect()->route('stripe.info.pending-or-confirmed-appointment');
-                        return response()->json(['error' => "You already have a pending or confirmed appointment. Contact us (". env('REPLY_TO_ADDRESS'). ") or check your appointment confirmation email for a reschedule or cancel link."], 500);
+                        return redirect()->route('stripe.info.pending-or-confirmed-appointment');
                     }
                 }
                 else{

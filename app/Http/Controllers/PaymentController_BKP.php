@@ -41,46 +41,76 @@ class PaymentController extends Controller
         if (!$client) {
             return redirect()->route('client.create');
         }
-        
-        // ********************************************************************
-        // ***************** Begin Payment View Conditions ********************
-        // ********************************************************************
-        // Step 1. Get the client's latest successful payment from payments table
-        $latestPayment = Payment::where('client_id', $client->id)
-            ->where('status', 'succeeded')
-            ->orderBy('created_at', 'desc')
+
+        $stripePaymentId = $client->latest_stripe_payment_id;
+        Log::info('Stripe Payment ID from clients table: ' . $stripePaymentId);
+
+        // Check for existing payments and appointments
+        $payment = $stripePaymentId
+            ? Payment::where('stripe_payment_id', $stripePaymentId)
+                ->where('status', 'succeeded')
+                ->first()
+            : null;
+
+        $latestAppointment = $payment
+            ? Appointment::where('payment_id', $payment->id)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->first()
+            : null;
+
+        $latestAppointmentCompletedOrCanceled = $payment
+        ? Appointment::where('payment_id', $payment->id)
+            ->whereIn('status', ['completed', 'canceled'])
+            ->first()
+        : null;
+
+        Log::info('Latest pending or confirmed appointment: ' . json_encode($latestAppointment));
+
+        $previousAppointment = Appointment::where('client_id', $client->id)
+            ->whereIn('status', ['pending', 'confirmed'])
             ->first();
 
-        // 1.1 If Payment exists goto-> Step 2
-        if ($latestPayment) {
-            // Step 2. Check if that payment has an appointment
-            $payment_has_appointment = Appointment::where('payment_id', $latestPayment->id)->exists();
-            if($payment_has_appointment){
-                // 2.2 - If pending or confirmed appointment goto-> show appointment-pending message
-                $pending_or_confirmed_appointment = Appointment::where('payment_id', $latestPayment->id)
-                    ->whereIn('status', ['pending', 'confirmed'])
-                    ->first();
-                if($pending_or_confirmed_appointment){
-                    return redirect()->route('stripe.info.pending-or-confirmed-appointment');
-                }
+        $previousAppointmentCompletedOrCanceled = Appointment::where('client_id', $client->id)
+            ->whereIn('status', ['completed', 'canceled'])
+            ->first();
 
-                // 2.3 - If completed or canceled appointment goto-> Step 3 - Payment form
-                $appointment_is_completed_or_canceled = Appointment::where('payment_id', $latestPayment->id)
-                    ->whereIn('status', ['completed', 'canceled'])
-                    ->first();
-                if($appointment_is_completed_or_canceled){
-                    // goto-> Step 3 - Payment form
-                }
+        Log::info('Previous pending or confirmed appointment: ' . json_encode($previousAppointment));
 
-            }else{
-                // 2.1 - No appointment goto-> Step 3 - Payment form
-            }
-        }
-        else{
-            // 1.2 If no payment exists goto-> Step 3 - Payment form
+        $hasAppointments = Appointment::where('client_id', $client->id)->exists();
+        Log::info("hasAppointments: ". $hasAppointments);
+
+        // Handle redirect logic based on appointment and payment status
+        if ($payment && !$hasAppointments) {
+            Log::info("Cond 1");
+            return redirect()->route('stripe.info.confirmed-payment');
         }
 
-        // Step 3 - Payment form:
+        if ($previousAppointment) {
+            Log::info("Cond 2");
+            return redirect()->route('stripe.info.pending-or-confirmed-appointment', [
+                'token' => $client->unique_token,
+                'appointment_uuid' => $previousAppointment->uuid,
+            ]);
+        }
+
+        if ($payment && $latestAppointment) {
+            Log::info("Cond 3");
+            return redirect()->route('stripe.info.confirmed-payment');
+        }
+
+        if ($latestAppointment) {
+            Log::info("Cond 4");
+            return redirect()->route('stripe.info.pending-or-confirmed-appointment', [
+                'token' => $client->unique_token,
+                'appointment_uuid' => $latestAppointment->uuid,
+            ]);
+        }
+
+        // if($latestAppointmentCompletedOrCanceled || $previousAppointmentCompletedOrCanceled){
+        //     Log::info("Cond 5");
+        //     return redirect()->route('appointment.completed');
+        // }
+
         // Create a new Stripe payment intent if no valid appointments or payments exist
         try {
             $stripe = new StripeClient(env('STRIPE_SECRET_KEY'));
@@ -114,11 +144,8 @@ class PaymentController extends Controller
             Log::error('Stripe Payment Intent creation failed: ' . $e->getMessage());
             return redirect()->route('client.create')->with('error', 'An error occurred while processing your payment.');
         }
-
-        // ******************************************************************
-        // ***************** End Payment View Conditions ********************
-        // ******************************************************************
     }
+
 
     public function success(Request $request)
     {
