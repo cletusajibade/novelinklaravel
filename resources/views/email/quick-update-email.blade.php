@@ -19,7 +19,7 @@
                     <tr>
                         <td style="background-color: #231F22; padding: 20px; text-align: center;">
                             <a href="{{ route('home') }}">
-                                <img src="https://novelinkimmigration.ca/wp-content/uploads/2020/08/novelink.png"
+                                <img src="https://novelinkimmigration.ca/uploads/2020/08/novelink.png"
                                     width="180" alt="novelink-logo" title="Novelink Immigration">
                             </a>
                         </td>
