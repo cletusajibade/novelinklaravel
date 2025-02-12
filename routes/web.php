@@ -60,10 +60,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/clients', [ClientController::class, 'index'])->name('clients');
-    Route::patch('/clients', [ClientController::class, 'update'])->name('client.update');
-    Route::get('/clients/{uuid}', [ClientController::class, 'edit'])->name('client.edit');
+    Route::get('/client/{uuid}', [ClientController::class, 'show'])->name('client.show');
+    Route::get('/client/{uuid}', [ClientController::class, 'edit'])->name('client.edit');
+    Route::patch('/client', [ClientController::class, 'update'])->name('client.update');
+    Route::delete('/client', [ClientController::class, 'destroy'])->name('client.destroy');
     Route::post('/clients', [ClientController::class, 'sendEmail'])->name('client.send-email');
-    Route::delete('/clients', [ClientController::class, 'destroy'])->name('client.destroy');
 
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
     Route::post('/calendar', [CalendarController::class, 'store'])->name('calendar.store');

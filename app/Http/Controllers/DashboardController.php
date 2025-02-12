@@ -10,6 +10,8 @@ use App\Models\Client;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -22,6 +24,8 @@ class DashboardController extends Controller
         $appointmentsCount = Appointment::count() ?? 0;
         $totalPayments = Payment::sum('amount') ?? 0;
         $totalPayments = '$' . number_format($totalPayments, 2);
+
+        $clients = Client::latest()->limit(10)->get();
 
         $topFiveDates = Payment::orderBy('created_at', 'desc')
             ->take(5)
@@ -36,12 +40,32 @@ class DashboardController extends Controller
             ->pluck('amount')
             ->toArray();
 
+        $topCountries = Client::select('country', DB::raw('COUNT(*) as total'))
+            ->groupBy('country')
+            ->orderByDesc('total')
+            ->limit(3)
+            ->get()
+            ->toArray();
+
+            Log::info($topCountries[0]['country']);
+
+        /**
+         * Chart Doc: https://larapex-charts.netlify.app/
+         * */
+
+         $value0 = isset($topCountries[0])? $topCountries[0]['total'] : 0;
+         $value1 = isset($topCountries[1])? $topCountries[1]['total'] : 0;
+         $value2 = isset($topCountries[2])? $topCountries[2]['total'] : 0;
+
+         $country0 = isset($topCountries[0])? $topCountries[0]['country'] : "";
+         $country1 = isset($topCountries[1])? $topCountries[1]['country'] : "";
+         $country2 = isset($topCountries[2])? $topCountries[2]['country'] : "";
         // Pie Chart
-        $chart =  new PieChart();
-        $chart->setTitle('Top 3 scorers of the team.');
-        $chart->setSubtitle('Season 2021.');
-        $chart->addData([20, 24, 30]);
-        $chart->setLabels(['Player 7', 'Player 10', 'Player 9']);
+        $pie_chart =  new PieChart();
+        $pie_chart->setTitle('Clients Registration');
+        $pie_chart->setSubtitle('Top 3 registrations by country.');
+        $pie_chart->addData([$value0, $value1, $value2]);
+        $pie_chart->setLabels([$country0, $country1, $country2]);
 
         // Area Chart
         $area_chart = new AreaChart();
@@ -61,6 +85,6 @@ class DashboardController extends Controller
         $bar_chart->setXAxis($topFiveDates);
 
 
-        return view('dashboard.dashboard', compact('consultationsCount', 'appointmentsCount', 'totalPayments', 'chart', 'area_chart', 'bar_chart'));
+        return view('dashboard.dashboard', compact('consultationsCount', 'appointmentsCount', 'totalPayments', 'pie_chart', 'area_chart', 'bar_chart', 'clients'));
     }
 }
