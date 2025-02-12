@@ -133,7 +133,7 @@ class ClientController extends Controller
      */
     public function destroy(Request $request)
     {
-        // dd($request->user_id);
+        // dd($request);
         Client::destroy($request->user_id);
         return redirect()->back()->with('success', 'Client deleted successfully!');
     }
