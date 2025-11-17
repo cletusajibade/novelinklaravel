@@ -143,7 +143,6 @@
 
     // Time slots from database
     const timeSlotData = @json($time_slots);
-    // console.log(timeSlotData);
 
     // Variable $current_appointment only exists during rescheduling, it does not exists during fresh appointment creation.
     const currentAppointment = @json($current_appointment ?? null);
@@ -155,7 +154,6 @@
 
     // Get the current route
     const route = window.location.href;
-    console.log('current route: ', route);
 
     let currentDate = new Date();
 
@@ -184,10 +182,6 @@
             cell.classList.add("bg-white", "text-center", "p-4", "md:p-4", "cursor-pointer", "hover:bg-green-200");
 
             const fullDate = `${year}-${month + 1}-${day}`;
-            // const fullDateForModal = `${year}-${month + 1}-${day+1}`;
-
-            console.log('fullDate: ', fullDate);
-            // console.log('fullDateForModal: ', fullDateForModal);
 
             if (
                 day === today.getDate() &&
@@ -202,8 +196,9 @@
                 let formattedDate;
                 if (!cell.classList.contains("cursor-not-allowed")) {
                     // if (!cell.classList.contains("bg-red-200")) {
-                    formattedDate = formatDateToClientLocale(fullDate, timezone, locale)
-                    console.log('formattedDate: ', formattedDate);
+                    // Build a Date object directly so we keep the selected day in the client’s timezone.
+                    const cellDate = new Date(year, month, day);
+                    formattedDate = formatDateToClientLocale(cellDate, timezone, locale)
                     modal.classList.remove("hidden");
                     selectedDate.textContent = `Date: ${formattedDate}`;
                     // eventName.value = "";
@@ -243,10 +238,9 @@
         const slotId = formData.get('timeslotId') || 0;
         const meetingDuration = formData.get('duration') || 1;
 
-        // time-label has been inflated dynamically, so it's available for reference here.
-        const timeLabel = document.getElementById('time-label');
-        const timeText = timeLabel.textContent;
-        console.log("timeText", timeText);
+        // Grab the checked radio's sibling label so we display the time the user actually picked.
+        const selectedRadio = document.querySelector('input[name="timeslotId"]:checked');
+        const timeText = selectedRadio?.nextElementSibling?.textContent || '';
 
         if (slotId > 0) {
             if (confirm(`Are you sure you want to book ${timeText} for your appointment?`)) {
@@ -260,12 +254,9 @@
                     locale: locale
                 };
 
-                console.log("data: ", data);
-
                 // Send POST request
                 axios.post(route, data)
                     .then(response => {
-                        // console.log('response.data.message: ', response.data.message);
                         successMessageDiv.innerHTML =
                             `<x-bladewind::alert type="success" shade="dark">
                                 ${response.data.message}
@@ -277,7 +268,6 @@
                         }
                     })
                     .catch(error => {
-                        // console.log('error:', error);
                         if (error.response) {
                             // Server responded with a status code
                             console.error('Error:', error.response.data.error);
@@ -320,12 +310,7 @@
                     });
 
                 renderCalendar();
-            } else {
-                console.log("User clicked No");
-                // Cancel action
             }
-
-
         } else {
             alert("Please select a meeting time slot");
         }
@@ -381,13 +366,12 @@
             timeSlots.forEach(slot => {
                 if (slot.start_date === formatDate(calendarDay).toLocaleString()) {
                     const convertedTime = mstToClientTz(slot.start_time, timezone, locale);
-                    console.log('convertedTime:', convertedTime);
                     const newLabel = document.createElement('label');
                     newLabel.classList.add("flex", "items-center", "mb-4");
                     newLabel.innerHTML =
                         `<div>
                                 <input type="radio" id="${slot.start_time}" name="timeslotId" value="${slot.id}" class="mr-2">
-                                <label for="${slot.start_time}" id="time-label">${convertedTime}</label>
+                                <label for="${slot.start_time}" id="time-label-${slot.id}">${convertedTime}</label>
                             </div>`
                     timeSlotsDiv.appendChild(newLabel)
                 }
@@ -433,11 +417,9 @@
         return `${hours}:${minutes}`;
     }
 
-    function formatDateToClientLocale(dateString, clientTimezone, locale) {
-        // Convert the input string to a valid JavaScript Date object
-        const date = new Date(dateString);
-
-        // Format the date using the client's locale and timezone
+    function formatDateToClientLocale(date, clientTimezone, locale) {
+        // We already have a Date object built with the client's timezone, so formatting it directly
+        // prevents UTC conversion from shifting the day backwards (e.g., showing the previous day).
         const options = {
             year: 'numeric',
             month: 'long', // Full month name
