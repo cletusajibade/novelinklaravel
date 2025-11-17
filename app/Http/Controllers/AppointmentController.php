@@ -202,7 +202,7 @@ class AppointmentController extends Controller
                                     'client_id' => session('client_id'),
                                     'payment_id' => $payment->id,
                                     'time_slot_id' => $time_slot->id,
-                                    'status' => 'confirmed',
+                                    'status' => 'confirmed', //TODO: In the future, admin needs to login to confirm an appointment
                                     'confirmation_no'=> $transactionNumber = str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT),
                                     'location' => 'Zoom',
                                 ]);
@@ -574,7 +574,7 @@ class AppointmentController extends Controller
                 $date = $time_slot->start_date;
                 $time = $time_slot->start_time;
 
-                // Process cancelation
+                // Process cancellation
                 $appointment_updated = $appointment->update(['status'=>'canceled']);
                 $time_slot_updated = $time_slot->update(['client_id'=>null, 'status'=>'available']);
 

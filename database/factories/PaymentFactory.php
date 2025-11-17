@@ -18,11 +18,14 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
+            'uuid' => fake()->uuid(),
             'client_id' => Client::inRandomOrder()->first()->id,
-            'payment_id'=> fake()->uuid(),
-            'amount'=> fake()->randomNumber(3, true),
-            'currency'=> fake()->currencyCode(),
-            'status'=> fake()->randomElement(['pending', 'confirmed', 'completed', 'canceled'])
+            'stripe_payment_id' => fake()->randomNumber(5, true),
+            'amount' => fake()->randomNumber(3, true),
+            'currency' => fake()->currencyCode(),
+            'status' => fake()->randomElement(['pending', 'confirmed', 'completed', 'canceled']),
+            'confirmation_no' => fake()->randomNumber(7, true),
+
         ];
     }
 }

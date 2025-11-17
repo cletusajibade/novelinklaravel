@@ -25,7 +25,7 @@ class StoreClientRequest extends FormRequest
             'first_name' => 'required|alpha:ascii|max:255',
             'last_name' => 'required|alpha:ascii|max:255',
             'email' => 'required|string|email:rfc,dns|max:255',
-            'phone' => 'required|string', //todo: implement phone input field validation
+            'phone' => 'required|string', //TODO: implement phone input field validation
             // 'country_code' => 'required', //TODO: may be implemented later
             'date_of_birth' => 'required|date|before:today',
             'country' => 'required|not_in:null',
