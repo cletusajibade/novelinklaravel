@@ -57,19 +57,29 @@ class DashboardController extends Controller
          * Chart Doc: https://larapex-charts.netlify.app/
          * */
 
-        $value0 = isset($topCountries[0]) ? $topCountries[0]['total'] : 0;
-        $value1 = isset($topCountries[1]) ? $topCountries[1]['total'] : 0;
-        $value2 = isset($topCountries[2]) ? $topCountries[2]['total'] : 0;
-
-        $country0 = isset($topCountries[0]) ? $topCountries[0]['country'] : "";
-        $country1 = isset($topCountries[1]) ? $topCountries[1]['country'] : "";
-        $country2 = isset($topCountries[2]) ? $topCountries[2]['country'] : "";
         // Pie Chart
+        // Initialize Pie Chart with proper data handling
         $pie_chart = new PieChart();
         $pie_chart->setTitle('Clients Registration');
         $pie_chart->setSubtitle('Top 3 registrations by country.');
-        $pie_chart->addData([$value0, $value1, $value2]);
-        $pie_chart->setLabels([$country0, $country1, $country2]);
+
+        // Only add data if we have countries
+        if (!empty($topCountries)) {
+            $chartData = [];
+            $chartLabels = [];
+
+            foreach ($topCountries as $country) {
+                $chartData[] = $country['total'];
+                $chartLabels[] = $country['country'];
+            }
+
+            $pie_chart->addData($chartData);
+            $pie_chart->setLabels($chartLabels);
+        } else {
+            // Provide default data when no countries exist
+            $pie_chart->addData([1]);
+            $pie_chart->setLabels(['No Data']);
+        }
 
         // Area Chart
         $area_chart = new AreaChart();
