@@ -1,23 +1,70 @@
 <IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
     RewriteEngine On
 
-    # Ensure index.php inside /public is used as the front controller.
-    DirectoryIndex public/index.php
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Protect sensitive folders from direct access.
-    RewriteRule ^(storage|bootstrap|vendor)(/|$) - [F,L,NC]
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
 
-    # Skip rewriting for existing files or directories.
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # Forward everything else to the public directory.
-    RewriteRule ^(.*)$ public/$1 [L,QSA]
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
 </IfModule>
 
-# Basic hardening for Apache servers without mod_rewrite.
-<FilesMatch "^\\.(env|htaccess|git|gitignore|log|ini)$">
+# Disable directory browsing
+Options -Indexes
+
+# Prevent access to .env and other sensitive files
+<FilesMatch "^\.">
     Order allow,deny
     Deny from all
 </FilesMatch>
+
+# Additional security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# PHP Configuration (adjust as needed)
+<IfModule mod_php.c>
+    php_value upload_max_filesize 64M
+    php_value post_max_size 64M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
+
+#<IfModule mod_rewrite.c>
+#    RewriteEngine On
+#
+#    # Ensure index.php inside /public is used as the front controller.
+#    DirectoryIndex public/index.php
+#
+#    # Protect sensitive folders from direct access.
+#    RewriteRule ^(storage|bootstrap|vendor)(/|$) - [F,L,NC]
+#
+#    # Skip rewriting for existing files or directories.
+#    RewriteCond %{REQUEST_FILENAME} -f [OR]
+#    RewriteCond %{REQUEST_FILENAME} -d
+#    RewriteRule ^ - [L]
+#
+#    # Forward everything else to the public directory.
+#    RewriteRule ^(.*)$ public/$1 [L,QSA]
+#</IfModule>
+#
+## Basic hardening for Apache servers without mod_rewrite.
+#<FilesMatch "^\\.(env|htaccess|git|gitignore|log|ini)$">
+#    Order allow,deny
+#    Deny from all
+#</FilesMatch>
