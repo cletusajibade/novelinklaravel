@@ -47,21 +47,25 @@ class DashboardController extends Controller
             ->get()
             ->toArray();
 
+        if (!empty($topCountries)) {
             Log::info($topCountries[0]['country']);
+        } else {
+            Log::info('No top countries available');
+        }
 
         /**
          * Chart Doc: https://larapex-charts.netlify.app/
          * */
 
-         $value0 = isset($topCountries[0])? $topCountries[0]['total'] : 0;
-         $value1 = isset($topCountries[1])? $topCountries[1]['total'] : 0;
-         $value2 = isset($topCountries[2])? $topCountries[2]['total'] : 0;
+        $value0 = isset($topCountries[0]) ? $topCountries[0]['total'] : 0;
+        $value1 = isset($topCountries[1]) ? $topCountries[1]['total'] : 0;
+        $value2 = isset($topCountries[2]) ? $topCountries[2]['total'] : 0;
 
-         $country0 = isset($topCountries[0])? $topCountries[0]['country'] : "";
-         $country1 = isset($topCountries[1])? $topCountries[1]['country'] : "";
-         $country2 = isset($topCountries[2])? $topCountries[2]['country'] : "";
+        $country0 = isset($topCountries[0]) ? $topCountries[0]['country'] : "";
+        $country1 = isset($topCountries[1]) ? $topCountries[1]['country'] : "";
+        $country2 = isset($topCountries[2]) ? $topCountries[2]['country'] : "";
         // Pie Chart
-        $pie_chart =  new PieChart();
+        $pie_chart = new PieChart();
         $pie_chart->setTitle('Clients Registration');
         $pie_chart->setSubtitle('Top 3 registrations by country.');
         $pie_chart->addData([$value0, $value1, $value2]);
