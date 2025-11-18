@@ -1,0 +1,23 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Ensure index.php inside /public is used as the front controller.
+    DirectoryIndex public/index.php
+
+    # Protect sensitive folders from direct access.
+    RewriteRule ^(storage|bootstrap|vendor)(/|$) - [F,L,NC]
+
+    # Skip rewriting for existing files or directories.
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Forward everything else to the public directory.
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
+
+# Basic hardening for Apache servers without mod_rewrite.
+<FilesMatch "^\\.(env|htaccess|git|gitignore|log|ini)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
