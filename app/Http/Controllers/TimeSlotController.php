@@ -65,7 +65,7 @@ class TimeSlotController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Time slotes created successfully!');
+        return redirect()->back()->with('success', 'Time slots created successfully!');
     }
 
     /**
